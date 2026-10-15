@@ -1,0 +1,11 @@
+{
+ "control": {
+  "reproduction": "import flask\napp = flask.Flask(\"t\")\n@app.route(\"/hi\")\ndef hi():\n    return {\"msg\": \"hello \" + flask.request.args.get(\"n\", \"\")}\nc = app.test_client()\nr = c.get(\"/hi?n=x\")\nassert r.status_code == 200, r.status_code\nassert r.get_json() == {\"msg\": \"hello x\"}, r.get_json()\nprint(\"OK\")",
+  "results": {
+   "old": "pass: printed OK",
+   "new": "fail: TypeError: EnvironBuilder.__init__() got an unexpected keyword argument 'as_tuple' (raised from flask/testing.py line 216, FlaskClient.open -> werkzeug.test.Client.open)"
+  },
+  "exclusion_holds": false,
+  "notes": "flask 2.0.2 FlaskClient.open passes as_tuple=as_tuple to werkzeug.test.Client.open. werkzeug 2.1.0 removed as_tuple; Client.open now takes *args, **kwargs and passes them to EnvironBuilder, which raises TypeError. griffe's removed-parameter list does not include Client.open's as_tuple, probably because the signature became *args/**kwargs (not confirmed), so the graph had no removed parameter to trace and the exclusion is a false negative. Any user calling app.test_client().get/post/open breaks."
+ }
+}

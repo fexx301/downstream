@@ -1,0 +1,22 @@
+{
+ "name": "replay-markupsafe-jinja2-2.11.3",
+ "lib": "markupsafe",
+ "lib_module": "markupsafe",
+ "old": "2.0.1",
+ "new": "2.1.0",
+ "dep": "jinja2==2.11.3",
+ "dep_module": "jinja2",
+ "asof": "2022-02-18T04:49:49Z",
+ "graph": "replay_markupsafe_jinja2",
+ "src": [
+  "src/jinja2-2.11.3",
+  "src/markupsafe-2.0.1"
+ ],
+ "lib_src": [
+  "src/markupsafe-2.0.1",
+  "src/markupsafe-2.1.0"
+ ],
+ "breaks": "breaks-markupsafe.json",
+ "python": "3.11",
+ "cap_s": 2700
+}

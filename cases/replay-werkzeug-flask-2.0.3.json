@@ -1,0 +1,22 @@
+{
+ "name": "replay-werkzeug-flask-2.0.3",
+ "lib": "werkzeug",
+ "lib_module": "werkzeug",
+ "old": "2.0.3",
+ "new": "2.1.0",
+ "dep": "flask==2.0.3",
+ "dep_module": "flask",
+ "asof": "2022-03-28T18:55:57Z",
+ "graph": "replay_werkzeug_flask_203",
+ "src": [
+  "src/flask-2.0.3",
+  "src/werkzeug-2.0.3"
+ ],
+ "lib_src": [
+  "src/werkzeug-2.0.3",
+  "src/werkzeug-2.1.0"
+ ],
+ "breaks": "breaks-werkzeug.json",
+ "python": "3.12",
+ "cap_s": 2700
+}

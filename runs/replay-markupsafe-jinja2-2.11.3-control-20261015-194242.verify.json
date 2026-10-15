@@ -1,0 +1,22 @@
+{
+ "control": {
+  "imports the dependent": true,
+  "has an assertion": true,
+  "old passes": true,
+  "new passes": false,
+  "outputs": {
+   "old": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK HI &lt;b&gt; 1,2\n",
+    "stderr": ""
+   },
+   "new": {
+    "outcome": "fail",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/env/v/lib/python3.11/site-packages/jinja2/__init__.py\", line 12, in <module>\n    from .environment import Environment\n  File \"/env/v/lib/python3.11/site-packages/jinja2/environment.py\", line 25, in <module>\n    from .defaults import BLOCK_END_STRING\n  File \"/env/v/lib/python3.11/site-packages/jinja2/defaults.py\", line 3, in <module>\n    from .filters import FILTERS as DEFAULT_FILTERS  # noqa: F401\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/env/v/lib/python3.11/site-packages/jinja2/filters.py\", line 13, in <module>\n    from markupsafe import soft_unicode\nImportError: cannot import name 'soft_unicode' from 'markupsafe' (/env/v/lib/python3.11/site-packages/markupsafe/__init__.py)\n"
+   }
+  }
+ }
+}

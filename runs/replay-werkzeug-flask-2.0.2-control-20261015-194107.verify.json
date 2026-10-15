@@ -1,0 +1,22 @@
+{
+ "control": {
+  "imports the dependent": true,
+  "has an assertion": true,
+  "old passes": true,
+  "new passes": false,
+  "outputs": {
+   "old": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK\n",
+    "stderr": ""
+   },
+   "new": {
+    "outcome": "fail",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\n  File \"/env/v/lib/python3.12/site-packages/werkzeug/test.py\", line 1134, in get\n    return self.open(*args, **kw)\n           ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/env/v/lib/python3.12/site-packages/flask/testing.py\", line 216, in open\n    return super().open(  # type: ignore\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/env/v/lib/python3.12/site-packages/werkzeug/test.py\", line 1081, in open\n    builder = EnvironBuilder(*args, **kwargs)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: EnvironBuilder.__init__() got an unexpected keyword argument 'as_tuple'\n"
+   }
+  }
+ }
+}

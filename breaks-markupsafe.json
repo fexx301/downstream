@@ -1,0 +1,9 @@
+[
+ {
+  "kind": "Attribute value was changed",
+  "path": "markupsafe.__version__",
+  "canonical": "markupsafe.__version__",
+  "name": null,
+  "explain": "\u001b[1msrc/markupsafe-2.1.0/markupsafe/__init__.py\u001b[0m:14: __version__: \u001b[33mAttribute value was changed\u001b[39m: '2.0.1' -> '2.1.0'"
+ }
+]

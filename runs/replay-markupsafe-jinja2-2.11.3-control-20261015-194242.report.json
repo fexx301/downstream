@@ -1,0 +1,11 @@
+{
+ "control": {
+  "reproduction": "from jinja2 import Environment\nenv = Environment(autoescape=True)\nout = env.from_string(\"{{ x|upper }} {{ y }} {{ items|join(',') }}\").render(x=\"hi\", y=\"<b>\", items=[1,2])\nassert out == \"HI &lt;b&gt; 1,2\", out\nprint(\"OK\", out)",
+  "results": {
+   "old": "pass: OK HI &lt;b&gt; 1,2",
+   "new": "fail: ImportError: cannot import name 'soft_unicode' from 'markupsafe' (raised from jinja2/filters.py line 13 during `from jinja2 import Environment`)"
+  },
+  "exclusion_holds": false,
+  "notes": "markupsafe 2.1.0 removed the soft_unicode function (soft_str replaces it). jinja2 2.11.3 imports soft_unicode at module level in filters.py and runtime.py, so importing jinja2 fails. The graph only traces removed parameters, and breaking_changes reported none (its only entry was a changed __version__, which was not analysed). The removed function is not in the report, so the graph could not find this path. Adding the shim 'soft_unicode = soft_str' to markupsafe on the new version makes the reproduction pass, which shows this removal is the only cause."
+ }
+}
