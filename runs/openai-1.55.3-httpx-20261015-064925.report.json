@@ -1,0 +1,37 @@
+{
+ "findings": [
+  {
+   "function": "httpx._client.Client.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "openai.cli._cli._main",
+    "httpx.Client",
+    "httpx._client.Client",
+    "httpx._client.Client.__init__"
+   ],
+   "exposure": [],
+   "reproduction": "import sys, io, contextlib, httpx, openai\nfrom openai.cli._cli import _main\ndef fake_send(self, request, **kw):\n    assert request.url.path.endswith(\"/models\")\n    return httpx.Response(200, json={\"object\":\"list\",\"data\":[{\"id\":\"gpt-x\",\"object\":\"model\",\"created\":1,\"owned_by\":\"me\"}]}, request=request)\nhttpx.Client.send = fake_send\nsys.argv = [\"openai\", \"--proxy\", \"http://proxy.local:8080\", \"--api-key\", \"sk-test\", \"api\", \"models.list\"]\nbuf = io.StringIO()\nwith contextlib.redirect_stdout(buf):\n    _main()\nout = buf.getvalue()\nassert \"gpt-x\" in out, out\nmounts = openai.http_client._mounts\nproxied = [(p.pattern, t._pool._proxy_url) for p, t in mounts.items() if t is not None and hasattr(t._pool, \"_proxy_url\")]\nassert any(pat == \"http://\" and url.host == b\"proxy.local\" and url.port == 8080 for pat, url in proxied), proxied\nprint(\"OK\", proxied)\n",
+   "shim": "\nimport warnings as _dw_warnings\n\ndef _dw_wrap_proxies(_cls, _transport_cls):\n    _orig_init = _cls.__init__\n\n    def __init__(self, *args, proxies=None, **kwargs):\n        if proxies is not None:\n            _dw_warnings.warn(\n                \"The 'proxies' argument is deprecated; use 'proxy' or 'mounts' instead.\",\n                DeprecationWarning,\n                stacklevel=2,\n            )\n            if isinstance(proxies, (str, URL, Proxy)):\n                if kwargs.get(\"proxy\") is None:\n                    kwargs[\"proxy\"] = proxies\n            else:\n                mounts = dict(kwargs.pop(\"mounts\", None) or {})\n                for _key, _value in proxies.items():\n                    if _key in mounts:\n                        continue\n                    if _value is None:\n                        mounts[_key] = None\n                    else:\n                        mounts[_key] = _transport_cls(\n                            verify=kwargs.get(\"verify\", True),\n                            cert=kwargs.get(\"cert\"),\n                            http1=kwargs.get(\"http1\", True),\n                            http2=kwargs.get(\"http2\", False),\n                            limits=kwargs.get(\"limits\", DEFAULT_LIMITS),\n                            trust_env=kwargs.get(\"trust_env\", True),\n                            proxy=_value,\n                        )\n                kwargs[\"mounts\"] = mounts\n        _orig_init(self, *args, **kwargs)\n\n    __init__.__wrapped__ = _orig_init\n    _cls.__init__ = __init__\n\nfrom ._config import DEFAULT_LIMITS\n_dw_wrap_proxies(Client, HTTPTransport)\n_dw_wrap_proxies(AsyncClient, AsyncHTTPTransport)\n",
+   "results": {
+    "old": "pass: OK [('http://', URL(scheme=b'http', host=b'proxy.local', port=8080, target=b'/'))]",
+    "new": "fail: TypeError: Client.__init__() got an unexpected keyword argument 'proxies' (traceback through openai/cli/_cli.py line 179 in _main)",
+    "new+shim": "pass: OK [('http://', URL(scheme=b'http', host=b'proxy.local', port=8080, target=b'/'))]"
+   }
+  }
+ ],
+ "unconfirmed": [
+  {
+   "candidate": "openai._base_client.SyncAPIClient.__init__ / AsyncAPIClient.__init__ forwarding kwargs['proxies'] to SyncHttpxClientWrapper/AsyncHttpxClientWrapper (httpx.Client/AsyncClient) via dynamically built **kwargs (text search)",
+   "why": "Only reached when proxies is not None; the public OpenAI/AsyncOpenAI constructors neither accept nor pass proxies (text search finds proxies only in _base_client and cli), so users cannot reach it through openai's public API without passing the removed parameter themselves."
+  },
+  {
+   "candidate": "the other 22 removed parameters (proxies/cert on httpx._api.*, app on Client/AsyncClient, proxies on AsyncClient, http2 on create_ssl_context)",
+   "why": "No graph paths, no unknown calls, and text search found no openai call passing these keywords to the affected functions."
+  }
+ ],
+ "unsupported": {
+  "Attribute value was changed": 5,
+  "Positional parameter was moved": 10
+ }
+}

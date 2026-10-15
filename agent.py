@@ -43,15 +43,19 @@ def last_json(text):
     return None
 
 
-def run_agent(case_path, case):
+def run_agent(case_path, case, control=False):
+    """Investigate the dependent (or, with control, test the graph's exclusion of it); returns verification rows."""
     cwd = Path(tempfile.mkdtemp(prefix="downstream-"))  # no project instructions, memory or settings above it
     (cwd / "mcp.json").write_text(json.dumps({"mcpServers": {"downstream": {
         "command": "uv", "args": [*UV[1:], "--with", "mcp", "--with", "falkordb", "python", str(HERE / "server.py")],
         "env": {"DOWNSTREAM_CASE": str(case_path.resolve()), "PATH": os.environ["PATH"]}}}}))
     (HERE / "runs").mkdir(exist_ok=True)
-    out = HERE / "runs" / f"{case['name']}-{time.strftime('%Y%m%d-%H%M%S')}"
-    prompt = Template((HERE / "prompt.md").read_text()).substitute(case, via=", ".join(case.get("pins", [])) or "none")
-    cmd = ["claude", "-p", f"Investigate this release of {case['lib']} for its maintainer.", "--system-prompt", prompt,
+    out = HERE / "runs" / f"{case['name']}{'-control' if control else ''}-{time.strftime('%Y%m%d-%H%M%S')}"
+    template = (HERE / ("prompt-control.md" if control else "prompt.md")).read_text()
+    prompt = Template(template).substitute(case, via=", ".join(case.get("pins", [])) or "none")
+    task = (f"Test the graph's exclusion of {case['dep']}." if control
+            else f"Investigate this release of {case['lib']} for its maintainer.")
+    cmd = ["claude", "-p", task, "--system-prompt", prompt,
            "--model", MODEL, "--tools", "", "--strict-mcp-config", "--mcp-config", str(cwd / "mcp.json"),
            "--allowedTools", "mcp__downstream", "--setting-sources", "", "--no-session-persistence",
            "--output-format", "stream-json", "--verbose"]
@@ -67,9 +71,9 @@ def run_agent(case_path, case):
     report = last_json(result.get("result") or "")
     if report is None:
         print("no JSON report in the final message")
-        return
+        return None
     Path(f"{out}.report.json").write_text(json.dumps(report, indent=1))
-    verify(case, report, out)
+    return (verify_control if control else verify)(case, report, out)
 
 
 def passes_param(code, param):
@@ -92,13 +96,18 @@ def through_dependent(code, stderr, case):
         return False
     if f"site-packages/{mod}/" in stderr:
         return True
+    names = imported(code)
+    return bool(via) and mod in names and not names & set(via)
+
+
+def imported(code):
+    """Top-level module names the code imports (empty if it does not parse)."""
     try:
         tree = ast.parse(code)
     except SyntaxError:
-        return False
-    imported = ({a.name.split(".")[0] for n in ast.walk(tree) if isinstance(n, ast.Import) for a in n.names} |
-                {n.module.split(".")[0] for n in ast.walk(tree) if isinstance(n, ast.ImportFrom) and n.module})
-    return bool(via) and mod in imported and not imported & set(via)
+        return set()
+    return ({a.name.split(".")[0] for n in ast.walk(tree) if isinstance(n, ast.Import) for a in n.names} |
+            {n.module.split(".")[0] for n in ast.walk(tree) if isinstance(n, ast.ImportFrom) and n.module})
 
 
 def text_hits(case, param):
@@ -120,7 +129,7 @@ def verify(case, report, out):
                "new+shim": runner.run(case, case["new"], code, f.get("shim") or None, fresh=True)}
         new_err = res["new"].get("stderr", "")
         rows[f"finding {i}: {f.get('function')}({param}=) via {f.get('evidence')}"] = {
-            "imports the dependent": bool(re.search(rf"^\s*(from|import)\s+{mod}\b", code, re.M)),
+            "imports the dependent": mod in imported(code),
             "does not pass the parameter itself": not passes_param(code, param),
             "dependent's source mentions the parameter": text_hits(case, param),
             "has an assertion": "assert" in code,
@@ -131,12 +140,60 @@ def verify(case, report, out):
             "new+shim passes": res["new+shim"]["outcome"] == "pass",
             "outputs": res,
         }
+    return save(rows, out)
+
+
+def verify_control(case, report, out):
+    """Re-run the control reproduction: the graph's exclusion holds only if it passes on both versions."""
+    code = (report.get("control") or {}).get("reproduction") or ""
+    res = {v: runner.run(case, case[v], code, fresh=True) for v in ("old", "new")}
+    return save({"control": {
+        "imports the dependent": case["dep_module"] in imported(code),
+        "has an assertion": "assert" in code,
+        "old passes": res["old"]["outcome"] == "pass",
+        "new passes": res["new"]["outcome"] == "pass",
+        "outputs": res,
+    }}, out)
+
+
+def save(rows, out):
     Path(f"{out}.verify.json").write_text(json.dumps(rows, indent=1))
     for k, v in rows.items():
         print(k, {c: r for c, r in v.items() if c != "outputs"} if isinstance(v, dict) else v)
+    return rows
+
+
+def passed(rows):
+    """Every yes/no check of every row holds (the text-hit lists are information, not checks)."""
+    return bool(rows) and all(r is True or (isinstance(r, dict) and all(x for x in r.values() if isinstance(x, bool)))
+                              for r in rows.values())
+
+
+def demo(paths):
+    """One release against several dependents: the graph sorts them, the agent tests each, the verifier re-runs."""
+    lines = ["| Dependent | Graph says | Agent run | Verified in fresh containers |", "|---|---|---|---|"]
+    for path in paths:
+        case = json.loads(path.read_text())
+        setup(case)
+        t = json.loads(subprocess.run([*UV, "--with", "mcp", "--with", "falkordb", "python", "-c",
+                                       "import json, server; print(json.dumps(server.triage()))"],
+                                      cwd=HERE, env={**os.environ, "DOWNSTREAM_CASE": str(path.resolve())},
+                                      capture_output=True, text=True, check=True).stdout)
+        counts = {k: len(v) for k, v in t.items()}
+        says = ", ".join(f"{n} {k}" for k, n in counts.items() if n) or "no exposure found"
+        rows = run_agent(path, case, control=not any(counts.values()))
+        found = [k for k, v in (rows or {}).items() if k.startswith("finding")]
+        did = "exclusion test" if "control" in (rows or {}) else f"{len(found)} break(s) reported"
+        lines.append(f"| {case['dep']} | {says} | {did} | {'yes' if passed(rows) else 'NO'} |")
+    out = HERE / "runs" / f"demo-{time.strftime('%Y%m%d-%H%M%S')}.md"
+    out.write_text("\n".join(lines) + "\n")
+    print("\n".join(lines))
 
 
 if __name__ == "__main__":
+    if sys.argv[1] == "demo":
+        demo([Path(p) for p in sys.argv[2:]])
+        sys.exit()
     path = Path(sys.argv[1])
     case = json.loads(path.read_text())
     if sys.argv[2] == "setup":

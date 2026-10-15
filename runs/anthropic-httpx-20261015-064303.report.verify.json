@@ -1,0 +1,119 @@
+{
+ "unsupported kinds all listed": true,
+ "finding 0: httpx._client.Client.__init__(proxies=) via graph path": {
+  "imports the dependent": true,
+  "does not pass the parameter itself": true,
+  "dependent's source mentions the parameter": [
+   "_base_client.py:347",
+   "_base_client.py:356",
+   "_base_client.py:768",
+   "_base_client.py:795",
+   "_base_client.py:797",
+   "_base_client.py:802",
+   "_base_client.py:827",
+   "_base_client.py:839",
+   "_base_client.py:1343",
+   "_base_client.py:1369",
+   "_base_client.py:1371",
+   "_base_client.py:1376",
+   "_base_client.py:1402",
+   "_base_client.py:1413",
+   "_client.py:88",
+   "_client.py:89",
+   "_client.py:128",
+   "_client.py:350",
+   "_client.py:351",
+   "_client.py:390",
+   "_proxy.py:16",
+   "_client.py:127",
+   "_client.py:128",
+   "_client.py:155",
+   "_client.py:215",
+   "_client.py:216",
+   "_client.py:243"
+  ],
+  "has an assertion": true,
+  "old passes": true,
+  "new fails naming the parameter, through the dependent": true,
+  "has a shim": true,
+  "new+shim passes": true,
+  "outputs": {
+   "old": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK\n",
+    "stderr": ""
+   },
+   "new": {
+    "outcome": "fail",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\n  File \"/env/v/lib/python3.12/site-packages/anthropic/_client.py\", line 121, in __init__\n    super().__init__(\n  File \"/env/v/lib/python3.12/site-packages/anthropic/_base_client.py\", line 835, in __init__\n    self._client = http_client or SyncHttpxClientWrapper(\n                                  ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/env/v/lib/python3.12/site-packages/anthropic/_base_client.py\", line 733, in __init__\n    super().__init__(**kwargs)\nTypeError: Client.__init__() got an unexpected keyword argument 'proxies'\n"
+   },
+   "new+shim": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK\n",
+    "stderr": ""
+   }
+  }
+ },
+ "finding 1: httpx._client.AsyncClient.__init__(proxies=) via graph path": {
+  "imports the dependent": true,
+  "does not pass the parameter itself": true,
+  "dependent's source mentions the parameter": [
+   "_base_client.py:347",
+   "_base_client.py:356",
+   "_base_client.py:768",
+   "_base_client.py:795",
+   "_base_client.py:797",
+   "_base_client.py:802",
+   "_base_client.py:827",
+   "_base_client.py:839",
+   "_base_client.py:1343",
+   "_base_client.py:1369",
+   "_base_client.py:1371",
+   "_base_client.py:1376",
+   "_base_client.py:1402",
+   "_base_client.py:1413",
+   "_client.py:88",
+   "_client.py:89",
+   "_client.py:128",
+   "_client.py:350",
+   "_client.py:351",
+   "_client.py:390",
+   "_proxy.py:16",
+   "_client.py:127",
+   "_client.py:128",
+   "_client.py:155",
+   "_client.py:215",
+   "_client.py:216",
+   "_client.py:243"
+  ],
+  "has an assertion": true,
+  "old passes": true,
+  "new fails naming the parameter, through the dependent": true,
+  "has a shim": true,
+  "new+shim passes": true,
+  "outputs": {
+   "old": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK\n",
+    "stderr": ""
+   },
+   "new": {
+    "outcome": "fail",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\n  File \"/env/v/lib/python3.12/site-packages/anthropic/_client.py\", line 383, in __init__\n    super().__init__(\n  File \"/env/v/lib/python3.12/site-packages/anthropic/_base_client.py\", line 1409, in __init__\n    self._client = http_client or AsyncHttpxClientWrapper(\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/env/v/lib/python3.12/site-packages/anthropic/_base_client.py\", line 1306, in __init__\n    super().__init__(**kwargs)\nTypeError: AsyncClient.__init__() got an unexpected keyword argument 'proxies'\n"
+   },
+   "new+shim": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK\n",
+    "stderr": ""
+   }
+  }
+ }
+}

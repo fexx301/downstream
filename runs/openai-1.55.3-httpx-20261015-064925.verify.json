@@ -1,0 +1,54 @@
+{
+ "unsupported kinds all listed": true,
+ "finding 0: httpx._client.Client.__init__(proxies=) via graph path": {
+  "imports the dependent": true,
+  "does not pass the parameter itself": true,
+  "dependent's source mentions the parameter": [
+   "_base_client.py:353",
+   "_base_client.py:362",
+   "_base_client.py:790",
+   "_base_client.py:819",
+   "_base_client.py:820",
+   "_base_client.py:822",
+   "_base_client.py:827",
+   "_base_client.py:852",
+   "_base_client.py:1374",
+   "_base_client.py:1402",
+   "_base_client.py:1403",
+   "_base_client.py:1405",
+   "_base_client.py:1410",
+   "_base_client.py:1436",
+   "_proxy.py:16",
+   "_cli.py:170",
+   "_cli.py:174",
+   "_cli.py:175",
+   "_cli.py:177",
+   "_cli.py:180"
+  ],
+  "has an assertion": true,
+  "old passes": true,
+  "new fails naming the parameter, through the dependent": true,
+  "has a shim": true,
+  "new+shim passes": true,
+  "outputs": {
+   "old": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK [('http://', URL(scheme=b'http', host=b'proxy.local', port=8080, target=b'/'))]\n",
+    "stderr": ""
+   },
+   "new": {
+    "outcome": "fail",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 10, in <module>\n  File \"/env/v/lib/python3.12/site-packages/openai/cli/_cli.py\", line 179, in _main\n    http_client = httpx.Client(\n                  ^^^^^^^^^^^^^\nTypeError: Client.__init__() got an unexpected keyword argument 'proxies'\n"
+   },
+   "new+shim": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK [('http://', URL(scheme=b'http', host=b'proxy.local', port=8080, target=b'/'))]\n",
+    "stderr": ""
+   }
+  }
+ }
+}

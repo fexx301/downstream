@@ -31,6 +31,16 @@ RETURN reverse([n IN nodes(p) | n.qn]) AS chain, reverse([r IN relationships(p) 
 LIMIT 50
 """
 
+# Calls in package $pkg that pass a removed keyword to a symbol the graph cannot resolve (a ref, possibly
+# behind aliases) whose name mentions the library, such as a vendored or runtime alias: unknown, not safe.
+UNRESOLVED = """
+MATCH (caller:Sym)-[c:CALLS]->(:Sym)-[:ALIAS_OF*0..12]->(end:Sym {kind: 'ref'})
+WHERE (caller.qn = $pkg OR caller.qn STARTS WITH $pkg + '.')
+  AND any(k IN c.kws WHERE k IN $params)
+  AND end.qn CONTAINS $lib
+RETURN DISTINCT caller.qn AS caller, end.qn AS target, [k IN c.kws WHERE k IN $params] AS keywords
+"""
+
 
 def main(graph, breaks_path):
     g = FalkorDB(host="localhost", port=6380).select_graph(graph)

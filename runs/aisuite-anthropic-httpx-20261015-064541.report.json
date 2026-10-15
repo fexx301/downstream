@@ -1,0 +1,50 @@
+{
+ "findings": [
+  {
+   "function": "httpx._client.Client.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "anthropic._base_client.SyncAPIClient.__init__",
+    "anthropic._base_client.SyncHttpxClientWrapper",
+    "anthropic._base_client.DefaultHttpxClient",
+    "anthropic._base_client._DefaultHttpxClient",
+    "anthropic._base_client._DefaultHttpxClient.__init__",
+    "httpx.Client",
+    "httpx._client.Client",
+    "httpx._client.Client.__init__"
+   ],
+   "exposure": [
+    "aisuite.providers.anthropic_provider.AnthropicProvider",
+    "aisuite.providers.anthropic_provider.AnthropicProvider.__init__",
+    "anthropic.Anthropic",
+    "anthropic._client.Anthropic",
+    "anthropic._client.Anthropic.__init__",
+    "anthropic._client.SyncAPIClient",
+    "anthropic._base_client.SyncAPIClient",
+    "anthropic._base_client.SyncAPIClient.__init__"
+   ],
+   "reproduction": "import types\nimport aisuite as ai\nclient = ai.Client({\"anthropic\": {\"api_key\": \"sk-test\"}})\nprov = client.providers[\"anthropic\"]\ninner = prov.client._client\nassert getattr(inner, \"follow_redirects\", None) is True\ncaptured = {}\ndef fake_create(**kw):\n    captured.update(kw)\n    return types.SimpleNamespace(content=[types.SimpleNamespace(text=\"hello from stub\")])\nprov.client.messages.create = fake_create\nr = client.chat.completions.create(model=\"anthropic:claude-3-5-sonnet-20240620\", messages=[{\"role\": \"system\", \"content\": \"be nice\"}, {\"role\": \"user\", \"content\": \"hi\"}])\nassert r.choices[0].message.content == \"hello from stub\", r\nassert captured[\"system\"] == \"be nice\" and captured[\"max_tokens\"] > 0\nprint(\"OK\")\n",
+   "shim": "\nimport functools as _functools\nimport warnings as _warnings\n\n\ndef _httpx_shim_map_proxies(kwargs):\n    proxies = kwargs.pop(\"proxies\")\n    _warnings.warn(\n        \"The 'proxies' argument is deprecated; use 'proxy' or 'mounts' instead.\",\n        DeprecationWarning,\n        stacklevel=3,\n    )\n    if proxies is None:\n        return\n    if isinstance(proxies, dict):\n        mounts = dict(kwargs.get(\"mounts\") or {})\n        for pattern, value in proxies.items():\n            if value is None:\n                mounts[pattern] = None\n            else:\n                mounts[pattern] = None  # placeholder, replaced below\n                mounts[pattern] = value\n        kwargs[\"_httpx_shim_proxy_mounts\"] = mounts\n    else:\n        kwargs.setdefault(\"proxy\", proxies)\n\n\ndef _httpx_shim_patch(cls, transport_cls, async_):\n    original = cls.__init__\n\n    @_functools.wraps(original)\n    def __init__(self, *args, **kwargs):\n        if \"proxies\" in kwargs:\n            _httpx_shim_map_proxies(kwargs)\n        proxy_mounts = kwargs.pop(\"_httpx_shim_proxy_mounts\", None)\n        if \"app\" in kwargs:\n            app = kwargs.pop(\"app\")\n            _warnings.warn(\n                \"The 'app' argument is deprecated; use 'transport=%s(app=...)' instead.\" % (\n                    \"ASGITransport\" if async_ else \"WSGITransport\"\n                ),\n                DeprecationWarning,\n                stacklevel=2,\n            )\n            if app is not None and kwargs.get(\"transport\") is None:\n                kwargs[\"transport\"] = (ASGITransport if async_ else WSGITransport)(app=app)\n        if proxy_mounts:\n            verify = kwargs.get(\"verify\", True)\n            trust_env = kwargs.get(\"trust_env\", True)\n            mounts = dict(kwargs.get(\"mounts\") or {})\n            for pattern, value in proxy_mounts.items():\n                if value is None:\n                    mounts[pattern] = None\n                elif isinstance(value, (transport_cls,)) or hasattr(value, \"handle_request\") or hasattr(value, \"handle_async_request\"):\n                    mounts[pattern] = value\n                else:\n                    mounts[pattern] = transport_cls(\n                        proxy=value if isinstance(value, Proxy) else Proxy(value),\n                        verify=verify,\n                        trust_env=trust_env,\n                    )\n            kwargs[\"mounts\"] = mounts\n        original(self, *args, **kwargs)\n\n    cls.__init__ = __init__\n\n\n_httpx_shim_patch(Client, HTTPTransport, False)\n_httpx_shim_patch(AsyncClient, AsyncHTTPTransport, True)\n",
+   "results": {
+    "old": "pass: OK",
+    "new": "fail: TypeError: Client.__init__() got an unexpected keyword argument 'proxies' (traceback through aisuite/client.py, aisuite/provider.py, aisuite/providers/anthropic_provider.py line 16, anthropic/_client.py line 121, anthropic/_base_client.py lines 835 and 733)",
+    "new+shim": "pass: OK"
+   }
+  }
+ ],
+ "unconfirmed": [
+  {
+   "candidate": "httpx._client.AsyncClient.__init__ proxies via anthropic._base_client.AsyncAPIClient.__init__",
+   "why": "exposed_paths found no aisuite code reaching AsyncAPIClient; aisuite 0.1.6 only builds the sync anthropic.Anthropic client. The same TypeError would hit anyone using anthropic.AsyncAnthropic directly, and the shim also patches AsyncClient."
+  },
+  {
+   "candidate": "the other 21 removed parameters (proxies/cert on httpx._api request/stream/get/options/head/post/put/patch/delete, app on Client/AsyncClient, http2 on create_ssl_context)",
+   "why": "impact_paths found no path, unknown_calls returned nothing, and a text search of aisuite for proxies|cert=|app=|http2 found no matches"
+  }
+ ],
+ "unsupported": {
+  "Attribute value was changed": 5,
+  "Positional parameter was moved": 10
+ }
+}

@@ -17,6 +17,30 @@ Work in progress for Graph Hacks (FalkorDB × WeMakeDevs), Track 01: agents that
 5. The agent writes a reproduction and runs it against the old and new release, then writes a deprecation shim and verifies it. `runner.py` executes each run in Docker, with no network, a read-only filesystem and a time limit.
 6. `agent.py verify` re-runs every claim in fresh containers instead of trusting the agent's report.
 
+## Graph model
+
+Every node is a `Sym`: a module, class, function or name binding in one of the scanned packages. Each is keyed by its full dotted name (`qn`) and labelled with its `kind`. Function nodes also record their parameter names (`params`) and whether they accept `**kwargs` (`var_kw`).
+
+| Edge | Meaning | Comes from |
+|---|---|---|
+| `ALIAS_OF {tc}` | This name refers to that symbol. `tc` is true when the binding exists only under `if TYPE_CHECKING:`. | `import x`, `from x import Y`, `A = B`, and star imports through `__all__`. |
+| `INHERITS {i}` | Class → its `i`-th base class. | `class C(Base)` |
+| `CTOR` | Class → the `__init__` that runs when the class is called. | The class's own `__init__`, or else its first base. |
+| `CALLS {kws}` | Function or module → what it calls, with the keyword names written at the call. A module's calls are the code that runs when it is imported. | Every call the scanner can resolve. |
+| `FORWARDS_KW` | Function → the callee it hands its own `**kwargs` to. | `g(**kwargs)` inside a function that takes `**kwargs`. |
+
+**Why a graph.** A keyword travels. It is written at a call in one package, then passes through an alias, a class constructor and a `**kwargs` hand-off before landing in another package. Each of those steps is an edge. So "does this call reach the parameter the release removed?" is a path query, and so is "which code in my dependents reaches that call?", run in the other direction. Text search sees only the first step, and only if the keyword is written out.
+
+**The two queries** (`impact.py`):
+- `REACHES_REMOVED` finds a `CALLS` edge whose `kws` include the removed parameter, followed by up to 12 `ALIAS_OF`/`CTOR`/`FORWARDS_KW` hops to the function that lost it. Every function along the way must accept `**kwargs` without naming the parameter itself; otherwise it consumes the keyword and the path stops there. Aliases that exist only for type checkers are skipped.
+- `EXPOSED` starts from such a call site and walks back up to 10 `CALLS`/`ALIAS_OF`/`CTOR` hops into a given dependent. It keeps the shortest path for each entry point.
+
+**What the graph cannot see**, and therefore must be reported as unknown, never as safe:
+- calls through `self` or other instances;
+- base classes after the first;
+- `**kwargs` built at runtime;
+- imports that only exist at runtime, such as `requests.packages.urllib3` or `importlib` loading.
+
 ## Example: httpx 0.28.0 breaks aisuite, which never mentions the removed keyword
 
 ```
@@ -31,6 +55,23 @@ Results are in `runs/aisuite-anthropic-httpx-20261015-061427.*`:
 - With httpx 0.27.2 the agent's reproduction passes.
 - With 0.28.0 it fails with `TypeError: Client.__init__() got an unexpected keyword argument 'proxies'`, raised through aisuite's and anthropic's code.
 - With the agent's shim it passes again.
+
+## Demo: httpx 0.27.2 → 0.28.0 against six dependents
+
+`python3 agent.py demo cases/openai-httpx.json cases/anthropic-httpx.json cases/aisuite-anthropic-httpx.json cases/langchain-openai-httpx.json cases/openai-1.55.3-httpx.json cases/openai-1.56.1-httpx.json` took 11 minutes on Oct 15.
+
+For each dependent the graph decides first. If it finds a path, the agent investigates. If it finds none, the agent must show that the dependent still works on the new release.
+
+| Dependent | Graph says | Agent | Verified in fresh containers |
+|---|---|---|---|
+| openai 1.55.2 | 3 direct paths | 3 breaks: sync client, async client, CLI | yes |
+| anthropic 0.30.1 | 2 direct paths | 2 breaks: sync and async client | yes (after a verifier fix, see `runs/demo-20261015-065144.md`) |
+| aisuite 0.1.6 | 2 indirect paths, through anthropic | 1 break | yes |
+| langchain-openai 0.2.10 | 12 indirect paths, through openai | 2 breaks | yes |
+| openai 1.55.3 (fixed the client) | 1 direct path: the CLI still passes `proxies` | 1 break: `openai --proxy … api models.list` | yes |
+| openai 1.56.1 (also fixed the CLI) | no exposure found | control: works on both releases | yes |
+
+A text search of openai 1.55.3 for `proxies` returns 20 lines, and only the CLI line still breaks. A text search of aisuite and langchain-openai returns nothing, yet both break. The graph handles both cases: it picks the one real hit out of many, and it finds breaks that text search cannot see at all.
 
 ## Run it
 
@@ -54,4 +95,4 @@ uv run --python 3.12 --with falkordb python -m unittest test_downstream
 
 ## AI use (rule 11)
 
-Claude (`claude-opus-5-5`, through Claude Code) wrote the code in this repository at Femi's direction. Femi chose the direction, approved each test's pass criteria before it ran, and had the test cases picked by an independent model. Femi reviews the code. At runtime the agent itself is Claude Code, restricted to DOWNSTREAM's tools.
+Claude (`claude-opus-5-5`, through Claude Code) wrote the code and this README at Femi's direction. Femi chose the project direction, approved each test's pass criteria before it ran, approved the demo dependents, and had the test cases picked by an independent model. At runtime the agent itself is Claude Code, restricted to DOWNSTREAM's tools.

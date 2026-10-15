@@ -1,0 +1,22 @@
+{
+ "control": {
+  "imports the dependent": true,
+  "has an assertion": true,
+  "old passes": true,
+  "new passes": true,
+  "outputs": {
+   "old": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK 0.27.2 1.56.1\n",
+    "stderr": ""
+   },
+   "new": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK 0.28.0 1.56.1\n",
+    "stderr": ""
+   }
+  }
+ }
+}

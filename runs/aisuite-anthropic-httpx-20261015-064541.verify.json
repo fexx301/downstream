@@ -1,0 +1,33 @@
+{
+ "unsupported kinds all listed": true,
+ "finding 0: httpx._client.Client.__init__(proxies=) via graph path": {
+  "imports the dependent": true,
+  "does not pass the parameter itself": true,
+  "dependent's source mentions the parameter": [],
+  "has an assertion": true,
+  "old passes": true,
+  "new fails naming the parameter, through the dependent": true,
+  "has a shim": true,
+  "new+shim passes": true,
+  "outputs": {
+   "old": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK\n",
+    "stderr": ""
+   },
+   "new": {
+    "outcome": "fail",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 3, in <module>\n  File \"/env/v/lib/python3.12/site-packages/aisuite/client.py\", line 27, in __init__\n    self._initialize_providers()\n  File \"/env/v/lib/python3.12/site-packages/aisuite/client.py\", line 33, in _initialize_providers\n    self.providers[provider_key] = ProviderFactory.create_provider(\n                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/env/v/lib/python3.12/site-packages/aisuite/provider.py\", line 46, in create_provider\n    return provider_class(**config)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/env/v/lib/python3.12/site-packages/aisuite/providers/anthropic_provider.py\", line 16, in __init__\n    self.client = anthropic.Anthropic(**config)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/env/v/lib/python3.12/site-packages/anthropic/_client.py\", line 121, in __init__\n    super().__init__(\n  File \"/env/v/lib/python3.12/site-packages/anthropic/_base_client.py\", line 835, in __init__\n    self._client = http_client or SyncHttpxClientWrapper(\n                                  ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/env/v/lib/python3.12/site-packages/anthropic/_base_client.py\", line 733, in __init__\n    super().__init__(**kwargs)\nTypeError: Client.__init__() got an unexpected keyword argument 'proxies'\n"
+   },
+   "new+shim": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK\n",
+    "stderr": ""
+   }
+  }
+ }
+}

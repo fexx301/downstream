@@ -1,0 +1,68 @@
+{
+ "findings": [
+  {
+   "function": "httpx._client.Client.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "anthropic._base_client.SyncAPIClient.__init__",
+    "anthropic._base_client.SyncHttpxClientWrapper",
+    "anthropic._base_client.DefaultHttpxClient",
+    "anthropic._base_client._DefaultHttpxClient",
+    "anthropic._base_client._DefaultHttpxClient.__init__",
+    "httpx.Client",
+    "httpx._client.Client",
+    "httpx._client.Client.__init__"
+   ],
+   "exposure": [],
+   "reproduction": "import httpx, anthropic\ndef handler(req):\n    return httpx.Response(200, json={\"id\":\"msg_1\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-3\",\"content\":[{\"type\":\"text\",\"text\":\"hi\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":None,\"usage\":{\"input_tokens\":1,\"output_tokens\":1}})\nc = anthropic.Anthropic(api_key=\"k\")\nc._client._transport = httpx.MockTransport(handler)\nm = c.messages.create(model=\"claude-3\", max_tokens=5, messages=[{\"role\":\"user\",\"content\":\"x\"}])\nassert m.content[0].text == \"hi\"\nprint(\"OK\")",
+   "shim": "\nimport warnings as _dw_warnings\nfrom httpx._client import Client as _DwClient, AsyncClient as _DwAsyncClient\nfrom httpx._config import DEFAULT_LIMITS as _DW_DEFAULT_LIMITS\nfrom httpx._transports.default import HTTPTransport as _DwHTTPTransport, AsyncHTTPTransport as _DwAsyncHTTPTransport\nfrom httpx._transports.wsgi import WSGITransport as _DwWSGITransport\nfrom httpx._transports.asgi import ASGITransport as _DwASGITransport\n\ndef _dw_proxies_to_mounts(proxies, transport_cls, kwargs):\n    if isinstance(proxies, dict):\n        mounts = dict(kwargs.pop(\"mounts\", None) or {})\n        for key, value in proxies.items():\n            mounts[key] = None if value is None else transport_cls(\n                proxy=value,\n                verify=kwargs.get(\"verify\", True),\n                cert=kwargs.get(\"cert\"),\n                trust_env=kwargs.get(\"trust_env\", True),\n                http1=kwargs.get(\"http1\", True),\n                http2=kwargs.get(\"http2\", False),\n                limits=kwargs.get(\"limits\", _DW_DEFAULT_LIMITS),\n            )\n        kwargs[\"mounts\"] = mounts\n    else:\n        kwargs[\"proxy\"] = proxies\n\ndef _dw_patch(cls, transport_cls, app_transport_cls):\n    _orig = cls.__init__\n    def __init__(self, *args, **kwargs):\n        if \"proxies\" in kwargs:\n            proxies = kwargs.pop(\"proxies\")\n            _dw_warnings.warn(\n                \"The 'proxies' argument is deprecated; use 'proxy' or 'mounts' instead.\",\n                DeprecationWarning, stacklevel=2)\n            if proxies is not None:\n                if kwargs.get(\"proxy\") is not None:\n                    raise RuntimeError(\"Use either `proxy` or 'proxies', not both.\")\n                _dw_proxies_to_mounts(proxies, transport_cls, kwargs)\n        if \"app\" in kwargs:\n            app = kwargs.pop(\"app\")\n            _dw_warnings.warn(\n                \"The 'app' argument is deprecated; use 'transport=%s(app=...)' instead.\" % app_transport_cls.__name__,\n                DeprecationWarning, stacklevel=2)\n            if app is not None and kwargs.get(\"transport\") is None:\n                kwargs[\"transport\"] = app_transport_cls(app=app)\n        _orig(self, *args, **kwargs)\n    __init__.__wrapped__ = _orig\n    cls.__init__ = __init__\n\n_dw_patch(_DwClient, _DwHTTPTransport, _DwWSGITransport)\n_dw_patch(_DwAsyncClient, _DwAsyncHTTPTransport, _DwASGITransport)\n",
+   "results": {
+    "old": "pass: OK",
+    "new": "fail: TypeError: Client.__init__() got an unexpected keyword argument 'proxies' (via anthropic/_client.py:121 -> anthropic/_base_client.py:835 -> anthropic/_base_client.py:733)",
+    "new+shim": "pass: OK"
+   }
+  },
+  {
+   "function": "httpx._client.AsyncClient.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "anthropic._base_client.AsyncAPIClient.__init__",
+    "anthropic._base_client.AsyncHttpxClientWrapper",
+    "anthropic._base_client.DefaultAsyncHttpxClient",
+    "anthropic._base_client._DefaultAsyncHttpxClient",
+    "anthropic._base_client._DefaultAsyncHttpxClient.__init__",
+    "httpx.AsyncClient",
+    "httpx._client.AsyncClient",
+    "httpx._client.AsyncClient.__init__"
+   ],
+   "exposure": [],
+   "reproduction": "import httpx, anthropic, asyncio\ndef handler(req):\n    return httpx.Response(200, json={\"id\":\"msg_1\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-3\",\"content\":[{\"type\":\"text\",\"text\":\"hi\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":None,\"usage\":{\"input_tokens\":1,\"output_tokens\":1}})\nac = anthropic.AsyncAnthropic(api_key=\"k\")\nac._client._transport = httpx.MockTransport(handler)\nm2 = asyncio.run(ac.messages.create(model=\"claude-3\", max_tokens=5, messages=[{\"role\":\"user\",\"content\":\"x\"}]))\nassert m2.content[0].text == \"hi\"\nprint(\"OK\")",
+   "shim": "\nimport warnings as _dw_warnings\nfrom httpx._client import Client as _DwClient, AsyncClient as _DwAsyncClient\nfrom httpx._config import DEFAULT_LIMITS as _DW_DEFAULT_LIMITS\nfrom httpx._transports.default import HTTPTransport as _DwHTTPTransport, AsyncHTTPTransport as _DwAsyncHTTPTransport\nfrom httpx._transports.wsgi import WSGITransport as _DwWSGITransport\nfrom httpx._transports.asgi import ASGITransport as _DwASGITransport\n\ndef _dw_proxies_to_mounts(proxies, transport_cls, kwargs):\n    if isinstance(proxies, dict):\n        mounts = dict(kwargs.pop(\"mounts\", None) or {})\n        for key, value in proxies.items():\n            mounts[key] = None if value is None else transport_cls(\n                proxy=value,\n                verify=kwargs.get(\"verify\", True),\n                cert=kwargs.get(\"cert\"),\n                trust_env=kwargs.get(\"trust_env\", True),\n                http1=kwargs.get(\"http1\", True),\n                http2=kwargs.get(\"http2\", False),\n                limits=kwargs.get(\"limits\", _DW_DEFAULT_LIMITS),\n            )\n        kwargs[\"mounts\"] = mounts\n    else:\n        kwargs[\"proxy\"] = proxies\n\ndef _dw_patch(cls, transport_cls, app_transport_cls):\n    _orig = cls.__init__\n    def __init__(self, *args, **kwargs):\n        if \"proxies\" in kwargs:\n            proxies = kwargs.pop(\"proxies\")\n            _dw_warnings.warn(\n                \"The 'proxies' argument is deprecated; use 'proxy' or 'mounts' instead.\",\n                DeprecationWarning, stacklevel=2)\n            if proxies is not None:\n                if kwargs.get(\"proxy\") is not None:\n                    raise RuntimeError(\"Use either `proxy` or 'proxies', not both.\")\n                _dw_proxies_to_mounts(proxies, transport_cls, kwargs)\n        if \"app\" in kwargs:\n            app = kwargs.pop(\"app\")\n            _dw_warnings.warn(\n                \"The 'app' argument is deprecated; use 'transport=%s(app=...)' instead.\" % app_transport_cls.__name__,\n                DeprecationWarning, stacklevel=2)\n            if app is not None and kwargs.get(\"transport\") is None:\n                kwargs[\"transport\"] = app_transport_cls(app=app)\n        _orig(self, *args, **kwargs)\n    __init__.__wrapped__ = _orig\n    cls.__init__ = __init__\n\n_dw_patch(_DwClient, _DwHTTPTransport, _DwWSGITransport)\n_dw_patch(_DwAsyncClient, _DwAsyncHTTPTransport, _DwASGITransport)\n",
+   "results": {
+    "old": "pass: OK",
+    "new": "fail: TypeError: AsyncClient.__init__() got an unexpected keyword argument 'proxies' (via anthropic/_client.py:383 -> anthropic/_base_client.py:1409 -> anthropic/_base_client.py:1306)",
+    "new+shim": "pass: OK"
+   }
+  }
+ ],
+ "unconfirmed": [
+  {
+   "candidate": "httpx._client.Client.__init__ / AsyncClient.__init__ parameter app",
+   "why": "No graph path and no text-search hit: anthropic never passes app= to httpx clients."
+  },
+  {
+   "candidate": "httpx._api.request/stream/get/options/head/post/put/patch/delete parameters proxies and cert",
+   "why": "anthropic does not call httpx's module-level request functions; no graph path, no unknown calls, no text-search hit for cert."
+  },
+  {
+   "candidate": "httpx._config.create_ssl_context parameter http2",
+   "why": "anthropic never calls create_ssl_context; no graph path or text-search hit."
+  }
+ ],
+ "unsupported": {
+  "Attribute value was changed": 5,
+  "Positional parameter was moved": 10
+ }
+}

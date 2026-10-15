@@ -1,0 +1,11 @@
+{
+ "name": "anthropic-httpx",
+ "lib": "httpx", "lib_module": "httpx", "old": "0.27.2", "new": "0.28.0",
+ "dep": "anthropic==0.30.1", "dep_module": "anthropic",
+ "python": "3.12", "asof": "2024-11-28T15:54:55Z",
+ "graph": "case_anthropic_httpx",
+ "src": ["src/anthropic-0.30.1", "src/httpx-0.27.2"],
+ "lib_src": ["src/httpx-0.27.2", "src/httpx-0.28.0"],
+ "breaks": "breaks-httpx.json",
+ "cap_s": 2700
+}

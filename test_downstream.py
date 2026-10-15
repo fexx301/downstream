@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 
 import scan
-from impact import EXPOSED, REACHES_REMOVED
+from impact import EXPOSED, REACHES_REMOVED, UNRESOLVED
 
 FILES = {
     "lib/__init__.py": "from ._core import *\n",
@@ -137,6 +137,27 @@ class Exposure(unittest.TestCase):
         rows = g.ro_query(EXPOSED, {"site": "mid.Thing.__init__", "pkg": "app"}).result_set
         self.assertEqual([chain for chain, _ in rows], [["app.Thing", "mid.Thing", "mid.Thing.__init__"]])
         g.delete()
+
+    def test_unresolved_call_is_unknown(self):
+        files = {"app/__init__.py": "from vendored.lib.retry import Retry\n\ndef make():\n    return Retry(gone=1)\n\n"
+                                    "def other():\n    return dict(gone=1)\n"}
+        with tempfile.TemporaryDirectory() as d:
+            for name, text in files.items():
+                (Path(d) / name).parent.mkdir(parents=True, exist_ok=True)
+                (Path(d) / name).write_text(text)
+            scan.nodes.clear(), scan.edges.clear()
+            scan.scan([d])
+            g = scan.load("downstream_selftest_unresolved")
+        rows = g.ro_query(UNRESOLVED, {"pkg": "app", "params": ["gone"], "lib": "lib"}).result_set
+        # the vendored alias is unknown; a builtin that happens to take the same keyword is not
+        self.assertEqual(rows, [["app.make", "vendored.lib.retry.Retry", ["gone"]]])
+        g.delete()
+
+    def test_imported(self):
+        from agent import imported
+        # the dependent need not be the first name on the import line
+        self.assertEqual(imported("import httpx, anthropic\nfrom openai.cli import _cli"), {"httpx", "anthropic", "openai"})
+        self.assertEqual(imported("not python ("), set())
 
     def test_through_dependent(self):
         from agent import through_dependent

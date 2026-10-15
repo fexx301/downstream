@@ -1,0 +1,87 @@
+{
+ "findings": [
+  {
+   "function": "httpx._client.Client.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "openai._base_client.SyncAPIClient.__init__",
+    "openai._base_client.SyncHttpxClientWrapper",
+    "openai._base_client.DefaultHttpxClient",
+    "openai._base_client._DefaultHttpxClient",
+    "openai._base_client._DefaultHttpxClient.__init__",
+    "httpx.Client",
+    "httpx._client.Client",
+    "httpx._client.Client.__init__"
+   ],
+   "exposure": [],
+   "reproduction": "\nimport httpx, openai, json\nfrom openai import OpenAI\nc = OpenAI(api_key=\"sk-test\", base_url=\"http://api.test/v1\", max_retries=0)\nseen = []\ndef handler(req):\n    seen.append(str(req.url))\n    return httpx.Response(200, json={\"object\": \"list\", \"data\": [{\"id\": \"m1\", \"object\": \"model\", \"created\": 0, \"owned_by\": \"me\"}]})\nc._client._transport = httpx.MockTransport(handler)\nids = [m.id for m in c.models.list()]\nassert ids == [\"m1\"], ids\nassert seen == [\"http://api.test/v1/models\"], seen\nassert c._client.follow_redirects is True\nprint(\"OK\", ids)\n",
+   "shim": "\ndef _httpx_install_proxies_shim():\n    import functools as _ft\n    import warnings as _w\n\n    def _wrap(cls, transport_cls, app_transport_name):\n        orig = cls.__init__\n        if getattr(orig, \"_proxies_shim\", False):\n            return\n\n        @_ft.wraps(orig)\n        def __init__(self, *args, proxies=None, app=None, **kwargs):\n            if proxies is not None:\n                _w.warn(\"The 'proxies' argument is deprecated; use 'proxy' or 'mounts' instead.\",\n                        DeprecationWarning, stacklevel=2)\n                if isinstance(proxies, dict):\n                    tkw = {k: kwargs[k] for k in (\"verify\", \"cert\", \"http1\", \"http2\", \"limits\", \"trust_env\") if k in kwargs}\n                    mounts = dict(kwargs.pop(\"mounts\", None) or {})\n                    for pattern, p in proxies.items():\n                        mounts.setdefault(pattern, None if p is None else transport_cls(proxy=p, **tkw))\n                    kwargs[\"mounts\"] = mounts\n                else:\n                    kwargs.setdefault(\"proxy\", proxies)\n            if app is not None:\n                _w.warn(\"The 'app' argument is deprecated; use 'transport=%s(app=...)' instead.\" % app_transport_name,\n                        DeprecationWarning, stacklevel=2)\n                if kwargs.get(\"transport\") is None:\n                    kwargs[\"transport\"] = globals()[app_transport_name](app=app)\n            orig(self, *args, **kwargs)\n\n        __init__._proxies_shim = True\n        cls.__init__ = __init__\n\n    _wrap(Client, HTTPTransport, \"WSGITransport\")\n    _wrap(AsyncClient, AsyncHTTPTransport, \"ASGITransport\")\n\n_httpx_install_proxies_shim()\n",
+   "results": {
+    "old": "pass: OK ['m1']",
+    "new": "fail: TypeError: Client.__init__() got an unexpected keyword argument 'proxies' (openai/_client.py:123 -> openai/_base_client.py:857 -> openai/_base_client.py:755)",
+    "new+shim": "pass: OK ['m1']"
+   }
+  },
+  {
+   "function": "httpx._client.AsyncClient.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "openai._base_client.AsyncAPIClient.__init__",
+    "openai._base_client.AsyncHttpxClientWrapper",
+    "openai._base_client.DefaultAsyncHttpxClient",
+    "openai._base_client._DefaultAsyncHttpxClient",
+    "openai._base_client._DefaultAsyncHttpxClient.__init__",
+    "httpx.AsyncClient",
+    "httpx._client.AsyncClient",
+    "httpx._client.AsyncClient.__init__"
+   ],
+   "exposure": [],
+   "reproduction": "\nimport asyncio, httpx, openai\nfrom openai import AsyncOpenAI\nasync def main():\n    c = AsyncOpenAI(api_key=\"sk-test\", base_url=\"http://api.test/v1\", max_retries=0)\n    seen = []\n    async def handler(req):\n        seen.append(str(req.url))\n        return httpx.Response(200, json={\"object\": \"list\", \"data\": [{\"id\": \"m1\", \"object\": \"model\", \"created\": 0, \"owned_by\": \"me\"}]})\n    c._client._transport = httpx.MockTransport(handler)\n    ids = [m.id async for m in c.models.list()]\n    assert ids == [\"m1\"], ids\n    assert seen == [\"http://api.test/v1/models\"], seen\n    assert c._client.follow_redirects is True\n    print(\"OK\", ids)\nasyncio.run(main())\n",
+   "shim": "\ndef _httpx_install_proxies_shim():\n    import functools as _ft\n    import warnings as _w\n\n    def _wrap(cls, transport_cls, app_transport_name):\n        orig = cls.__init__\n        if getattr(orig, \"_proxies_shim\", False):\n            return\n\n        @_ft.wraps(orig)\n        def __init__(self, *args, proxies=None, app=None, **kwargs):\n            if proxies is not None:\n                _w.warn(\"The 'proxies' argument is deprecated; use 'proxy' or 'mounts' instead.\",\n                        DeprecationWarning, stacklevel=2)\n                if isinstance(proxies, dict):\n                    tkw = {k: kwargs[k] for k in (\"verify\", \"cert\", \"http1\", \"http2\", \"limits\", \"trust_env\") if k in kwargs}\n                    mounts = dict(kwargs.pop(\"mounts\", None) or {})\n                    for pattern, p in proxies.items():\n                        mounts.setdefault(pattern, None if p is None else transport_cls(proxy=p, **tkw))\n                    kwargs[\"mounts\"] = mounts\n                else:\n                    kwargs.setdefault(\"proxy\", proxies)\n            if app is not None:\n                _w.warn(\"The 'app' argument is deprecated; use 'transport=%s(app=...)' instead.\" % app_transport_name,\n                        DeprecationWarning, stacklevel=2)\n                if kwargs.get(\"transport\") is None:\n                    kwargs[\"transport\"] = globals()[app_transport_name](app=app)\n            orig(self, *args, **kwargs)\n\n        __init__._proxies_shim = True\n        cls.__init__ = __init__\n\n    _wrap(Client, HTTPTransport, \"WSGITransport\")\n    _wrap(AsyncClient, AsyncHTTPTransport, \"ASGITransport\")\n\n_httpx_install_proxies_shim()\n",
+   "results": {
+    "old": "pass: OK ['m1']",
+    "new": "fail: TypeError: AsyncClient.__init__() got an unexpected keyword argument 'proxies' (openai/_client.py:337 -> openai/_base_client.py:1438 -> openai/_base_client.py:1335)",
+    "new+shim": "pass: OK ['m1']"
+   }
+  },
+  {
+   "function": "httpx._client.Client.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "openai.cli._cli._main",
+    "httpx.Client",
+    "httpx._client.Client",
+    "httpx._client.Client.__init__"
+   ],
+   "exposure": [],
+   "reproduction": "\nimport sys, httpx, openai\nimport openai.cli._cli as cli\ncaptured = {}\ndef fake_send(self, request, **kw):\n    captured[\"client\"] = self\n    captured[\"url\"] = str(request.url)\n    return httpx.Response(200, json={\"object\": \"list\", \"data\": [{\"id\": \"m1\", \"object\": \"model\", \"created\": 0, \"owned_by\": \"me\"}]}, request=request)\nhttpx.Client.send = fake_send\nsys.argv = [\"openai\", \"--proxy\", \"http://proxy.test:3128\", \"--api-key\", \"sk-test\", \"api\", \"models.list\"]\ncli._main()\nc = captured[\"client\"]\nassert captured[\"url\"].endswith(\"/models\"), captured\nt = c._transport_for_url(httpx.URL(\"http://api.openai.com/v1/models\"))\nassert t is not c._transport, \"proxy transport not mounted\"\nassert \"proxy.test\" in repr(vars(t._pool)) or type(t._pool).__name__ == \"HTTPProxy\", vars(t._pool)\nprint(\"OK\", type(t._pool).__name__)\n",
+   "shim": "\ndef _httpx_install_proxies_shim():\n    import functools as _ft\n    import warnings as _w\n\n    def _wrap(cls, transport_cls, app_transport_name):\n        orig = cls.__init__\n        if getattr(orig, \"_proxies_shim\", False):\n            return\n\n        @_ft.wraps(orig)\n        def __init__(self, *args, proxies=None, app=None, **kwargs):\n            if proxies is not None:\n                _w.warn(\"The 'proxies' argument is deprecated; use 'proxy' or 'mounts' instead.\",\n                        DeprecationWarning, stacklevel=2)\n                if isinstance(proxies, dict):\n                    tkw = {k: kwargs[k] for k in (\"verify\", \"cert\", \"http1\", \"http2\", \"limits\", \"trust_env\") if k in kwargs}\n                    mounts = dict(kwargs.pop(\"mounts\", None) or {})\n                    for pattern, p in proxies.items():\n                        mounts.setdefault(pattern, None if p is None else transport_cls(proxy=p, **tkw))\n                    kwargs[\"mounts\"] = mounts\n                else:\n                    kwargs.setdefault(\"proxy\", proxies)\n            if app is not None:\n                _w.warn(\"The 'app' argument is deprecated; use 'transport=%s(app=...)' instead.\" % app_transport_name,\n                        DeprecationWarning, stacklevel=2)\n                if kwargs.get(\"transport\") is None:\n                    kwargs[\"transport\"] = globals()[app_transport_name](app=app)\n            orig(self, *args, **kwargs)\n\n        __init__._proxies_shim = True\n        cls.__init__ = __init__\n\n    _wrap(Client, HTTPTransport, \"WSGITransport\")\n    _wrap(AsyncClient, AsyncHTTPTransport, \"ASGITransport\")\n\n_httpx_install_proxies_shim()\n",
+   "results": {
+    "old": "pass: printed model m1 JSON, OK HTTPProxy",
+    "new": "fail: TypeError: Client.__init__() got an unexpected keyword argument 'proxies' (openai/cli/_cli.py:179 in _main)",
+    "new+shim": "pass: printed model m1 JSON, OK HTTPProxy"
+   }
+  }
+ ],
+ "unconfirmed": [
+  {
+   "candidate": "httpx._api.request/stream/get/options/head/post/put/patch/delete: proxies, cert",
+   "why": "No graph path, no unknown calls; text search shows openai never calls httpx top-level request functions with these keywords."
+  },
+  {
+   "candidate": "httpx._client.Client.__init__ / AsyncClient.__init__: app",
+   "why": "No graph path, no unknown calls; text search finds no `app=` passed to httpx clients in openai."
+  },
+  {
+   "candidate": "httpx._config.create_ssl_context: http2",
+   "why": "No graph path, no unknown calls; openai never calls create_ssl_context (its only http2= use is httpx.Client(http2=...), which still exists)."
+  }
+ ],
+ "unsupported": {
+  "Attribute value was changed": 5,
+  "Positional parameter was moved": 10
+ }
+}

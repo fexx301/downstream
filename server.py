@@ -13,7 +13,7 @@ from mcp.server.mcpserver import MCPServer
 
 import runner
 import scan
-from impact import EXPOSED, REACHES_REMOVED
+from impact import EXPOSED, REACHES_REMOVED, UNRESOLVED
 
 HERE = Path(__file__).parent
 SUPPORTED = "Parameter was removed"
@@ -77,6 +77,24 @@ def exposed_paths(site: str) -> dict:
     Shortest path per entry point, at most 50."""
     rows = graph.ro_query(EXPOSED, {"site": site, "pkg": case["dep_module"]}, timeout=30000).result_set
     return {"paths": [{"chain": chain, "hops": hops} for chain, hops in rows]}
+
+
+@server.tool()
+def unknown_calls() -> list:
+    """Calls in the dependent that pass a removed keyword to a symbol the graph cannot resolve but whose
+    name mentions the library, for example a vendored or runtime alias. Unknown, not safe: test them."""
+    params = sorted({c["parameter"] for c in breaking_changes()["removed_parameters"]})
+    rows = graph.ro_query(UNRESOLVED, {"pkg": case["dep_module"], "params": params, "lib": case["lib_module"]}).result_set
+    return [{"caller": caller, "target": target, "keywords": kws} for caller, target, kws in rows]
+
+
+def triage():
+    """What the graph alone says about the dependent, before any agent runs."""
+    mod, paths = case["dep_module"], impact_paths()["paths"]
+    direct = [p for p in paths if p["chain"][0] == mod or p["chain"][0].startswith(mod + ".")]
+    sites = sorted({p["chain"][0] for p in paths if p not in direct})
+    return {"direct": direct, "exposed": [e for s in sites for e in exposed_paths(s)["paths"]],
+            "unknown": unknown_calls()}
 
 
 @server.tool()

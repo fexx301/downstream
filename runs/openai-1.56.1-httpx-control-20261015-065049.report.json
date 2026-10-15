@@ -1,0 +1,11 @@
+{
+ "control": {
+  "reproduction": "import json, asyncio, httpx, openai\nfrom openai import OpenAI, AsyncOpenAI, DefaultHttpxClient, DefaultAsyncHttpxClient\nBODY={\"id\":\"c1\",\"object\":\"chat.completion\",\"created\":1,\"model\":\"gpt-4o\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"hi there\"}}]}\nseen=[]\ndef h(req):\n    seen.append((req.method,str(req.url),json.loads(req.content)[\"model\"],req.headers[\"authorization\"]))\n    return httpx.Response(200,json=BODY)\n# default construction (no http_client) must work\nd=OpenAI(api_key=\"k\"); assert isinstance(d._client, httpx.Client); d.close()\nc=OpenAI(api_key=\"k\",base_url=\"http://x/v1\",http_client=DefaultHttpxClient(transport=httpx.MockTransport(h)))\nr=c.chat.completions.create(model=\"gpt-4o\",messages=[{\"role\":\"user\",\"content\":\"hi\"}])\nassert r.choices[0].message.content==\"hi there\", r\nassert seen[0]==(\"POST\",\"http://x/v1/chat/completions\",\"gpt-4o\",\"Bearer k\"), seen\nasync def main():\n    a0=AsyncOpenAI(api_key=\"k\"); await a0.close()\n    a=AsyncOpenAI(api_key=\"k\",base_url=\"http://x/v1\",http_client=DefaultAsyncHttpxClient(transport=httpx.MockTransport(h)))\n    r=await a.chat.completions.create(model=\"gpt-4o\",messages=[{\"role\":\"user\",\"content\":\"yo\"}])\n    assert r.choices[0].message.content==\"hi there\"\nasyncio.run(main())\nassert len(seen)==2\nprint(\"OK\", httpx.__version__, openai.__version__)",
+  "results": {
+   "old": "pass: OK 0.27.2 1.56.1",
+   "new": "pass: OK 0.28.0 1.56.1"
+  },
+  "exclusion_holds": true,
+  "notes": "openai 1.56.1 passes proxies= to httpx.Client only when proxies is given directly to the internal SyncAPIClient/AsyncAPIClient constructors (_base_client.py lines 819-820 and 1402-1403). The public OpenAI/AsyncOpenAI classes never forward it, so users can't reach that code. The CLI already uses mounts= with HTTPTransport(proxy=...). No use of app=, cert= or the module-level request helpers was found. Default and custom http_client construction plus sync and async chat completions all work on httpx 0.28.0. Remaining risk: code that subclasses the internal base client and passes proxies= itself would get a TypeError on httpx 0.28; that is not public API."
+ }
+}

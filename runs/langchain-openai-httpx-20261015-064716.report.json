@@ -1,0 +1,80 @@
+{
+ "findings": [
+  {
+   "function": "httpx._client.Client.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "openai._base_client.SyncAPIClient.__init__",
+    "openai._base_client.SyncHttpxClientWrapper",
+    "openai._base_client.DefaultHttpxClient",
+    "openai._base_client._DefaultHttpxClient",
+    "openai._base_client._DefaultHttpxClient.__init__",
+    "httpx.Client",
+    "httpx._client.Client",
+    "httpx._client.Client.__init__"
+   ],
+   "exposure": [
+    "langchain_openai.chat_models.base.BaseChatOpenAI.validate_environment",
+    "openai.OpenAI",
+    "openai._client.OpenAI",
+    "openai._client.OpenAI.__init__",
+    "openai._client.SyncAPIClient",
+    "openai._base_client.SyncAPIClient",
+    "openai._base_client.SyncAPIClient.__init__"
+   ],
+   "reproduction": "import json, httpx\nfrom langchain_openai import ChatOpenAI\nllm = ChatOpenAI(model=\"gpt-4o-mini\", api_key=\"sk-test\", max_retries=0)\ndef handler(req):\n    body = {\"id\":\"x\",\"object\":\"chat.completion\",\"created\":0,\"model\":\"gpt-4o-mini\",\n            \"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"pong\"},\"finish_reason\":\"stop\"}],\n            \"usage\":{\"prompt_tokens\":1,\"completion_tokens\":1,\"total_tokens\":2}}\n    return httpx.Response(200, json=body)\nllm.root_client._client._transport = httpx.MockTransport(handler)\nout = llm.invoke(\"ping\")\nassert out.content == \"pong\", out\nprint(\"OK\", out.content)\n",
+   "shim": "\nimport warnings as _dw\nimport functools as _dft\n\ndef _httpx_proxies_shim(_cls, _transport_cls, _app_transport):\n    _orig = _cls.__init__\n\n    @_dft.wraps(_orig)\n    def __init__(self, *args, proxies=None, app=None, **kwargs):\n        if proxies is not None:\n            _dw.warn(\"The 'proxies' argument is deprecated; use 'proxy' or 'mounts' instead.\",\n                     DeprecationWarning, stacklevel=2)\n            if isinstance(proxies, dict):\n                mounts = dict(kwargs.pop(\"mounts\", None) or {})\n                for key, value in proxies.items():\n                    mounts.setdefault(key, None if value is None else _transport_cls(\n                        proxy=value,\n                        verify=kwargs.get(\"verify\", True),\n                        cert=kwargs.get(\"cert\"),\n                        trust_env=kwargs.get(\"trust_env\", True),\n                        http1=kwargs.get(\"http1\", True),\n                        http2=kwargs.get(\"http2\", False),\n                    ))\n                kwargs[\"mounts\"] = mounts\n            else:\n                kwargs.setdefault(\"proxy\", proxies)\n        if app is not None:\n            _dw.warn(\"The 'app' argument is deprecated; use 'transport=WSGITransport(app=...)' or 'ASGITransport' instead.\",\n                     DeprecationWarning, stacklevel=2)\n            kwargs.setdefault(\"transport\", _app_transport(app=app))\n        _orig(self, *args, **kwargs)\n\n    _cls.__init__ = __init__\n\n_httpx_proxies_shim(Client, HTTPTransport, WSGITransport)\n_httpx_proxies_shim(AsyncClient, AsyncHTTPTransport, ASGITransport)\n",
+   "results": {
+    "old": "pass: OK pong",
+    "new": "fail: TypeError: Client.__init__() got an unexpected keyword argument 'proxies' (traceback via langchain_openai/chat_models/base.py:551 validate_environment -> openai/_client.py:123 -> openai/_base_client.py:857 -> openai/_base_client.py:755)",
+    "new+shim": "pass: OK pong"
+   }
+  },
+  {
+   "function": "httpx._client.AsyncClient.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "openai._base_client.AsyncAPIClient.__init__",
+    "openai._base_client.AsyncHttpxClientWrapper",
+    "openai._base_client.DefaultAsyncHttpxClient",
+    "openai._base_client._DefaultAsyncHttpxClient",
+    "openai._base_client._DefaultAsyncHttpxClient.__init__",
+    "httpx.AsyncClient",
+    "httpx._client.AsyncClient",
+    "httpx._client.AsyncClient.__init__"
+   ],
+   "exposure": [
+    "langchain_openai.chat_models.base.BaseChatOpenAI.validate_environment",
+    "openai.AsyncOpenAI",
+    "openai._client.AsyncOpenAI",
+    "openai._client.AsyncOpenAI.__init__",
+    "openai._client.AsyncAPIClient",
+    "openai._base_client.AsyncAPIClient",
+    "openai._base_client.AsyncAPIClient.__init__"
+   ],
+   "reproduction": "import asyncio, httpx\nfrom langchain_openai import ChatOpenAI\ndef handler(req):\n    body = {\"id\":\"x\",\"object\":\"chat.completion\",\"created\":0,\"model\":\"gpt-4o-mini\",\n            \"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"pong\"},\"finish_reason\":\"stop\"}],\n            \"usage\":{\"prompt_tokens\":1,\"completion_tokens\":1,\"total_tokens\":2}}\n    return httpx.Response(200, json=body)\n# user supplies only a sync client; the async client is built by openai's default\nllm = ChatOpenAI(model=\"gpt-4o-mini\", api_key=\"sk-test\", max_retries=0,\n                 http_client=httpx.Client(transport=httpx.MockTransport(handler)))\nllm.root_async_client._client._transport = httpx.MockTransport(handler)\nout = asyncio.run(llm.ainvoke(\"ping\"))\nassert out.content == \"pong\", out\nprint(\"OK\", out.content)\n",
+   "shim": "\nimport warnings as _dw\nimport functools as _dft\n\ndef _httpx_proxies_shim(_cls, _transport_cls, _app_transport):\n    _orig = _cls.__init__\n\n    @_dft.wraps(_orig)\n    def __init__(self, *args, proxies=None, app=None, **kwargs):\n        if proxies is not None:\n            _dw.warn(\"The 'proxies' argument is deprecated; use 'proxy' or 'mounts' instead.\",\n                     DeprecationWarning, stacklevel=2)\n            if isinstance(proxies, dict):\n                mounts = dict(kwargs.pop(\"mounts\", None) or {})\n                for key, value in proxies.items():\n                    mounts.setdefault(key, None if value is None else _transport_cls(\n                        proxy=value,\n                        verify=kwargs.get(\"verify\", True),\n                        cert=kwargs.get(\"cert\"),\n                        trust_env=kwargs.get(\"trust_env\", True),\n                        http1=kwargs.get(\"http1\", True),\n                        http2=kwargs.get(\"http2\", False),\n                    ))\n                kwargs[\"mounts\"] = mounts\n            else:\n                kwargs.setdefault(\"proxy\", proxies)\n        if app is not None:\n            _dw.warn(\"The 'app' argument is deprecated; use 'transport=WSGITransport(app=...)' or 'ASGITransport' instead.\",\n                     DeprecationWarning, stacklevel=2)\n            kwargs.setdefault(\"transport\", _app_transport(app=app))\n        _orig(self, *args, **kwargs)\n\n    _cls.__init__ = __init__\n\n_httpx_proxies_shim(Client, HTTPTransport, WSGITransport)\n_httpx_proxies_shim(AsyncClient, AsyncHTTPTransport, ASGITransport)\n",
+   "results": {
+    "old": "pass: OK pong",
+    "new": "fail: TypeError: AsyncClient.__init__() got an unexpected keyword argument 'proxies' (traceback via langchain_openai/chat_models/base.py:564 validate_environment -> openai/_client.py:337 -> openai/_base_client.py:1438 -> openai/_base_client.py:1335)",
+    "new+shim": "pass: OK pong"
+   }
+  }
+ ],
+ "unconfirmed": [
+  {
+   "candidate": "openai.cli._cli._main -> httpx.Client(proxies=...)",
+   "why": "exposed_paths found no langchain_openai code reaching openai's CLI entry point; it is not reachable from the dependent."
+  },
+  {
+   "candidate": "the other 21 removed parameters (httpx._api.* proxies/cert, Client/AsyncClient app, create_ssl_context http2)",
+   "why": "impact_paths found no graph paths, unknown_calls returned nothing, and a text search of langchain_openai for proxies|app=|cert=|http2 found no matches."
+  }
+ ],
+ "unsupported": {
+  "Attribute value was changed": 5,
+  "Positional parameter was moved": 10
+ }
+}
