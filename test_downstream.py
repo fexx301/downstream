@@ -171,6 +171,32 @@ class Exposure(unittest.TestCase):
         self.assertFalse(through_dependent("import app", 'File "<string>", line 1', case))
 
 
+class SummaryRow(unittest.TestCase):
+    def test_rows_never_read_as_safe_without_saying_what_was_not_analysed(self):
+        from agent import summary_row
+        none = {"direct": 0, "exposed": 0, "unknown": 0}
+        ok = {"imports the dependent": True, "has an assertion": True, "old passes": True}
+        holds = {"control": {**ok, "new passes": True}}
+        fails = {"control": {**ok, "new passes": False}}
+        stuck = {"control": {**ok, "old passes": False, "new passes": False}}
+        self.assertEqual(summary_row("b==1", none, 0, holds),
+                         "| b==1 | no exposure found | behaviour changes | exclusion test | holds: works on both |")
+        self.assertIn("FAILS on new", summary_row("b==1", none, 3, fails))
+        self.assertIn("3 other API changes", summary_row("b==1", none, 3, fails))
+        self.assertIn("inconclusive", summary_row("b==1", none, 0, stuck))
+        self.assertIn("no report from the agent", summary_row("b==1", none, 0, None))
+        found = {"unsupported kinds all listed": True, "finding 0: f(x=)": {"old passes": True, "new+shim passes": False}}
+        self.assertIn("1 break(s) reported | NOT all confirmed", summary_row("b==1", {**none, "direct": 2}, 0, found))
+
+
+class Readme(unittest.TestCase):
+    def test_cypher_in_readme_matches_code(self):
+        import impact
+        readme = (Path(__file__).parent / "README.md").read_text()
+        for name in ("REACHES_REMOVED", "EXPOSED", "UNRESOLVED"):
+            self.assertIn(getattr(impact, name).strip(), readme, name)
+
+
 class FinalReport(unittest.TestCase):
     def test_last_json(self):
         from agent import last_json

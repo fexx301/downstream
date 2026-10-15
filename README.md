@@ -31,15 +31,70 @@ Every node is a `Sym`: a module, class, function or name binding in one of the s
 
 **Why a graph.** A keyword travels. It is written at a call in one package, then passes through an alias, a class constructor and a `**kwargs` hand-off before landing in another package. Each of those steps is an edge. So "does this call reach the parameter the release removed?" is a path query, and so is "which code in my dependents reaches that call?", run in the other direction. Text search sees only the first step, and only if the keyword is written out.
 
-**The two queries** (`impact.py`):
-- `REACHES_REMOVED` finds a `CALLS` edge whose `kws` include the removed parameter, followed by up to 12 `ALIAS_OF`/`CTOR`/`FORWARDS_KW` hops to the function that lost it. Every function along the way must accept `**kwargs` without naming the parameter itself; otherwise it consumes the keyword and the path stops there. Aliases that exist only for type checkers are skipped.
-- `EXPOSED` starts from such a call site and walks back up to 10 `CALLS`/`ALIAS_OF`/`CTOR` hops into a given dependent. It keeps the shortest path for each entry point.
+The Cypher that answers these questions is listed in full under [Cypher used](#cypher-used).
 
 **What the graph cannot see**, and therefore must be reported as unknown, never as safe:
 - calls through `self` or other instances;
 - base classes after the first;
 - `**kwargs` built at runtime;
 - imports that only exist at runtime, such as `requests.packages.urllib3` or `importlib` loading.
+
+## Cypher used
+
+Every query below is in `impact.py` or `scan.py`. The agent calls them through MCP tools; it can also send its own read-only queries (FalkorDB `GRAPH.RO_QUERY`) through the `cypher` tool.
+
+**1. Which call sites reach a removed parameter?** (`REACHES_REMOVED`, tool `impact_paths`)
+
+```cypher
+MATCH p = (caller:Sym)-[c:CALLS]->(:Sym)-[:ALIAS_OF|CTOR|FORWARDS_KW*0..12]->(f:Sym {qn: $fn})
+WHERE $param IN c.kws
+  AND NOT caller.qn STARTS WITH $pkg
+  AND all(r IN relationships(p) WHERE type(r) <> 'ALIAS_OF' OR r.tc = false)
+  AND all(n IN nodes(p)[1..] WHERE n.kind <> 'function' OR n.qn = $fn OR (n.var_kw AND NOT $param IN n.params))
+RETURN [n IN nodes(p) | n.qn] AS chain, [r IN relationships(p) | type(r)] AS hops
+```
+
+`$fn` and `$param` come from griffe ("Parameter was removed"), and `$pkg` is the library's own prefix.
+- A path starts with a call that writes the keyword, then follows up to 12 alias, constructor and `**kwargs` hops to the function that lost it.
+- Every function on the way must accept `**kwargs` and not name the parameter itself. Otherwise it consumes the keyword and the path stops there.
+- Aliases that exist only for type checkers are skipped.
+- The library's own callers are excluded, because they ship in the same release.
+
+**2. Which code in the dependent reaches such a call site?** (`EXPOSED`, tool `exposed_paths`)
+
+```cypher
+MATCH p = (site:Sym {qn: $site})<-[:CALLS|ALIAS_OF|CTOR*1..10]-(entry:Sym)
+WHERE (entry.qn = $pkg OR entry.qn STARTS WITH $pkg + '.')
+  AND all(r IN relationships(p) WHERE type(r) <> 'ALIAS_OF' OR r.tc = false)
+WITH entry, p ORDER BY length(p)
+WITH entry, collect(p)[0] AS p
+RETURN reverse([n IN nodes(p) | n.qn]) AS chain, reverse([r IN relationships(p) | type(r)]) AS hops
+LIMIT 50
+```
+
+It walks backwards from a call site found by query 1, up to 10 hops, into the dependent's package (`$pkg`), possibly through another package. It keeps the shortest path for each entry point. Module nodes are included, so code that runs on import counts as an entry point.
+
+**3. Which calls can the graph not resolve?** (`UNRESOLVED`, tool `unknown_calls`)
+
+```cypher
+MATCH (caller:Sym)-[c:CALLS]->(:Sym)-[:ALIAS_OF*0..12]->(end:Sym {kind: 'ref'})
+WHERE (caller.qn = $pkg OR caller.qn STARTS WITH $pkg + '.')
+  AND any(k IN c.kws WHERE k IN $params)
+  AND end.qn CONTAINS $lib
+RETURN DISTINCT caller.qn AS caller, end.qn AS target, [k IN c.kws WHERE k IN $params] AS keywords
+```
+
+These are calls in the dependent that pass a removed keyword to a symbol the graph cannot resolve, but whose name mentions the library. A typical example is a vendored or runtime alias such as `requests.packages.urllib3`. They are reported as unknown and tested, never cleared.
+
+**Loading** (`scan.py`): one index, then batched writes of 2,000 rows at a time.
+
+```cypher
+CREATE INDEX FOR (s:Sym) ON (s.qn)
+UNWIND $rows AS r CREATE (s:Sym) SET s = r
+UNWIND $rows AS r MATCH (a:Sym {qn: r.s}), (b:Sym {qn: r.d}) CREATE (a)-[e:CALLS]->(b) SET e = r.p
+```
+
+The last statement runs once per edge type.
 
 ## Example: httpx 0.28.0 breaks aisuite, which never mentions the removed keyword
 

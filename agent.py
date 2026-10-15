@@ -195,9 +195,27 @@ def passed(rows):
                               for r in rows.values())
 
 
+def summary_row(dep, counts, other, rows):
+    """One demo table row: what the graph said, what it did not cover, and what the re-run showed."""
+    says = ", ".join(f"{n} {k}" for k, n in counts.items() if n) or "no exposure found"
+    # a clean graph result covers removed parameters only, so the row always says what it did not cover
+    unanalysed = f"{other} other API changes; behaviour changes" if other else "behaviour changes"
+    if not rows:
+        did, rerun = "no report from the agent", "nothing to re-run"
+    elif "control" in rows:
+        c = rows["control"]
+        did, rerun = "exclusion test", ("holds: works on both" if passed(rows) else
+                                        "FAILS on new: exclusion wrong" if c["old passes"] and not c["new passes"]
+                                        else "inconclusive: no working test on old")
+    else:
+        found = [k for k in rows if k.startswith("finding")]
+        did, rerun = f"{len(found)} break(s) reported", "all confirmed" if passed(rows) else "NOT all confirmed"
+    return f"| {dep} | {says} | {unanalysed} | {did} | {rerun} |"
+
+
 def demo(paths):
     """One release against several dependents: the graph sorts them, the agent tests each, the verifier re-runs."""
-    lines = ["| Dependent | Graph says | Agent run | Verified in fresh containers |", "|---|---|---|---|"]
+    lines = ["| Dependent | Graph says | Not analysed | Agent run | Re-run in fresh containers |", "|---|---|---|---|---|"]
     for path in paths:
         case = json.loads(path.read_text())
         setup(case)
@@ -206,11 +224,9 @@ def demo(paths):
                                       cwd=HERE, env={**os.environ, "DOWNSTREAM_CASE": str(path.resolve())},
                                       capture_output=True, text=True, check=True).stdout)
         counts = {k: len(v) for k, v in t.items()}
-        says = ", ".join(f"{n} {k}" for k, n in counts.items() if n) or "no exposure found"
+        other = sum(c["kind"] != "Parameter was removed" for c in json.loads((HERE / case["breaks"]).read_text()))
         rows = run_agent(path, case, control=not any(counts.values()))
-        found = [k for k, v in (rows or {}).items() if k.startswith("finding")]
-        did = "exclusion test" if "control" in (rows or {}) else f"{len(found)} break(s) reported"
-        lines.append(f"| {case['dep']} | {says} | {did} | {'yes' if passed(rows) else 'NO'} |")
+        lines.append(summary_row(case["dep"], counts, other, rows))
     out = HERE / "runs" / f"demo-{time.strftime('%Y%m%d-%H%M%S')}.md"
     out.write_text("\n".join(lines) + "\n")
     print("\n".join(lines))
