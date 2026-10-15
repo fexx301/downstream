@@ -149,8 +149,8 @@ uv run --python 3.12 --with falkordb python -m unittest test_downstream
 - The scanner resolves names and module attributes, not calls through `self` or instances, and it follows only the first base class.
 - Every demo case comes from one incident: httpx 0.28.0 removing `proxies`. The scanner was first developed on the openai case.
 - The graph only traces parameters that griffe reports as removed, and griffe misses some. The frozen replay set below shows two:
-  - A parameter dropped from a function that still takes `**kwargs` (Werkzeug 2.1's `Client.open`).
-  - A removed name that was not public (MarkupSafe 2.1's `soft_unicode`).
+  - **`as_tuple`, dropped from Werkzeug 2.1's `Client.open`.** griffe did not list it. The new signature still ends in `**kwargs`, which is the likely reason.
+  - **MarkupSafe 2.1's removal of `soft_unicode`.** griffe did not list it. In 2.0.1 the name was only imported into `markupsafe/__init__.py`, inside a try/except and with no `__all__`, so griffe most likely did not count it as public API.
 
 ## Frozen replay set (cases picked by an independent model, code locked before the run)
 
@@ -158,11 +158,11 @@ uv run --python 3.12 --with falkordb python -m unittest test_downstream
 
 | Dependent | Graph says | Agent run | Re-run in fresh containers | Against the predeclared criterion |
 |---|---|---|---|---|
-| Flask 2.0.2 on Werkzeug 2.0.3 → 2.1.0 (known break) | no exposure: griffe did not list `as_tuple` as removed | exclusion test | fails on new: `TypeError: EnvironBuilder.__init__() got an unexpected keyword argument 'as_tuple'`, through Flask's test client | **fail** (graph miss; the break was caught and diagnosed, but no shim was written) |
+| Flask 2.0.2 on Werkzeug 2.0.3 → 2.1.0 (known break) | no exposure: griffe did not list `as_tuple` as removed (the new signature still takes `**kwargs`) | exclusion test | fails on new: `TypeError: EnvironBuilder.__init__() got an unexpected keyword argument 'as_tuple'`, through Flask's test client | **fail** (graph miss; the break was caught and diagnosed, but no shim was written) |
 | Flask 2.0.3 on the same release (known to be unaffected) | no exposure | exclusion test | holds: works on both | pass: no false alarm |
 | Jinja2 2.11.3 on MarkupSafe 2.0.1 → 2.1.0 (break of another kind) | no exposure: griffe listed only a changed `__version__` | exclusion test | fails on new: `ImportError: cannot import name 'soft_unicode'` | pass: not falsely cleared |
 
-The graph found none of the three. In each case the exclusion test told the real breaks apart from the safe release, and in both broken cases the agent's notes named the cause. One improvement follows from this, still untested: when an exclusion test fails, hand the dependent to a full investigation, so it gets a diagnosis and a verified shim.
+In none of the three did the graph have anything to trace, because griffe's diff reported neither real break. The exclusion test is what told the two real breaks apart from the safe release, and in both broken cases the agent's notes named the cause. One improvement follows from this, still untested: when an exclusion test fails, hand the dependent to a full investigation, so it gets a diagnosis and a verified shim.
 
 ## AI use (rule 11)
 
