@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 
 import scan
-from impact import EXPOSED, REACHES_REMOVED, UNRESOLVED
+from impact import EXPOSED, REACHES_REMOVED, REMOVED_PARAMS, UNRESOLVED
 
 FILES = {
     "lib/__init__.py": "from ._core import *\n",
@@ -171,6 +171,28 @@ class Exposure(unittest.TestCase):
         self.assertFalse(through_dependent("import app", 'File "<string>", line 1', case))
 
 
+class GraphDiff(unittest.TestCase):
+    def test_removed_parameter_behind_kwargs_reached_through_super(self):
+        old = "class Client:\n    def open(self, *args, as_tuple=False, **kwargs): ...\n    def keep(self, x=1): ...\n"
+        new = "class Client:\n    def open(self, *args, **kwargs): ...\n    def keep(self, x=1): ...\n"
+        app = ("from lib import Client\n\nclass Mine(Client):\n    def open(self, *args, as_tuple=False, **kwargs):\n"
+               "        return super().open(*args, as_tuple=as_tuple, **kwargs)\n")
+        with tempfile.TemporaryDirectory() as old_dir, tempfile.TemporaryDirectory() as new_dir:
+            for root, files in ((old_dir, {"lib/__init__.py": old, "app/__init__.py": app}), (new_dir, {"lib/__init__.py": new})):
+                for name, text in files.items():
+                    (Path(root) / name).parent.mkdir(parents=True, exist_ok=True)
+                    (Path(root) / name).write_text(text)
+            released = scan.release(new_dir)
+            scan.scan([old_dir])
+            scan.mark_new("lib", released)
+            g = scan.load("downstream_selftest_diff")
+        # an API diff sees no removal here, because **kwargs still accepts the keyword
+        self.assertEqual(g.ro_query(REMOVED_PARAMS, {"lib": "lib"}).result_set, [["lib.Client.open", "as_tuple", True]])
+        rows = g.ro_query(REACHES_REMOVED, {"fn": "lib.Client.open", "param": "as_tuple", "pkg": "lib."}).result_set
+        self.assertEqual([chain for chain, _ in rows], [["app.Mine.open", "lib.Client.open"]])
+        g.delete()
+
+
 class SummaryRow(unittest.TestCase):
     def test_rows_never_read_as_safe_without_saying_what_was_not_analysed(self):
         from agent import summary_row
@@ -193,7 +215,7 @@ class Readme(unittest.TestCase):
     def test_cypher_in_readme_matches_code(self):
         import impact
         readme = (Path(__file__).parent / "README.md").read_text()
-        for name in ("REACHES_REMOVED", "EXPOSED", "UNRESOLVED"):
+        for name in ("REMOVED_PARAMS", "REACHES_REMOVED", "EXPOSED", "UNRESOLVED"):
             self.assertIn(getattr(impact, name).strip(), readme, name)
 
 

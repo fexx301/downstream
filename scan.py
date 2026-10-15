@@ -1,6 +1,6 @@
 """Load the symbol graph of unpacked Python packages into FalkorDB.
 
-Usage: python scan.py <graph> <src_dir> [<src_dir> ...]
+Usage: python scan.py <graph> <src_dir> [<src_dir> ...] [--new <library module> <new release dir>]
 
 Every symbol is a (:Sym {qn, kind}) node. Edges:
   ALIAS_OF {tc}   name binding -> what it names (imports, re-exports, `X = Y`); tc = only under TYPE_CHECKING
@@ -147,9 +147,10 @@ class Module:
             is_super = (isinstance(f, ast.Attribute) and isinstance(f.value, ast.Call)
                         and isinstance(f.value.func, ast.Name) and f.value.func.id == "super")
             if is_super:
-                if f.attr != "__init__" or not bases:
+                if not bases:
                     continue
-                target = bases[0]
+                # super().__init__ runs the base's constructor (CTOR follows); super().m() calls the base's m
+                target = bases[0] if f.attr == "__init__" else f"{bases[0]}.{f.attr}"
             else:
                 # shortcut: calls through self/instances are not resolved; only names and module attributes are
                 target = self.resolve(f)
@@ -180,6 +181,38 @@ def scan(src_dirs):
             for n in names:
                 node(f"{m.name}.{n}", "alias")
                 edge("ALIAS_OF", f"{m.name}.{n}", f"{src}.{n}", tc=tc)
+    # A member reached through an import alias (`m.Client.open`, where `m.Client` is an alias) points
+    # at the definition the alias names, so super().open() lands on the real method.
+    alias = {s: d for t, s, d, p in edges if t == "ALIAS_OF" and not p.get("tc")}
+    for i, (t, s, d, p) in enumerate(edges):
+        if nodes[d]["kind"] != "ref":
+            continue
+        head, _, member = d.rpartition(".")
+        hops = 0
+        while head in alias and hops < 12:
+            head, hops = alias[head], hops + 1
+        real = f"{head}.{member}"
+        if hops and real in nodes and nodes[real]["kind"] != "ref":
+            edges[i] = (t, s, real, p)
+
+
+def release(src_dir):
+    """Symbols of another release of a library, scanned on their own (the graph's side of the diff)."""
+    nodes.clear(), edges.clear()
+    scan([src_dir])
+    found = {qn: p for qn, p in nodes.items() if p["kind"] != "ref"}
+    nodes.clear(), edges.clear()
+    return found
+
+
+def mark_new(lib, new):
+    """Record on each node of library `lib` whether the new release still has it, and for functions the
+    parameters they take there: a Cypher query then reads removed parameters off the graph."""
+    for qn, p in nodes.items():
+        if p["kind"] != "ref" and (qn == lib or qn.startswith(lib + ".")):
+            p["in_new"] = qn in new
+            if p["kind"] == "function" and new.get(qn, {}).get("kind") == "function":
+                p["new_params"], p["new_var_kw"] = new[qn]["params"], new[qn]["var_kw"]
 
 
 def load(graph_name, host="localhost", port=6380):
@@ -203,6 +236,13 @@ def load(graph_name, host="localhost", port=6380):
 
 
 if __name__ == "__main__":
-    scan(sys.argv[2:])
-    g = load(sys.argv[1])
+    args, new = sys.argv[1:], None
+    if "--new" in args:  # --new <library module> <new release dir>
+        i = args.index("--new")
+        lib, new = args[i + 1], release(args[i + 2])
+        del args[i:i + 3]
+    scan(args[1:])
+    if new is not None:
+        mark_new(lib, new)
+    g = load(args[0])
     print(len(nodes), "nodes,", len(edges), "edges")

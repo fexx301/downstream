@@ -19,6 +19,19 @@ WHERE $param IN c.kws
 RETURN [n IN nodes(p) | n.qn] AS chain, [r IN relationships(p) | type(r)] AS hops
 """
 
+# Parameters a library function takes in the old release but not in the new one, read off the graph's own
+# diff of the two releases (scan.py --new). Unlike an API diff, it still counts a parameter as removed when
+# the new signature takes **kwargs, which accepts the keyword only to fail further in.
+REMOVED_PARAMS = """
+MATCH (f:Sym {kind: 'function'})
+WHERE f.qn STARTS WITH $lib + '.' AND f.new_params IS NOT NULL
+WITH f, [p IN f.params WHERE NOT p IN f.new_params AND NOT p IN ['self', 'cls']] AS gone
+WHERE size(gone) > 0
+UNWIND gone AS param
+RETURN f.qn AS function, param, f.new_var_kw AS still_takes_kwargs
+ORDER BY function, param
+"""
+
 # Code in package $pkg that reaches a call site (found above) in another package: through calls,
 # runtime aliases (imports included) and constructor lookup. Shortest witness path per entry point.
 EXPOSED = """

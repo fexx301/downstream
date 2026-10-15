@@ -1,0 +1,58 @@
+{
+ "findings": [
+  {
+   "function": "werkzeug.test.Client.open",
+   "parameter": "as_tuple",
+   "evidence": "graph path",
+   "path": [
+    "flask.testing.FlaskClient.open",
+    "werkzeug.test.Client.open"
+   ],
+   "exposure": [],
+   "reproduction": "import flask\napp = flask.Flask(\"t\")\n@app.route(\"/\")\ndef i(): return \"hello\"\nr = app.test_client().get(\"/\")\nassert r.status_code == 200 and r.data == b\"hello\", r\nprint(\"OK\")",
+   "shim": "\ndef _downstream_shim_client_open():\n    import functools as _ft\n    import warnings as _w\n    from werkzeug import test as _wt\n\n    _orig_open = _wt.Client.open\n    if getattr(_orig_open, \"_downstream_as_tuple_shim\", False):\n        return\n\n    @_ft.wraps(_orig_open)\n    def open(self, *args, **kwargs):\n        if \"as_tuple\" not in kwargs:\n            return _orig_open(self, *args, **kwargs)\n        as_tuple = kwargs.pop(\"as_tuple\")\n        _w.warn(\n            \"The 'as_tuple' parameter is deprecated and was removed in\"\n            \" Werkzeug 2.1. Access 'response.request.environ' instead.\",\n            DeprecationWarning,\n            stacklevel=2,\n        )\n        response = _orig_open(self, *args, **kwargs)\n        if as_tuple:\n            return response.request.environ, response\n        return response\n\n    open._downstream_as_tuple_shim = True\n    _wt.Client.open = open\n\n\n_downstream_shim_client_open()\ndel _downstream_shim_client_open\n",
+   "results": {
+    "old": "pass: OK",
+    "new": "fail: TypeError: EnvironBuilder.__init__() got an unexpected keyword argument 'as_tuple' (via flask/testing.py line 216 in open -> werkzeug/test.py line 1081)",
+    "new+shim": "pass: OK"
+   }
+  }
+ ],
+ "unconfirmed": [
+  {
+   "candidate": "werkzeug.local.LocalManager.__init__(ident_func)",
+   "why": "No graph path, no unknown call; flask source never passes ident_func (text search matches only werkzeug itself)."
+  },
+  {
+   "candidate": "werkzeug.wrappers.response.Response.freeze(no_etag)",
+   "why": "No graph path, no unknown call; no occurrence of no_etag in flask source."
+  },
+  {
+   "candidate": "werkzeug.urls.url_decode(decode_keys)",
+   "why": "No graph path, no unknown call; no occurrence of decode_keys in flask source."
+  },
+  {
+   "candidate": "werkzeug.urls.url_decode_stream(decode_keys)",
+   "why": "No graph path, no unknown call; no occurrence in flask source."
+  },
+  {
+   "candidate": "werkzeug.urls.url_decode_stream(return_iterator)",
+   "why": "No graph path, no unknown call; no occurrence in flask source."
+  },
+  {
+   "candidate": "werkzeug.urls.url_encode(encode_keys)",
+   "why": "No graph path, no unknown call; no occurrence of encode_keys in flask source."
+  },
+  {
+   "candidate": "werkzeug.urls.url_encode_stream(encode_keys)",
+   "why": "No graph path, no unknown call; no occurrence in flask source."
+  }
+ ],
+ "unsupported": {
+  "Attribute value was changed": 6,
+  "Public object was removed": 97,
+  "Parameter default was changed": 2,
+  "Positional parameter was moved": 15,
+  "Parameter is now required": 1
+ }
+}

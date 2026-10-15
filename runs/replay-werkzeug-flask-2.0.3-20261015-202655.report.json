@@ -1,0 +1,16 @@
+{
+ "findings": [],
+ "unconfirmed": [
+  {
+   "candidate": "werkzeug.test.Client.open(as_tuple) via flask.testing.FlaskClient.open",
+   "why": "Graph path flask.testing.FlaskClient.open -> werkzeug.test.Client.open (also found by text search). Flask only forwards as_tuple when the user passes it (kwargs.pop('as_tuple', None); it is forwarded only if not None), and flask already marks it deprecated for 'Werkzeug 2.1 and Flask 2.1'. Without the parameter, app.test_client().get('/') works on both old and new (returned b'hi'). With c.get('/', as_tuple=True) it passes on old and fails on new with TypeError: EnvironBuilder.__init__() got an unexpected keyword argument 'as_tuple' through flask/testing.py:228. That trigger requires the user to pass the removed parameter, which is not an allowed reproduction, so it is not confirmed."
+  }
+ ],
+ "unsupported": {
+  "Attribute value was changed": 6,
+  "Public object was removed": 97,
+  "Parameter default was changed": 2,
+  "Positional parameter was moved": 15,
+  "Parameter is now required": 1
+ }
+}

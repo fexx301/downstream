@@ -6,7 +6,7 @@ Work in progress for Graph Hacks (FalkorDB × WeMakeDevs), Track 01: agents that
 
 ## How it works
 
-1. `breaks.py` diffs the old and new release with [griffe](https://mkdocstrings.github.io/griffe/) and lists removed parameters.
+1. `breaks.py` diffs the old and new release with [griffe](https://mkdocstrings.github.io/griffe/). `scan.py --new` also scans the new release and marks each old library symbol with what the new release still has. A Cypher query then reads removed parameters straight off the graph. This graph diff catches parameters dropped from functions that still take `**kwargs`, which griffe misses. Removed parameters are the union of both diffs, and each one records which diff found it.
 2. `scan.py` loads the source of the library and its dependents into a FalkorDB symbol graph:
    - nodes are `(:Sym {qn, kind, params, var_kw})`
    - edges are `ALIAS_OF {tc}`, `INHERITS`, `CTOR`, `CALLS {kws}` and `FORWARDS_KW`
@@ -20,6 +20,10 @@ Work in progress for Graph Hacks (FalkorDB × WeMakeDevs), Track 01: agents that
 ## Graph model
 
 Every node is a `Sym`: a module, class, function or name binding in one of the scanned packages. Each is keyed by its full dotted name (`qn`) and labelled with its `kind`. Function nodes also record their parameter names (`params`) and whether they accept `**kwargs` (`var_kw`).
+
+The library's nodes carry the new release's side of the diff:
+- `in_new`: whether the symbol still exists in the new release.
+- `new_params` and `new_var_kw`: the parameter names a function takes in the new release, and whether it still accepts `**kwargs` there.
 
 | Edge | Meaning | Comes from |
 |---|---|---|
@@ -42,6 +46,20 @@ The Cypher that answers these questions is listed in full under [Cypher used](#c
 ## Cypher used
 
 Every query below is in `impact.py` or `scan.py`. The agent calls them through MCP tools; it can also send its own read-only queries (FalkorDB `GRAPH.RO_QUERY`) through the `cypher` tool.
+
+**0. Which parameters did the release remove?** (`REMOVED_PARAMS`, used by tool `breaking_changes`)
+
+```cypher
+MATCH (f:Sym {kind: 'function'})
+WHERE f.qn STARTS WITH $lib + '.' AND f.new_params IS NOT NULL
+WITH f, [p IN f.params WHERE NOT p IN f.new_params AND NOT p IN ['self', 'cls']] AS gone
+WHERE size(gone) > 0
+UNWIND gone AS param
+RETURN f.qn AS function, param, f.new_var_kw AS still_takes_kwargs
+ORDER BY function, param
+```
+
+This is the graph's own diff of the two releases. It counts a parameter as removed even when the new signature still takes `**kwargs`. That `**kwargs` accepts the keyword only for it to fail further in, as with Werkzeug 2.1's `Client.open(as_tuple=)`.
 
 **1. Which call sites reach a removed parameter?** (`REACHES_REMOVED`, tool `impact_paths`)
 
@@ -146,7 +164,8 @@ uv run --python 3.12 --with falkordb python -m unittest test_downstream
 - Only removed parameters are traced. Every other change kind is listed as unsupported, never as safe.
 - frameioclient on urllib3 2.0 was a graph miss. It imports `Retry` through `requests.packages`, which the scanner cannot resolve, and the agent found the break by text search.
 - docker on requests 2.32 is an unsupported change class: an overridden method that the library stopped calling.
-- The scanner resolves names and module attributes, not calls through `self` or instances, and it follows only the first base class.
+- The scanner resolves names, module attributes, `super().method()` calls and members reached through import aliases. It does not resolve calls through `self` or other instances, and it follows only the first base class.
+- Removed functions and names, such as `soft_unicode`, are not diffed. Only removed parameters are.
 - Every demo case comes from one incident: httpx 0.28.0 removing `proxies`. The scanner was first developed on the openai case.
 - The graph only traces parameters that griffe reports as removed, and griffe misses some. The frozen replay set below shows two:
   - **`as_tuple`, dropped from Werkzeug 2.1's `Client.open`.** griffe did not list it. The new signature still ends in `**kwargs`, which is the likely reason.
@@ -163,6 +182,12 @@ uv run --python 3.12 --with falkordb python -m unittest test_downstream
 | Jinja2 2.11.3 on MarkupSafe 2.0.1 → 2.1.0 (break of another kind) | no exposure: griffe listed only a changed `__version__` | exclusion test | fails on new: `ImportError: cannot import name 'soft_unicode'` | pass: not falsely cleared |
 
 In none of the three did the graph have anything to trace, because griffe's diff reported neither real break. The exclusion test is what told the two real breaks apart from the safe release, and in both broken cases the agent's notes named the cause. One improvement follows from this, still untested: when an exclusion test fails, hand the dependent to a full investigation, so it gets a diagnosis and a verified shim.
+
+**After the replay, not counted as a pass.** The graph diff and the `super()` resolution were added after the replay. Re-run on its two Werkzeug cases (`runs/demo-20261015-202725.md`):
+- **Flask 2.0.2:** the graph diff lists `Client.open(as_tuple)`, and the graph has a path through `FlaskClient.open` → `super().open()`. The agent confirmed the break, and its shim passes. Every check passed when re-run in fresh containers.
+- **Flask 2.0.3:** the same path is flagged. The agent showed that ordinary use works on both releases, and that only callers still passing the deprecated `as_tuple` break. It reported no break.
+
+These two runs are development evidence. A fresh frozen pick is needed before the graph diff can claim a pass.
 
 ## AI use (rule 11)
 

@@ -13,7 +13,7 @@ from mcp.server.mcpserver import MCPServer
 
 import runner
 import scan
-from impact import EXPOSED, REACHES_REMOVED, UNRESOLVED
+from impact import EXPOSED, REACHES_REMOVED, REMOVED_PARAMS, UNRESOLVED
 
 HERE = Path(__file__).parent
 SUPPORTED = "Parameter was removed"
@@ -42,16 +42,25 @@ def defs(body):
 
 @server.tool()
 def breaking_changes() -> dict:
-    """API changes between the old and new library versions, found by griffe. Only removed parameters
-    can be traced through the symbol graph; every other kind is listed as unsupported (not analysed)."""
+    """Removed parameters, from the graph's own diff of the two releases plus griffe's API diff (each
+    entry says which found it). Only removed parameters can be traced through the symbol graph; every
+    other kind griffe reports is listed as unsupported (not analysed)."""
     changes = json.loads((HERE / case["breaks"]).read_text())
-    unsupported = {}
+    unsupported, removed = {}, {}
     for c in changes:
         if c["kind"] != SUPPORTED:
             unsupported.setdefault(c["kind"], []).append(c["path"])
+        else:
+            removed[(c["canonical"], c["name"])] = {"function": c["canonical"], "parameter": c["name"], "found_by": "griffe"}
+    for fn, param, kwargs in graph.ro_query(REMOVED_PARAMS, {"lib": case["lib_module"]}).result_set:
+        if fn.rpartition(".")[2].startswith("_") and not fn.endswith("__"):
+            continue  # private helpers are not API
+        entry = removed.setdefault((fn, param), {"function": fn, "parameter": param, "found_by": "graph diff"})
+        if entry["found_by"] == "griffe":
+            entry["found_by"] = "both"
+        entry["new_signature_takes_kwargs"] = kwargs
     return {
-        "removed_parameters": [{"function": c["canonical"], "parameter": c["name"]}
-                               for c in changes if c["kind"] == SUPPORTED],
+        "removed_parameters": list(removed.values()),
         "unsupported": {k: {"count": len(v), "examples": v[:5]} for k, v in unsupported.items()},
     }
 

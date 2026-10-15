@@ -53,7 +53,8 @@ def setup(case):
     with open(HERE / case["breaks"], "w") as out:
         subprocess.run([*UV, "--with", "griffe", "python", "breaks.py", case["lib_module"], *case["lib_src"]],
                        cwd=HERE, stdout=out, check=True)
-    subprocess.run([*UV, "--with", "falkordb", "python", "scan.py", case["graph"], *case["src"]], cwd=HERE, check=True)
+    subprocess.run([*UV, "--with", "falkordb", "python", "scan.py", case["graph"], *case["src"],
+                    "--new", case["lib_module"], case["lib_src"][1]], cwd=HERE, check=True)
 
 
 def last_json(text):
