@@ -69,9 +69,9 @@ For each dependent the graph decides first. If it finds a path, the agent invest
 | aisuite 0.1.6 | 2 indirect paths, through anthropic | 1 break | yes |
 | langchain-openai 0.2.10 | 12 indirect paths, through openai | 2 breaks | yes |
 | openai 1.55.3 (fixed the client) | 1 direct path: the CLI still passes `proxies` | 1 break: `openai --proxy … api models.list` | yes |
-| openai 1.56.1 (also fixed the CLI) | no exposure found | control: works on both releases | yes |
+| openai 1.56.1 (also fixed the CLI) | no exposure found | control: clients and chat calls work on both releases | yes. The 1.55.3 CLI reproduction, re-run afterwards as a mechanical check, also passes on both. |
 
-A text search of openai 1.55.3 for `proxies` returns 20 lines, and only the CLI line still breaks. A text search of aisuite and langchain-openai returns nothing, yet both break. The graph handles both cases: it picks the one real hit out of many, and it finds breaks that text search cannot see at all.
+A text search of openai 1.55.3 for `proxies` returns 20 lines. The graph flagged one path among them, the CLI, and the agent confirmed it breaks. The other 19 lines were not tested one by one; some build `proxies` at runtime, which the graph cannot see. A text search of aisuite and langchain-openai for `proxies` returns nothing, yet both break; the graph found them through the packages they depend on.
 
 ## Run it
 
@@ -92,7 +92,14 @@ uv run --python 3.12 --with falkordb python -m unittest test_downstream
 - frameioclient on urllib3 2.0 was a graph miss. It imports `Retry` through `requests.packages`, which the scanner cannot resolve, and the agent found the break by text search.
 - docker on requests 2.32 is an unsupported change class: an overridden method that the library stopped calling.
 - The scanner resolves names and module attributes, not calls through `self` or instances, and it follows only the first base class.
+- Every demo case comes from one incident: httpx 0.28.0 removing `proxies`. The scanner was first developed on the openai case.
 
 ## AI use (rule 11)
 
-Claude (`claude-opus-5-5`, through Claude Code) wrote the code and this README at Femi's direction. Femi chose the project direction, approved each test's pass criteria before it ran, approved the demo dependents, and had the test cases picked by an independent model. At runtime the agent itself is Claude Code, restricted to DOWNSTREAM's tools.
+Claude (`claude-opus-5-5`, through Claude Code) wrote the code and this README at Femi's direction.
+- Femi chose the project direction and gave the go-ahead for each test.
+- Claude wrote each test's pass criteria into the project's notes before the test ran.
+- The test cases were picked by an independent model, relayed by Femi.
+- Femi approved the first five demo dependents. Claude added openai 1.56.1 as the control after the graph showed that 1.55.3 still breaks.
+
+At runtime the agent itself is Claude Code, restricted to DOWNSTREAM's tools.
