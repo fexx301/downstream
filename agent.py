@@ -6,13 +6,18 @@ Usage: python agent.py <case.json> setup|run|verify [report.json]
   verify  re-run each finding's reproduction on old, new and new+shim in fresh environments
 """
 import ast
+import hashlib
+import io
 import json
 import os
 import re
 import subprocess
 import sys
+import tarfile
 import tempfile
 import time
+import urllib.request
+import zipfile
 from pathlib import Path
 from string import Template
 
@@ -23,7 +28,28 @@ MODEL = "claude-opus-5-5"
 UV = ["uv", "run", "-q", "--python", "3.12"]
 
 
+def fetch(case):
+    """Download from PyPI and unpack each source directory the case reads, unless it is already there."""
+    for d in sorted({*case["src"], *case["lib_src"]}):
+        top = HERE / Path(*Path(d).parts[:2])  # src/<distribution>-<version>
+        if top.exists():
+            continue
+        dist, version = top.name.rsplit("-", 1)
+        files = json.load(urllib.request.urlopen(f"https://pypi.org/pypi/{dist}/{version}/json"))["urls"]
+        # a pure-Python wheel if there is one, else any wheel, else the sdist
+        f = min(files, key=lambda f: (f["packagetype"] != "bdist_wheel", not f["filename"].endswith("-none-any.whl")))
+        data = urllib.request.urlopen(f["url"]).read()
+        if hashlib.sha256(data).hexdigest() != f["digests"]["sha256"]:
+            raise ValueError(f"checksum mismatch for {f['filename']}")
+        if f["packagetype"] == "bdist_wheel":
+            zipfile.ZipFile(io.BytesIO(data)).extractall(top)
+        else:
+            tarfile.open(fileobj=io.BytesIO(data)).extractall(top, filter="data")
+        print("fetched", f["filename"])
+
+
 def setup(case):
+    fetch(case)
     with open(HERE / case["breaks"], "w") as out:
         subprocess.run([*UV, "--with", "griffe", "python", "breaks.py", case["lib_module"], *case["lib_src"]],
                        cwd=HERE, stdout=out, check=True)

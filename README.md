@@ -84,7 +84,7 @@ python3 agent.py cases/aisuite-anthropic-httpx.json run     # agent, then verifi
 uv run --python 3.12 --with falkordb python -m unittest test_downstream
 ```
 
-`setup` expects the unpacked package sources under `src/`; a fetch step is still to be added.
+`setup` downloads the package sources it reads from PyPI into `src/`, checks their published SHA-256 checksums, and unpacks them. Nothing is installed or run on your machine; the contained runs install packages inside Docker.
 
 ## Limits found by frozen tests
 
