@@ -32,6 +32,33 @@ RETURN f.qn AS function, param, f.new_var_kw AS still_takes_kwargs
 ORDER BY function, param
 """
 
+# Library symbols the new release no longer has, from the same diff: functions, classes, names and
+# modules. A dependent that imports, calls or subclasses one of them breaks.
+REMOVED_NAMES = """
+MATCH (s:Sym)
+WHERE s.qn STARTS WITH $lib + '.' AND s.in_new = false AND s.kind IN ['function', 'class', 'alias', 'module']
+RETURN s.qn AS name, s.kind AS kind
+ORDER BY name
+"""
+
+# Sites outside the library that import, call or subclass a removed name, possibly through aliases.
+REACHES_NAME = """
+MATCH p = (site:Sym)-[:ALIAS_OF|CALLS|INHERITS]->(:Sym)-[:ALIAS_OF*0..12]->(r:Sym {qn: $name})
+WHERE NOT site.qn STARTS WITH $pkg
+  AND all(x IN relationships(p) WHERE type(x) <> 'ALIAS_OF' OR x.tc = false)
+RETURN [n IN nodes(p) | n.qn] AS chain, [x IN relationships(p) | type(x)] AS hops
+"""
+
+
+def public_tops(names, lib):
+    """Removed names worth reporting: public paths only, and not the members of a parent removed with them."""
+    def private(qn):
+        return any(s.startswith("_") and not s.endswith("__") for s in qn[len(lib) + 1:].split("."))
+    kept = sorted(n for n in names if not private(n))
+    gone = set(kept)
+    return [n for n in kept if not any(n.startswith(p + ".") for p in gone if p != n)]
+
+
 # Code in package $pkg that reaches a call site (found above) in another package: through calls,
 # runtime aliases (imports included) and constructor lookup. Shortest witness path per entry point.
 EXPOSED = """

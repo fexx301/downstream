@@ -1,0 +1,32 @@
+{
+ "findings": [
+  {
+   "kind": "name",
+   "function": "markupsafe.soft_unicode",
+   "parameter": "soft_unicode",
+   "evidence": "graph path",
+   "path": [
+    "jinja2.filters.do_upper",
+    "jinja2.filters.soft_unicode",
+    "markupsafe.soft_unicode"
+   ],
+   "exposure": [],
+   "reproduction": "import jinja2\nenv = jinja2.Environment()\nout = env.from_string(\"{{ name|upper }}|{{ items|join(',') }}|{{ ' x '|trim }}\").render(name=\"abc\", items=[1,2])\nassert out == \"ABC|1,2|x\", out\nprint(\"OK\", out)",
+   "shim": "\n\ndef soft_unicode(s):\n    import warnings\n    warnings.warn(\n        \"'soft_unicode' has been renamed to 'soft_str'. The old name\"\n        \" will be removed in a future version.\",\n        DeprecationWarning,\n        stacklevel=2,\n    )\n    return soft_str(s)\n",
+   "results": {
+    "old": "pass: OK ABC|1,2|x",
+    "new": "fail: ImportError: cannot import name 'soft_unicode' from 'markupsafe' (traceback via jinja2/__init__.py -> environment.py -> defaults.py -> filters.py line 13)",
+    "new+shim": "pass: OK ABC|1,2|x"
+   }
+  }
+ ],
+ "unconfirmed": [
+  {
+   "candidate": "jinja2.runtime.soft_unicode (from markupsafe import soft_unicode at jinja2/runtime.py:9) and the other filters (lower, replace, capitalize, title, wordcount, format)",
+   "why": "Same removed name and the same import-time failure. jinja2.filters fails first during import, so these sites can't fail separately. They are covered by the confirmed finding, and the same shim fixes them."
+  }
+ ],
+ "unsupported": {
+  "Attribute value was changed": 1
+ }
+}

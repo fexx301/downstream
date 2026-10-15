@@ -6,7 +6,7 @@ Work in progress for Graph Hacks (FalkorDB × WeMakeDevs), Track 01: agents that
 
 ## How it works
 
-1. `breaks.py` diffs the old and new release with [griffe](https://mkdocstrings.github.io/griffe/). `scan.py --new` also scans the new release and marks each old library symbol with what the new release still has. A Cypher query then reads removed parameters straight off the graph. This graph diff catches parameters dropped from functions that still take `**kwargs`, which griffe misses. Removed parameters are the union of both diffs, and each one records which diff found it.
+1. `breaks.py` diffs the old and new release with [griffe](https://mkdocstrings.github.io/griffe/). `scan.py --new` also scans the new release and marks each old library symbol with what the new release still has. A Cypher query then reads removed parameters straight off the graph. This graph diff catches parameters dropped from functions that still take `**kwargs`, which griffe misses. The same diff also lists functions, classes and names the new release dropped. Both lists are the union of the graph diff and griffe's, and each entry records which diff found it.
 2. `scan.py` loads the source of the library and its dependents into a FalkorDB symbol graph:
    - nodes are `(:Sym {qn, kind, params, var_kw})`
    - edges are `ALIAS_OF {tc}`, `INHERITS`, `CTOR`, `CALLS {kws}` and `FORWARDS_KW`
@@ -60,6 +60,28 @@ ORDER BY function, param
 ```
 
 This is the graph's own diff of the two releases. It counts a parameter as removed even when the new signature still takes `**kwargs`. That `**kwargs` accepts the keyword only for it to fail further in, as with Werkzeug 2.1's `Client.open(as_tuple=)`.
+
+**0b. Which functions, classes and names did the release remove?** (`REMOVED_NAMES`, used by tool `breaking_changes`)
+
+```cypher
+MATCH (s:Sym)
+WHERE s.qn STARTS WITH $lib + '.' AND s.in_new = false AND s.kind IN ['function', 'class', 'alias', 'module']
+RETURN s.qn AS name, s.kind AS kind
+ORDER BY name
+```
+
+These are library symbols the new release no longer has: functions, classes, imported names and modules. Python then drops private paths, and drops the members of a parent removed with them. The list is joined with griffe's "Public object was removed". This is how MarkupSafe 2.1's `soft_unicode` is caught after the replay; griffe's diff missed it.
+
+**0c. Who uses a removed name?** (`REACHES_NAME`, inside tool `impact_paths`)
+
+```cypher
+MATCH p = (site:Sym)-[:ALIAS_OF|CALLS|INHERITS]->(:Sym)-[:ALIAS_OF*0..12]->(r:Sym {qn: $name})
+WHERE NOT site.qn STARTS WITH $pkg
+  AND all(x IN relationships(p) WHERE type(x) <> 'ALIAS_OF' OR x.tc = false)
+RETURN [n IN nodes(p) | n.qn] AS chain, [x IN relationships(p) | type(x)] AS hops
+```
+
+This finds sites outside the library that import, call or subclass a removed name, possibly through aliases. A site in another package reaches the dependent through query 2.
 
 **1. Which call sites reach a removed parameter?** (`REACHES_REMOVED`, tool `impact_paths`)
 
@@ -165,7 +187,7 @@ uv run --python 3.12 --with falkordb python -m unittest test_downstream
 - frameioclient on urllib3 2.0 was a graph miss. It imports `Retry` through `requests.packages`, which the scanner cannot resolve, and the agent found the break by text search.
 - docker on requests 2.32 is an unsupported change class: an overridden method that the library stopped calling.
 - The scanner resolves names, module attributes, `super().method()` calls and members reached through import aliases. It does not resolve calls through `self` or other instances, and it follows only the first base class.
-- Removed functions and names, such as `soft_unicode`, are not diffed. Only removed parameters are.
+- Removed functions, classes and names are now diffed too. But importing a module that itself imports a removed name is not linked, because there are no module-to-import edges, so a break that only travels through module imports can be missed.
 - Every demo case comes from one incident: httpx 0.28.0 removing `proxies`. The scanner was first developed on the openai case.
 - The graph only traces parameters that griffe reports as removed, and griffe misses some. The frozen replay set below shows two:
   - **`as_tuple`, dropped from Werkzeug 2.1's `Client.open`.** griffe did not list it. The new signature still ends in `**kwargs`, which is the likely reason.
@@ -183,11 +205,13 @@ uv run --python 3.12 --with falkordb python -m unittest test_downstream
 
 In none of the three did the graph have anything to trace, because griffe's diff reported neither real break. The exclusion test is what told the two real breaks apart from the safe release, and in both broken cases the agent's notes named the cause. One improvement follows from this, still untested: when an exclusion test fails, hand the dependent to a full investigation, so it gets a diagnosis and a verified shim.
 
-**After the replay, not counted as a pass.** The graph diff and the `super()` resolution were added after the replay. Re-run on its two Werkzeug cases (`runs/demo-20261015-202725.md`):
+**After the replay, not counted as a pass.** The graph diff and the `super()` resolution were added after the replay, then re-run on the replay's cases. The two Werkzeug cases (`runs/demo-20261015-202725.md`):
 - **Flask 2.0.2:** the graph diff lists `Client.open(as_tuple)`, and the graph has a path through `FlaskClient.open` → `super().open()`. The agent confirmed the break, and its shim passes. Every check passed when re-run in fresh containers.
 - **Flask 2.0.3:** the same path is flagged. The agent showed that ordinary use works on both releases, and that only callers still passing the deprecated `as_tuple` break. It reported no break.
 
-These two runs are development evidence. A fresh frozen pick is needed before the graph diff can claim a pass.
+- **Jinja2 2.11.3** (`runs/demo-20261015-204649.md`): removed names were added later. With them, the graph diff lists `markupsafe.soft_unicode`, which griffe missed, and finds 13 places in Jinja2 that import or call it. The agent's reproduction runs ordinary Jinja2 code without naming `soft_unicode` itself. It fails on MarkupSafe 2.1 with an ImportError that names it, and the agent's shim, which puts the name back, passes. Every check passed in fresh containers.
+
+These three runs are development evidence. A fresh frozen pick is needed before the graph diff can claim a pass.
 
 ## AI use (rule 11)
 

@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 
 import scan
-from impact import EXPOSED, REACHES_REMOVED, REMOVED_PARAMS, UNRESOLVED
+from impact import EXPOSED, REACHES_NAME, REACHES_REMOVED, REMOVED_NAMES, REMOVED_PARAMS, UNRESOLVED, public_tops
 
 FILES = {
     "lib/__init__.py": "from ._core import *\n",
@@ -193,6 +193,32 @@ class GraphDiff(unittest.TestCase):
         g.delete()
 
 
+class RemovedNames(unittest.TestCase):
+    def test_removed_names_and_who_uses_them(self):
+        old = ("def soft_str(s):\n    return s\n\ndef soft_unicode(s):\n    return s\n\n"
+               "class Gone:\n    def m(self): ...\n\ndef _private(): ...\n")
+        new = "def soft_str(s):\n    return s\n"
+        app = ("from lib import soft_unicode\nimport lib\n\nclass Mine(lib.Gone):\n    pass\n\n"
+               "def fine(x):\n    return lib.soft_str(x)\n")
+        with tempfile.TemporaryDirectory() as old_dir, tempfile.TemporaryDirectory() as new_dir:
+            for root, files in ((old_dir, {"lib/__init__.py": old, "app/__init__.py": app}), (new_dir, {"lib/__init__.py": new})):
+                for name, text in files.items():
+                    (Path(root) / name).parent.mkdir(parents=True, exist_ok=True)
+                    (Path(root) / name).write_text(text)
+            released = scan.release(new_dir)
+            scan.scan([old_dir])
+            scan.mark_new("lib", released)
+            g = scan.load("downstream_selftest_names")
+        names = [n for n, _ in g.ro_query(REMOVED_NAMES, {"lib": "lib"}).result_set]
+        self.assertEqual(names, ["lib.Gone", "lib.Gone.m", "lib._private", "lib.soft_unicode"])
+        # report public names only, and a removed class without its methods
+        self.assertEqual(public_tops(names, "lib"), ["lib.Gone", "lib.soft_unicode"])
+        sites = lambda n: sorted(c[0] for c, _ in g.ro_query(REACHES_NAME, {"name": n, "pkg": "lib."}).result_set)
+        self.assertEqual(sites("lib.soft_unicode"), ["app.soft_unicode"])  # the import itself
+        self.assertEqual(sites("lib.Gone"), ["app.Mine"])  # the subclass
+        g.delete()
+
+
 class SummaryRow(unittest.TestCase):
     def test_rows_never_read_as_safe_without_saying_what_was_not_analysed(self):
         from agent import summary_row
@@ -215,7 +241,7 @@ class Readme(unittest.TestCase):
     def test_cypher_in_readme_matches_code(self):
         import impact
         readme = (Path(__file__).parent / "README.md").read_text()
-        for name in ("REMOVED_PARAMS", "REACHES_REMOVED", "EXPOSED", "UNRESOLVED"):
+        for name in ("REMOVED_PARAMS", "REMOVED_NAMES", "REACHES_REMOVED", "REACHES_NAME", "EXPOSED", "UNRESOLVED"):
             self.assertIn(getattr(impact, name).strip(), readme, name)
 
 
@@ -232,6 +258,13 @@ class FinalReport(unittest.TestCase):
         self.assertTrue(passes_param("f(**{'gone': 1})", "gone"))
         # naming it in a string, such as an expected warning, is not passing it
         self.assertFalse(passes_param("assert 'gone' in str(w)", "gone"))
+
+    def test_uses_name(self):
+        from agent import uses_name
+        self.assertTrue(uses_name("from markupsafe import soft_unicode", "soft_unicode"))
+        self.assertTrue(uses_name("import markupsafe\nmarkupsafe.soft_unicode('x')", "soft_unicode"))
+        # mentioning it in a string, such as an expected error message, is not using it
+        self.assertFalse(uses_name("import jinja2\nassert 'soft_unicode' not in str(e)", "soft_unicode"))
 
 
 if __name__ == "__main__":

@@ -1,0 +1,53 @@
+{
+ "unsupported kinds all listed": true,
+ "finding 0: markupsafe.soft_unicode(soft_unicode) via graph path": {
+  "imports the dependent": true,
+  "does not pass or name it itself": true,
+  "dependent's source mentions the parameter": [
+   "filters.py:13",
+   "filters.py:194",
+   "filters.py:195",
+   "filters.py:200",
+   "filters.py:205",
+   "filters.py:248",
+   "filters.py:258",
+   "filters.py:498",
+   "filters.py:764",
+   "filters.py:823",
+   "filters.py:828",
+   "filters.py:1368",
+   "runtime.py:9",
+   "runtime.py:65",
+   "utils.py:728",
+   "utils.py:729",
+   "utils.py:732",
+   "utils.py:733",
+   "utils.py:737"
+  ],
+  "has an assertion": true,
+  "old passes": true,
+  "new fails naming the parameter, through the dependent": true,
+  "has a shim": true,
+  "new+shim passes": true,
+  "outputs": {
+   "old": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK ABC|1,2|x\n",
+    "stderr": ""
+   },
+   "new": {
+    "outcome": "fail",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/env/v/lib/python3.11/site-packages/jinja2/__init__.py\", line 12, in <module>\n    from .environment import Environment\n  File \"/env/v/lib/python3.11/site-packages/jinja2/environment.py\", line 25, in <module>\n    from .defaults import BLOCK_END_STRING\n  File \"/env/v/lib/python3.11/site-packages/jinja2/defaults.py\", line 3, in <module>\n    from .filters import FILTERS as DEFAULT_FILTERS  # noqa: F401\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/env/v/lib/python3.11/site-packages/jinja2/filters.py\", line 13, in <module>\n    from markupsafe import soft_unicode\nImportError: cannot import name 'soft_unicode' from 'markupsafe' (/env/v/lib/python3.11/site-packages/markupsafe/__init__.py)\n"
+   },
+   "new+shim": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK ABC|1,2|x\n",
+    "stderr": ""
+   }
+  }
+ }
+}

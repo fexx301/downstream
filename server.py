@@ -13,10 +13,11 @@ from mcp.server.mcpserver import MCPServer
 
 import runner
 import scan
-from impact import EXPOSED, REACHES_REMOVED, REMOVED_PARAMS, UNRESOLVED
+from impact import EXPOSED, REACHES_NAME, REACHES_REMOVED, REMOVED_NAMES, REMOVED_PARAMS, UNRESOLVED, public_tops
 
 HERE = Path(__file__).parent
 SUPPORTED = "Parameter was removed"
+REMOVED_OBJECT = "Public object was removed"
 case = json.loads(Path(os.environ["DOWNSTREAM_CASE"]).read_text())
 graph = FalkorDB(host="localhost", port=6380).select_graph(case["graph"])
 mods = {name: path for src in case["src"] for name, _, path in scan.modules(HERE / src)}
@@ -40,17 +41,26 @@ def defs(body):
             yield n
 
 
+def removed_names():
+    """Public library names the new release no longer has: the graph's diff unioned with griffe's."""
+    lib = case["lib_module"]
+    graph_side = {n for n, _ in graph.ro_query(REMOVED_NAMES, {"lib": lib}).result_set}
+    griffe_side = {c["path"] for c in json.loads((HERE / case["breaks"]).read_text()) if c["kind"] == REMOVED_OBJECT}
+    return [{"name": n, "found_by": "both" if n in graph_side and n in griffe_side else
+             "graph diff" if n in graph_side else "griffe"} for n in public_tops(graph_side | griffe_side, lib)]
+
+
 @server.tool()
 def breaking_changes() -> dict:
-    """Removed parameters, from the graph's own diff of the two releases plus griffe's API diff (each
-    entry says which found it). Only removed parameters can be traced through the symbol graph; every
-    other kind griffe reports is listed as unsupported (not analysed)."""
+    """Removed parameters and removed names (functions, classes, imported names), from the graph's own
+    diff of the two releases plus griffe's API diff; each entry says which found it. Both can be traced
+    through the symbol graph. Every other kind griffe reports is listed as unsupported (not analysed)."""
     changes = json.loads((HERE / case["breaks"]).read_text())
     unsupported, removed = {}, {}
     for c in changes:
-        if c["kind"] != SUPPORTED:
+        if c["kind"] not in (SUPPORTED, REMOVED_OBJECT):
             unsupported.setdefault(c["kind"], []).append(c["path"])
-        else:
+        elif c["kind"] == SUPPORTED:
             removed[(c["canonical"], c["name"])] = {"function": c["canonical"], "parameter": c["name"], "found_by": "griffe"}
     for fn, param, kwargs in graph.ro_query(REMOVED_PARAMS, {"lib": case["lib_module"]}).result_set:
         if fn.rpartition(".")[2].startswith("_") and not fn.endswith("__"):
@@ -59,16 +69,19 @@ def breaking_changes() -> dict:
         if entry["found_by"] == "griffe":
             entry["found_by"] = "both"
         entry["new_signature_takes_kwargs"] = kwargs
+    names = removed_names()
     return {
         "removed_parameters": list(removed.values()),
+        "removed_names": {"count": len(names), "first_60": names[:60]},
         "unsupported": {k: {"count": len(v), "examples": v[:5]} for k, v in unsupported.items()},
     }
 
 
 @server.tool()
 def impact_paths(function: str = "", parameter: str = "") -> dict:
-    """Call paths from the dependent's code whose explicit keyword reaches a removed parameter, through
-    aliases, constructors and **kwargs forwarding. With no arguments, checks every removed parameter."""
+    """Call paths from code outside the library whose explicit keyword reaches a removed parameter (through
+    aliases, constructors and **kwargs forwarding), and sites that import, call or subclass a removed name.
+    With no arguments, checks every removed parameter and name."""
     todo = [(function, parameter)] if function else [
         (c["function"], c["parameter"]) for c in breaking_changes()["removed_parameters"]]
     found, empty = [], 0
@@ -76,6 +89,9 @@ def impact_paths(function: str = "", parameter: str = "") -> dict:
         rows = graph.ro_query(REACHES_REMOVED, {"fn": fn, "param": param, "pkg": fn.partition(".")[0] + "."}).result_set
         found += [{"function": fn, "parameter": param, "chain": chain, "hops": hops} for chain, hops in rows]
         empty += not rows
+    for n in ([] if function else removed_names()):
+        rows = graph.ro_query(REACHES_NAME, {"name": n["name"], "pkg": case["lib_module"] + "."}).result_set
+        found += [{"removed_name": n["name"], "chain": chain, "hops": hops} for chain, hops in rows]
     return {"paths": found, "removed_parameters_without_paths": empty}
 
 

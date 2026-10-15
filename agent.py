@@ -25,6 +25,7 @@ import runner
 
 HERE = Path(__file__).parent
 MODEL = "claude-opus-5-5"
+TRACED = {"Parameter was removed", "Public object was removed"}  # change kinds the graph traces
 UV = ["uv", "run", "-q", "--python", "3.12"]
 
 
@@ -114,6 +115,17 @@ def passes_param(code, param):
                for n in ast.walk(tree))
 
 
+def uses_name(code, name):
+    """Whether the code refers to `name` itself: as a variable, an attribute or an imported name."""
+    try:
+        tree = ast.parse(code)
+    except SyntaxError:
+        return True  # unparseable code cannot be cleared
+    return any((isinstance(n, ast.Name) and n.id == name) or (isinstance(n, ast.Attribute) and n.attr == name) or
+               (isinstance(n, ast.alias) and name in (n.name, n.name.rpartition(".")[2], n.asname))
+               for n in ast.walk(tree))
+
+
 def through_dependent(code, stderr, case):
     """The failure is reached through the dependent: every package in between is on the failing traceback,
     and either the dependent's own code runs there or, when it only re-exports the affected code, the
@@ -146,18 +158,19 @@ def text_hits(case, param):
 
 def verify(case, report, out):
     """Re-run the agent's evidence instead of trusting its report."""
-    kinds = {c["kind"] for c in json.loads((HERE / case["breaks"]).read_text())} - {"Parameter was removed"}
+    kinds = {c["kind"] for c in json.loads((HERE / case["breaks"]).read_text())} - TRACED
     rows = {"unsupported kinds all listed": sorted(kinds - set(report.get("unsupported", {}))) or True}
     mod = case["dep_module"]
     for i, f in enumerate(report.get("findings", [])):
-        code, param = f.get("reproduction") or "", f.get("parameter") or ""
+        # a removed name is checked by its last part, the one an ImportError or AttributeError names
+        code, param, name = f.get("reproduction") or "", (f.get("parameter") or "").rpartition(".")[2], f.get("kind") == "name"
         res = {"old": runner.run(case, case["old"], code, fresh=True),
                "new": runner.run(case, case["new"], code, fresh=True),
                "new+shim": runner.run(case, case["new"], code, f.get("shim") or None, fresh=True)}
         new_err = res["new"].get("stderr", "")
-        rows[f"finding {i}: {f.get('function')}({param}=) via {f.get('evidence')}"] = {
+        rows[f"finding {i}: {f.get('function')}({param}{'' if name else '='}) via {f.get('evidence')}"] = {
             "imports the dependent": mod in imported(code),
-            "does not pass the parameter itself": not passes_param(code, param),
+            "does not pass or name it itself": not (uses_name(code, param) if name else passes_param(code, param)),
             "dependent's source mentions the parameter": text_hits(case, param),
             "has an assertion": "assert" in code,
             "old passes": res["old"]["outcome"] == "pass",
@@ -225,7 +238,7 @@ def demo(paths):
                                       cwd=HERE, env={**os.environ, "DOWNSTREAM_CASE": str(path.resolve())},
                                       capture_output=True, text=True, check=True).stdout)
         counts = {k: len(v) for k, v in t.items()}
-        other = sum(c["kind"] != "Parameter was removed" for c in json.loads((HERE / case["breaks"]).read_text()))
+        other = sum(c["kind"] not in TRACED for c in json.loads((HERE / case["breaks"]).read_text()))
         rows = run_agent(path, case, control=not any(counts.values()))
         lines.append(summary_row(case["dep"], counts, other, rows))
     out = HERE / "runs" / f"demo-{time.strftime('%Y%m%d-%H%M%S')}.md"
