@@ -1,0 +1,33 @@
+{
+ "unsupported kinds all listed": true,
+ "finding 0: httpx._client.Client.__init__(proxies=) via graph path": {
+  "imports the dependent": true,
+  "does not pass the parameter itself": true,
+  "dependent's source mentions the parameter": [],
+  "has an assertion": true,
+  "old passes": true,
+  "new fails naming the parameter, through the dependent and the packages between": true,
+  "has a shim": true,
+  "new+shim passes": true,
+  "outputs": {
+   "old": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK pong\n",
+    "stderr": ""
+   },
+   "new": {
+    "outcome": "fail",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 3, in <module>\n  File \"/env/v/lib/python3.12/site-packages/langchain_core/load/serializable.py\", line 125, in __init__\n    super().__init__(*args, **kwargs)\n  File \"/env/v/lib/python3.12/site-packages/pydantic/main.py\", line 214, in __init__\n    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/env/v/lib/python3.12/site-packages/langchain_openai/chat_models/base.py\", line 551, in validate_environment\n    self.root_client = openai.OpenAI(**client_params, **sync_specific)  # type: ignore[arg-type]\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/env/v/lib/python3.12/site-packages/openai/_client.py\", line 123, in __init__\n    super().__init__(\n  File \"/env/v/lib/python3.12/site-packages/openai/_base_client.py\", line 857, in __init__\n    self._client = http_client or SyncHttpxClientWrapper(\n                                  ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/env/v/lib/python3.12/site-packages/openai/_base_client.py\", line 755, in __init__\n    super().__init__(**kwargs)\nTypeError: Client.__init__() got an unexpected keyword argument 'proxies'\n"
+   },
+   "new+shim": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK pong\n",
+    "stderr": ""
+   }
+  }
+ }
+}

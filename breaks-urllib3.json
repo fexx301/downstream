@@ -1,0 +1,1199 @@
+[
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3._request_methods.RequestMethods.request",
+  "canonical": "urllib3._request_methods.RequestMethods.request",
+  "name": "fields",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/_request_methods.py\u001b[0m:69: RequestMethods.request(\u001b[34mfields\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3._request_methods.RequestMethods.request",
+  "canonical": "urllib3._request_methods.RequestMethods.request",
+  "name": "headers",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/_request_methods.py\u001b[0m:69: RequestMethods.request(\u001b[34mheaders\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "urllib3.connectionpool.ConnectionPool.QueueCls",
+  "canonical": "urllib3.connectionpool.ConnectionPool.QueueCls",
+  "name": "LifoQueue",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:80: ConnectionPool.QueueCls: \u001b[33mAttribute value was changed\u001b[39m: LifoQueue -> queue.LifoQueue"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.connectionpool.HTTPConnectionPool.ResponseCls",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.ResponseCls",
+  "name": "ResponseCls",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/connectionpool.py\u001b[0m:174: HTTPConnectionPool.ResponseCls: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "name": "strict",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:178: HTTPConnectionPool.__init__(\u001b[34mstrict\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "name": "timeout",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:178: HTTPConnectionPool.__init__(\u001b[34mtimeout\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Parameter default was changed",
+  "path": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "name": "timeout",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:178: HTTPConnectionPool.__init__(\u001b[34mtimeout\u001b[39m): \u001b[33mParameter default was changed\u001b[39m: Timeout.DEFAULT_TIMEOUT -> _DEFAULT_TIMEOUT"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "name": "maxsize",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:178: HTTPConnectionPool.__init__(\u001b[34mmaxsize\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "name": "block",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:178: HTTPConnectionPool.__init__(\u001b[34mblock\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "name": "headers",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:178: HTTPConnectionPool.__init__(\u001b[34mheaders\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "name": "retries",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:178: HTTPConnectionPool.__init__(\u001b[34mretries\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "name": "_proxy",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:178: HTTPConnectionPool.__init__(\u001b[34m_proxy\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "name": "_proxy_headers",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:178: HTTPConnectionPool.__init__(\u001b[34m_proxy_headers\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.__init__",
+  "name": "_proxy_config",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:178: HTTPConnectionPool.__init__(\u001b[34m_proxy_config\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.connectionpool.HTTPConnectionPool.strict",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.strict",
+  "name": "strict",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/connectionpool.py\u001b[0m:194: HTTPConnectionPool.strict: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter default was changed",
+  "path": "urllib3.connectionpool.HTTPConnectionPool.urlopen",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.urlopen",
+  "name": "timeout",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:595: HTTPConnectionPool.urlopen(\u001b[34mtimeout\u001b[39m): \u001b[33mParameter default was changed\u001b[39m: _Default -> _DEFAULT_TIMEOUT"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.ResponseCls",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.ResponseCls",
+  "name": "ResponseCls",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/connectionpool.py\u001b[0m:0: HTTPSConnectionPool.ResponseCls: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.strict",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.strict",
+  "name": "strict",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/connectionpool.py\u001b[0m:0: HTTPSConnectionPool.strict: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "name": "strict",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:979: HTTPSConnectionPool.__init__(\u001b[34mstrict\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "name": "timeout",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:979: HTTPSConnectionPool.__init__(\u001b[34mtimeout\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Parameter default was changed",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "name": "timeout",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:979: HTTPSConnectionPool.__init__(\u001b[34mtimeout\u001b[39m): \u001b[33mParameter default was changed\u001b[39m: Timeout.DEFAULT_TIMEOUT -> _DEFAULT_TIMEOUT"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "name": "maxsize",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:979: HTTPSConnectionPool.__init__(\u001b[34mmaxsize\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "name": "block",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:979: HTTPSConnectionPool.__init__(\u001b[34mblock\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "name": "headers",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:979: HTTPSConnectionPool.__init__(\u001b[34mheaders\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "name": "retries",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:979: HTTPSConnectionPool.__init__(\u001b[34mretries\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "name": "_proxy",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:979: HTTPSConnectionPool.__init__(\u001b[34m_proxy\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "name": "_proxy_headers",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:979: HTTPSConnectionPool.__init__(\u001b[34m_proxy_headers\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "name": "key_file",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:979: HTTPSConnectionPool.__init__(\u001b[34mkey_file\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "name": "cert_file",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:979: HTTPSConnectionPool.__init__(\u001b[34mcert_file\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "name": "cert_reqs",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:979: HTTPSConnectionPool.__init__(\u001b[34mcert_reqs\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "name": "key_password",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:979: HTTPSConnectionPool.__init__(\u001b[34mkey_password\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "name": "ca_certs",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:979: HTTPSConnectionPool.__init__(\u001b[34mca_certs\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "name": "ssl_version",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:979: HTTPSConnectionPool.__init__(\u001b[34mssl_version\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "name": "assert_hostname",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:979: HTTPSConnectionPool.__init__(\u001b[34massert_hostname\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "name": "assert_fingerprint",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:979: HTTPSConnectionPool.__init__(\u001b[34massert_fingerprint\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "canonical": "urllib3.connectionpool.HTTPSConnectionPool.__init__",
+  "name": "ca_cert_dir",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:979: HTTPSConnectionPool.__init__(\u001b[34mca_cert_dir\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Parameter is now required",
+  "path": "urllib3.poolmanager.PoolManager.connection_from_pool_key",
+  "canonical": "urllib3.poolmanager.PoolManager.connection_from_pool_key",
+  "name": "request_context",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/poolmanager.py\u001b[0m:330: PoolManager.connection_from_pool_key(\u001b[34mrequest_context\u001b[39m): \u001b[33mParameter is now required\u001b[39m"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "urllib3.poolmanager.ProxyManager.proxy_config",
+  "canonical": "urllib3.poolmanager.ProxyManager.proxy_config",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/poolmanager.py\u001b[0m:572: ProxyManager.proxy_config: \u001b[33mAttribute value was changed\u001b[39m: ProxyConfig(proxy_ssl_context, use_forwarding_for_https) -> ProxyConfig(proxy_ssl_context, use_forwarding_for_https, proxy_assert_hostname, proxy_assert_fingerprint)"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "urllib3.response.HTTPResponse.__init__",
+  "canonical": "urllib3.response.HTTPResponse.__init__",
+  "name": "strict",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/response.py\u001b[0m:537: HTTPResponse.__init__(\u001b[34mstrict\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.response.HTTPResponse.__init__",
+  "canonical": "urllib3.response.HTTPResponse.__init__",
+  "name": "preload_content",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/response.py\u001b[0m:537: HTTPResponse.__init__(\u001b[34mpreload_content\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.response.HTTPResponse.__init__",
+  "canonical": "urllib3.response.HTTPResponse.__init__",
+  "name": "decode_content",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/response.py\u001b[0m:537: HTTPResponse.__init__(\u001b[34mdecode_content\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.response.HTTPResponse.__init__",
+  "canonical": "urllib3.response.HTTPResponse.__init__",
+  "name": "original_response",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/response.py\u001b[0m:537: HTTPResponse.__init__(\u001b[34moriginal_response\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.response.HTTPResponse.__init__",
+  "canonical": "urllib3.response.HTTPResponse.__init__",
+  "name": "pool",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/response.py\u001b[0m:537: HTTPResponse.__init__(\u001b[34mpool\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.response.HTTPResponse.__init__",
+  "canonical": "urllib3.response.HTTPResponse.__init__",
+  "name": "connection",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/response.py\u001b[0m:537: HTTPResponse.__init__(\u001b[34mconnection\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.response.HTTPResponse.__init__",
+  "canonical": "urllib3.response.HTTPResponse.__init__",
+  "name": "msg",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/response.py\u001b[0m:537: HTTPResponse.__init__(\u001b[34mmsg\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.response.HTTPResponse.__init__",
+  "canonical": "urllib3.response.HTTPResponse.__init__",
+  "name": "retries",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/response.py\u001b[0m:537: HTTPResponse.__init__(\u001b[34mretries\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.response.HTTPResponse.__init__",
+  "canonical": "urllib3.response.HTTPResponse.__init__",
+  "name": "enforce_content_length",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/response.py\u001b[0m:537: HTTPResponse.__init__(\u001b[34menforce_content_length\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Parameter default was changed",
+  "path": "urllib3.response.HTTPResponse.__init__",
+  "canonical": "urllib3.response.HTTPResponse.__init__",
+  "name": "enforce_content_length",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/response.py\u001b[0m:537: HTTPResponse.__init__(\u001b[34menforce_content_length\u001b[39m): \u001b[33mParameter default was changed\u001b[39m: False -> True"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.response.HTTPResponse.__init__",
+  "canonical": "urllib3.response.HTTPResponse.__init__",
+  "name": "request_method",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/response.py\u001b[0m:537: HTTPResponse.__init__(\u001b[34mrequest_method\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.response.HTTPResponse.__init__",
+  "canonical": "urllib3.response.HTTPResponse.__init__",
+  "name": "request_url",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/response.py\u001b[0m:537: HTTPResponse.__init__(\u001b[34mrequest_url\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.response.HTTPResponse.__init__",
+  "canonical": "urllib3.response.HTTPResponse.__init__",
+  "name": "auto_close",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/response.py\u001b[0m:537: HTTPResponse.__init__(\u001b[34mauto_close\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.response.HTTPResponse.strict",
+  "canonical": "urllib3.response.HTTPResponse.strict",
+  "name": "strict",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/response.py\u001b[0m:229: HTTPResponse.strict: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.response.HTTPResponse.from_httplib",
+  "canonical": "urllib3.response.HTTPResponse.from_httplib",
+  "name": "from_httplib",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/response.py\u001b[0m:633: HTTPResponse.from_httplib: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Base class was removed",
+  "path": "urllib3.util.retry.Retry",
+  "canonical": "urllib3.util.retry.Retry",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/retry.py\u001b[0m:39: Retry: \u001b[33mBase class was removed\u001b[39m: [object] -> []"
+ },
+ {
+  "kind": "Parameter default was changed",
+  "path": "urllib3.util.retry.Retry.__init__",
+  "canonical": "urllib3.util.retry.Retry.__init__",
+  "name": "allowed_methods",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/retry.py\u001b[0m:198: Retry.__init__(\u001b[34mallowed_methods\u001b[39m): \u001b[33mParameter default was changed\u001b[39m: _Default -> DEFAULT_ALLOWED_METHODS"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.util.retry.Retry.__init__",
+  "canonical": "urllib3.util.retry.Retry.__init__",
+  "name": "raise_on_redirect",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/retry.py\u001b[0m:198: Retry.__init__(\u001b[34mraise_on_redirect\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.util.retry.Retry.__init__",
+  "canonical": "urllib3.util.retry.Retry.__init__",
+  "name": "raise_on_status",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/retry.py\u001b[0m:198: Retry.__init__(\u001b[34mraise_on_status\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.util.retry.Retry.__init__",
+  "canonical": "urllib3.util.retry.Retry.__init__",
+  "name": "history",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/retry.py\u001b[0m:198: Retry.__init__(\u001b[34mhistory\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.util.retry.Retry.__init__",
+  "canonical": "urllib3.util.retry.Retry.__init__",
+  "name": "respect_retry_after_header",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/retry.py\u001b[0m:198: Retry.__init__(\u001b[34mrespect_retry_after_header\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.util.retry.Retry.__init__",
+  "canonical": "urllib3.util.retry.Retry.__init__",
+  "name": "remove_headers_on_redirect",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/retry.py\u001b[0m:198: Retry.__init__(\u001b[34mremove_headers_on_redirect\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Parameter default was changed",
+  "path": "urllib3.util.retry.Retry.__init__",
+  "canonical": "urllib3.util.retry.Retry.__init__",
+  "name": "remove_headers_on_redirect",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/retry.py\u001b[0m:198: Retry.__init__(\u001b[34mremove_headers_on_redirect\u001b[39m): \u001b[33mParameter default was changed\u001b[39m: _Default -> DEFAULT_REMOVE_HEADERS_ON_REDIRECT"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "urllib3.util.retry.Retry.__init__",
+  "canonical": "urllib3.util.retry.Retry.__init__",
+  "name": "method_whitelist",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/retry.py\u001b[0m:198: Retry.__init__(\u001b[34mmethod_whitelist\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "urllib3.util.retry.Retry.history",
+  "canonical": "urllib3.util.retry.Retry.history",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/retry.py\u001b[0m:236: Retry.history: \u001b[33mAttribute value was changed\u001b[39m: history or tuple() -> history or ()"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "urllib3.util.retry.Retry.remove_headers_on_redirect",
+  "canonical": "urllib3.util.retry.Retry.remove_headers_on_redirect",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/retry.py\u001b[0m:238: Retry.remove_headers_on_redirect: \u001b[33mAttribute value was changed\u001b[39m: frozenset([h.lower() for h in remove_headers_on_redirect]) -> frozenset(h.lower() for h in remove_headers_on_redirect)"
+ },
+ {
+  "kind": "Parameter is now required",
+  "path": "urllib3.util.retry.Retry.sleep_for_retry",
+  "canonical": "urllib3.util.retry.Retry.sleep_for_retry",
+  "name": "response",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/retry.py\u001b[0m:331: Retry.sleep_for_retry(\u001b[34mresponse\u001b[39m): \u001b[33mParameter is now required\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.retry.Retry.__getattr__",
+  "canonical": "urllib3.util.retry.Retry.__getattr__",
+  "name": "__getattr__",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/retry.py\u001b[0m:604: Retry.__getattr__: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Base class was removed",
+  "path": "urllib3.util.timeout.Timeout",
+  "canonical": "urllib3.util.timeout.Timeout",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/timeout.py\u001b[0m:25: Timeout: \u001b[33mBase class was removed\u001b[39m: [object] -> []"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "urllib3.util.timeout.Timeout.DEFAULT_TIMEOUT",
+  "canonical": "urllib3.util.timeout.Timeout.DEFAULT_TIMEOUT",
+  "name": "_GLOBAL_DEFAULT_TIMEOUT",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/timeout.py\u001b[0m:111: Timeout.DEFAULT_TIMEOUT: \u001b[33mAttribute value was changed\u001b[39m: _GLOBAL_DEFAULT_TIMEOUT -> _DEFAULT_TIMEOUT"
+ },
+ {
+  "kind": "Parameter default was changed",
+  "path": "urllib3.util.timeout.Timeout.__init__",
+  "canonical": "urllib3.util.timeout.Timeout.__init__",
+  "name": "connect",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/timeout.py\u001b[0m:113: Timeout.__init__(\u001b[34mconnect\u001b[39m): \u001b[33mParameter default was changed\u001b[39m: _Default -> _DEFAULT_TIMEOUT"
+ },
+ {
+  "kind": "Parameter default was changed",
+  "path": "urllib3.util.timeout.Timeout.__init__",
+  "canonical": "urllib3.util.timeout.Timeout.__init__",
+  "name": "read",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/timeout.py\u001b[0m:113: Timeout.__init__(\u001b[34mread\u001b[39m): \u001b[33mParameter default was changed\u001b[39m: _Default -> _DEFAULT_TIMEOUT"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "urllib3.util.timeout.Timeout.resolve_default_timeout",
+  "canonical": "urllib3.util.timeout.Timeout.resolve_default_timeout",
+  "name": "cls",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/timeout.py\u001b[0m:130: Timeout.resolve_default_timeout(\u001b[34mcls\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "urllib3.util.timeout.Timeout.resolve_default_timeout",
+  "canonical": "urllib3.util.timeout.Timeout.resolve_default_timeout",
+  "name": "timeout",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/timeout.py\u001b[0m:130: Timeout.resolve_default_timeout(\u001b[34mtimeout\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.get_host",
+  "canonical": "urllib3.util.url.get_host",
+  "name": "get_host",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/__init__.py\u001b[0m:20: get_host: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.filepost.iter_fields",
+  "canonical": "urllib3.filepost.iter_fields",
+  "name": "iter_fields",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/filepost.py\u001b[0m:45: iter_fields: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object points to a different kind of object",
+  "path": "urllib3.fields.format_header_param",
+  "canonical": "urllib3.fields.format_header_param",
+  "name": "ATTRIBUTE",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/fields.py\u001b[0m:135: format_header_param: \u001b[33mPublic object points to a different kind of object\u001b[39m: attribute -> function"
+ },
+ {
+  "kind": "Base class was removed",
+  "path": "urllib3.fields.RequestField",
+  "canonical": "urllib3.fields.RequestField",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/fields.py\u001b[0m:153: RequestField: \u001b[33mBase class was removed\u001b[39m: [object] -> []"
+ },
+ {
+  "kind": "Parameter default was changed",
+  "path": "urllib3.fields.RequestField.__init__",
+  "canonical": "urllib3.fields.RequestField.__init__",
+  "name": "header_formatter",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/fields.py\u001b[0m:171: RequestField.__init__(\u001b[34mheader_formatter\u001b[39m): \u001b[33mParameter default was changed\u001b[39m: format_header_param_html5 -> None"
+ },
+ {
+  "kind": "Parameter default was changed",
+  "path": "urllib3.fields.RequestField.from_tuples",
+  "canonical": "urllib3.fields.RequestField.from_tuples",
+  "name": "header_formatter",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/fields.py\u001b[0m:199: RequestField.from_tuples(\u001b[34mheader_formatter\u001b[39m): \u001b[33mParameter default was changed\u001b[39m: format_header_param_html5 -> None"
+ },
+ {
+  "kind": "Public object points to a different kind of object",
+  "path": "urllib3.request",
+  "canonical": "urllib3.request",
+  "name": "MODULE",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/__init__.py\u001b[0m:133: request: \u001b[33mPublic object points to a different kind of object\u001b[39m: module -> function"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.response.DeflateDecoder.__getattr__",
+  "canonical": "urllib3.response.DeflateDecoder.__getattr__",
+  "name": "__getattr__",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/response.py\u001b[0m:47: DeflateDecoder.__getattr__: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Base class was removed",
+  "path": "urllib3.response.GzipDecoderState",
+  "canonical": "urllib3.response.GzipDecoderState",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/response.py\u001b[0m:108: GzipDecoderState: \u001b[33mBase class was removed\u001b[39m: [object] -> []"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.response.GzipDecoder.__getattr__",
+  "canonical": "urllib3.response.GzipDecoder.__getattr__",
+  "name": "__getattr__",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/response.py\u001b[0m:85: GzipDecoder.__getattr__: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object points to a different kind of object",
+  "path": "urllib3.connection.ConnectionError",
+  "canonical": "urllib3.connection.ConnectionError",
+  "name": "CLASS",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:66: ConnectionError: \u001b[33mPublic object points to a different kind of object\u001b[39m: class -> attribute"
+ },
+ {
+  "kind": "Public object points to a different kind of object",
+  "path": "urllib3.connection.BrokenPipeError",
+  "canonical": "urllib3.connection.BrokenPipeError",
+  "name": "CLASS",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:67: BrokenPipeError: \u001b[33mPublic object points to a different kind of object\u001b[39m: class -> attribute"
+ },
+ {
+  "kind": "Base class was removed",
+  "path": "urllib3.connection.HTTPConnection",
+  "canonical": "urllib3.connection.HTTPConnection",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:83: HTTPConnection: \u001b[33mBase class was removed\u001b[39m: [urllib3.packages.six.moves.http_client.HTTPConnection, object] -> [http.client.HTTPConnection]"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "urllib3.connection.HTTPConnection.__init__",
+  "canonical": "urllib3.connection.HTTPConnection.__init__",
+  "name": "args",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:133: HTTPConnection.__init__(\u001b[34margs\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "urllib3.connection.HTTPConnection.__init__",
+  "canonical": "urllib3.connection.HTTPConnection.__init__",
+  "name": "kw",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:133: HTTPConnection.__init__(\u001b[34mkw\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was added as required",
+  "path": "urllib3.connection.HTTPConnection.__init__",
+  "canonical": "urllib3.connection.HTTPConnection.__init__",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:133: HTTPConnection.__init__(\u001b[34mhost\u001b[39m): \u001b[33mParameter was added as required\u001b[39m"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "urllib3.connection.HTTPConnection.source_address",
+  "canonical": "urllib3.connection.HTTPConnection.source_address",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:124: HTTPConnection.source_address: \u001b[33mAttribute value was changed\u001b[39m: kw.get('source_address') -> unset"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "urllib3.connection.HTTPConnection.socket_options",
+  "canonical": "urllib3.connection.HTTPConnection.socket_options",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:153: HTTPConnection.socket_options: \u001b[33mAttribute value was changed\u001b[39m: kw.pop('socket_options', self.default_socket_options) -> socket_options"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "urllib3.connection.HTTPConnection.proxy",
+  "canonical": "urllib3.connection.HTTPConnection.proxy",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:154: HTTPConnection.proxy: \u001b[33mAttribute value was changed\u001b[39m: kw.pop('proxy', None) -> proxy"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "urllib3.connection.HTTPConnection.proxy_config",
+  "canonical": "urllib3.connection.HTTPConnection.proxy_config",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:155: HTTPConnection.proxy_config: \u001b[33mAttribute value was changed\u001b[39m: kw.pop('proxy_config', None) -> proxy_config"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "urllib3.connection.HTTPConnection.putrequest",
+  "canonical": "urllib3.connection.HTTPConnection.putrequest",
+  "name": "args",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:285: HTTPConnection.putrequest(\u001b[34margs\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "urllib3.connection.HTTPConnection.putrequest",
+  "canonical": "urllib3.connection.HTTPConnection.putrequest",
+  "name": "kwargs",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:285: HTTPConnection.putrequest(\u001b[34mkwargs\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "urllib3.connection.HTTPSConnection.cert_reqs",
+  "canonical": "urllib3.connection.HTTPSConnection.cert_reqs",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:566: HTTPSConnection.cert_reqs: \u001b[33mAttribute value was changed\u001b[39m: None -> cert_reqs"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "urllib3.connection.HTTPSConnection.ca_certs",
+  "canonical": "urllib3.connection.HTTPSConnection.ca_certs",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:556: HTTPSConnection.ca_certs: \u001b[33mAttribute value was changed\u001b[39m: None -> ca_certs and os.path.expanduser(ca_certs)"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "urllib3.connection.HTTPSConnection.ca_cert_dir",
+  "canonical": "urllib3.connection.HTTPSConnection.ca_cert_dir",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:557: HTTPSConnection.ca_cert_dir: \u001b[33mAttribute value was changed\u001b[39m: None -> ca_cert_dir and os.path.expanduser(ca_cert_dir)"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "urllib3.connection.HTTPSConnection.ca_cert_data",
+  "canonical": "urllib3.connection.HTTPSConnection.ca_cert_data",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:558: HTTPSConnection.ca_cert_data: \u001b[33mAttribute value was changed\u001b[39m: None -> ca_cert_data"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "urllib3.connection.HTTPSConnection.ssl_version",
+  "canonical": "urllib3.connection.HTTPSConnection.ssl_version",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:553: HTTPSConnection.ssl_version: \u001b[33mAttribute value was changed\u001b[39m: None -> ssl_version"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "urllib3.connection.HTTPSConnection.assert_fingerprint",
+  "canonical": "urllib3.connection.HTTPSConnection.assert_fingerprint",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:552: HTTPSConnection.assert_fingerprint: \u001b[33mAttribute value was changed\u001b[39m: None -> assert_fingerprint"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.connection.HTTPSConnection.tls_in_tls_required",
+  "canonical": "urllib3.connection.HTTPSConnection.tls_in_tls_required",
+  "name": "tls_in_tls_required",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/connection.py\u001b[0m:300: HTTPSConnection.tls_in_tls_required: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter kind was changed",
+  "path": "urllib3.connection.HTTPSConnection.__init__",
+  "canonical": "urllib3.connection.HTTPSConnection.__init__",
+  "name": "key_file",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:508: HTTPSConnection.__init__(\u001b[34mkey_file\u001b[39m): \u001b[33mParameter kind was changed\u001b[39m: positional or keyword -> keyword-only"
+ },
+ {
+  "kind": "Parameter kind was changed",
+  "path": "urllib3.connection.HTTPSConnection.__init__",
+  "canonical": "urllib3.connection.HTTPSConnection.__init__",
+  "name": "cert_file",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:508: HTTPSConnection.__init__(\u001b[34mcert_file\u001b[39m): \u001b[33mParameter kind was changed\u001b[39m: positional or keyword -> keyword-only"
+ },
+ {
+  "kind": "Parameter kind was changed",
+  "path": "urllib3.connection.HTTPSConnection.__init__",
+  "canonical": "urllib3.connection.HTTPSConnection.__init__",
+  "name": "key_password",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:508: HTTPSConnection.__init__(\u001b[34mkey_password\u001b[39m): \u001b[33mParameter kind was changed\u001b[39m: positional or keyword -> keyword-only"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "urllib3.connection.HTTPSConnection.__init__",
+  "canonical": "urllib3.connection.HTTPSConnection.__init__",
+  "name": "strict",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:508: HTTPSConnection.__init__(\u001b[34mstrict\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter kind was changed",
+  "path": "urllib3.connection.HTTPSConnection.__init__",
+  "canonical": "urllib3.connection.HTTPSConnection.__init__",
+  "name": "timeout",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:508: HTTPSConnection.__init__(\u001b[34mtimeout\u001b[39m): \u001b[33mParameter kind was changed\u001b[39m: positional or keyword -> keyword-only"
+ },
+ {
+  "kind": "Parameter default was changed",
+  "path": "urllib3.connection.HTTPSConnection.__init__",
+  "canonical": "urllib3.connection.HTTPSConnection.__init__",
+  "name": "timeout",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:508: HTTPSConnection.__init__(\u001b[34mtimeout\u001b[39m): \u001b[33mParameter default was changed\u001b[39m: socket._GLOBAL_DEFAULT_TIMEOUT -> _DEFAULT_TIMEOUT"
+ },
+ {
+  "kind": "Parameter kind was changed",
+  "path": "urllib3.connection.HTTPSConnection.__init__",
+  "canonical": "urllib3.connection.HTTPSConnection.__init__",
+  "name": "ssl_context",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:508: HTTPSConnection.__init__(\u001b[34mssl_context\u001b[39m): \u001b[33mParameter kind was changed\u001b[39m: positional or keyword -> keyword-only"
+ },
+ {
+  "kind": "Parameter kind was changed",
+  "path": "urllib3.connection.HTTPSConnection.__init__",
+  "canonical": "urllib3.connection.HTTPSConnection.__init__",
+  "name": "server_hostname",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:508: HTTPSConnection.__init__(\u001b[34mserver_hostname\u001b[39m): \u001b[33mParameter kind was changed\u001b[39m: positional or keyword -> keyword-only"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "urllib3.connection.HTTPSConnection.__init__",
+  "canonical": "urllib3.connection.HTTPSConnection.__init__",
+  "name": "kw",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:508: HTTPSConnection.__init__(\u001b[34mkw\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Base class was removed",
+  "path": "urllib3.connection.DummyConnection",
+  "canonical": "urllib3.connection.DummyConnection",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connection.py\u001b[0m:888: DummyConnection: \u001b[33mBase class was removed\u001b[39m: [object] -> []"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "urllib3.exceptions.ProxyError.__init__",
+  "canonical": "urllib3.exceptions.ProxyError.__init__",
+  "name": "args",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/exceptions.py\u001b[0m:65: ProxyError.__init__(\u001b[34margs\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.exceptions.NewConnectionError.__reduce__",
+  "canonical": "urllib3.exceptions.PoolError.__reduce__",
+  "name": "__reduce__",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/exceptions.py\u001b[0m:0: NewConnectionError.__reduce__: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.exceptions.SubjectAltNameWarning",
+  "canonical": "urllib3.exceptions.SubjectAltNameWarning",
+  "name": "SubjectAltNameWarning",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/exceptions.py\u001b[0m:191: SubjectAltNameWarning: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.exceptions.SNIMissingWarning",
+  "canonical": "urllib3.exceptions.SNIMissingWarning",
+  "name": "SNIMissingWarning",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/exceptions.py\u001b[0m:215: SNIMissingWarning: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.connectionpool.xrange",
+  "canonical": "urllib3.connectionpool.xrange",
+  "name": "xrange",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/connectionpool.py\u001b[0m:60: xrange: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Base class was removed",
+  "path": "urllib3.connectionpool.ConnectionPool",
+  "canonical": "urllib3.connectionpool.ConnectionPool",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/connectionpool.py\u001b[0m:68: ConnectionPool: \u001b[33mBase class was removed\u001b[39m: [object] -> []"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.HAS_SNI",
+  "canonical": "urllib3.util.HAS_SNI",
+  "name": "HAS_SNI",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/__init__.py\u001b[0m:8: HAS_SNI: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.PROTOCOL_TLS",
+  "canonical": "urllib3.util.PROTOCOL_TLS",
+  "name": "PROTOCOL_TLS",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/__init__.py\u001b[0m:8: PROTOCOL_TLS: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.current_time",
+  "canonical": "urllib3.util.timeout.current_time",
+  "name": "current_time",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/__init__.py\u001b[0m:20: current_time: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.Url.__slots__",
+  "canonical": "urllib3.util.url.Url.__slots__",
+  "name": "__slots__",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:89: Url.__slots__: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.get_host",
+  "canonical": "urllib3.util.url.get_host",
+  "name": "get_host",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/__init__.py\u001b[0m:21: get_host: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.split_first",
+  "canonical": "urllib3.util.url.split_first",
+  "name": "split_first",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/__init__.py\u001b[0m:21: split_first: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.queue",
+  "canonical": "urllib3.util.queue",
+  "name": "queue",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/queue.py\u001b[0m:0: <module>: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "urllib3.util.ssltransport.SSLTransport.recv",
+  "canonical": "urllib3.util.ssltransport.SSLTransport.recv",
+  "name": "len",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/ssltransport.py\u001b[0m:85: SSLTransport.recv(\u001b[34mlen\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter is now required",
+  "path": "urllib3.util.ssltransport.SSLTransport.makefile",
+  "canonical": "urllib3.util.ssltransport.SSLTransport.makefile",
+  "name": "mode",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/ssltransport.py\u001b[0m:117: SSLTransport.makefile(\u001b[34mmode\u001b[39m): \u001b[33mParameter is now required\u001b[39m"
+ },
+ {
+  "kind": "Parameter kind was changed",
+  "path": "urllib3.util.ssltransport.SSLTransport.makefile",
+  "canonical": "urllib3.util.ssltransport.SSLTransport.makefile",
+  "name": "encoding",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/ssltransport.py\u001b[0m:117: SSLTransport.makefile(\u001b[34mencoding\u001b[39m): \u001b[33mParameter kind was changed\u001b[39m: positional or keyword -> keyword-only"
+ },
+ {
+  "kind": "Parameter kind was changed",
+  "path": "urllib3.util.ssltransport.SSLTransport.makefile",
+  "canonical": "urllib3.util.ssltransport.SSLTransport.makefile",
+  "name": "errors",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/ssltransport.py\u001b[0m:117: SSLTransport.makefile(\u001b[34merrors\u001b[39m): \u001b[33mParameter kind was changed\u001b[39m: positional or keyword -> keyword-only"
+ },
+ {
+  "kind": "Parameter kind was changed",
+  "path": "urllib3.util.ssltransport.SSLTransport.makefile",
+  "canonical": "urllib3.util.ssltransport.SSLTransport.makefile",
+  "name": "newline",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/ssltransport.py\u001b[0m:117: SSLTransport.makefile(\u001b[34mnewline\u001b[39m): \u001b[33mParameter kind was changed\u001b[39m: positional or keyword -> keyword-only"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.proxy.create_proxy_ssl_context",
+  "canonical": "urllib3.util.proxy.create_proxy_ssl_context",
+  "name": "create_proxy_ssl_context",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/proxy.py\u001b[0m:37: create_proxy_ssl_context: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.wait.NoWayToWaitForSocketError",
+  "canonical": "urllib3.util.wait.NoWayToWaitForSocketError",
+  "name": "NoWayToWaitForSocketError",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/wait.py\u001b[0m:14: NoWayToWaitForSocketError: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.timeout.current_time",
+  "canonical": "urllib3.util.timeout.current_time",
+  "name": "current_time",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/timeout.py\u001b[0m:16: current_time: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.ssl_.DEFAULT_CIPHERS",
+  "canonical": "urllib3.util.ssl_.DEFAULT_CIPHERS",
+  "name": "DEFAULT_CIPHERS",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/ssl_.py\u001b[0m:110: DEFAULT_CIPHERS: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object points to a different kind of object",
+  "path": "urllib3.util.retry.RequestHistory",
+  "canonical": "urllib3.util.retry.RequestHistory",
+  "name": "ATTRIBUTE",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/retry.py\u001b[0m:31: RequestHistory: \u001b[33mPublic object points to a different kind of object\u001b[39m: attribute -> class"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.url_attrs",
+  "canonical": "urllib3.util.url.url_attrs",
+  "name": "url_attrs",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:9: url_attrs: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.NORMALIZABLE_SCHEMES",
+  "canonical": "urllib3.util.url.NORMALIZABLE_SCHEMES",
+  "name": "NORMALIZABLE_SCHEMES",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:13: NORMALIZABLE_SCHEMES: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.PERCENT_RE",
+  "canonical": "urllib3.util.url.PERCENT_RE",
+  "name": "PERCENT_RE",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:17: PERCENT_RE: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.SCHEME_RE",
+  "canonical": "urllib3.util.url.SCHEME_RE",
+  "name": "SCHEME_RE",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:18: SCHEME_RE: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.URI_RE",
+  "canonical": "urllib3.util.url.URI_RE",
+  "name": "URI_RE",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:19: URI_RE: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.IPV4_PAT",
+  "canonical": "urllib3.util.url.IPV4_PAT",
+  "name": "IPV4_PAT",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:28: IPV4_PAT: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.HEX_PAT",
+  "canonical": "urllib3.util.url.HEX_PAT",
+  "name": "HEX_PAT",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:29: HEX_PAT: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.LS32_PAT",
+  "canonical": "urllib3.util.url.LS32_PAT",
+  "name": "LS32_PAT",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:30: LS32_PAT: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.UNRESERVED_PAT",
+  "canonical": "urllib3.util.url.UNRESERVED_PAT",
+  "name": "UNRESERVED_PAT",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:53: UNRESERVED_PAT: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.IPV6_PAT",
+  "canonical": "urllib3.util.url.IPV6_PAT",
+  "name": "IPV6_PAT",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:54: IPV6_PAT: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.ZONE_ID_PAT",
+  "canonical": "urllib3.util.url.ZONE_ID_PAT",
+  "name": "ZONE_ID_PAT",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:55: ZONE_ID_PAT: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.IPV6_ADDRZ_PAT",
+  "canonical": "urllib3.util.url.IPV6_ADDRZ_PAT",
+  "name": "IPV6_ADDRZ_PAT",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:56: IPV6_ADDRZ_PAT: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.REG_NAME_PAT",
+  "canonical": "urllib3.util.url.REG_NAME_PAT",
+  "name": "REG_NAME_PAT",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:57: REG_NAME_PAT: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.TARGET_RE",
+  "canonical": "urllib3.util.url.TARGET_RE",
+  "name": "TARGET_RE",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:58: TARGET_RE: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.IPV4_RE",
+  "canonical": "urllib3.util.url.IPV4_RE",
+  "name": "IPV4_RE",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:60: IPV4_RE: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.IPV6_RE",
+  "canonical": "urllib3.util.url.IPV6_RE",
+  "name": "IPV6_RE",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:61: IPV6_RE: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.IPV6_ADDRZ_RE",
+  "canonical": "urllib3.util.url.IPV6_ADDRZ_RE",
+  "name": "IPV6_ADDRZ_RE",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:62: IPV6_ADDRZ_RE: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.BRACELESS_IPV6_ADDRZ_RE",
+  "canonical": "urllib3.util.url.BRACELESS_IPV6_ADDRZ_RE",
+  "name": "BRACELESS_IPV6_ADDRZ_RE",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:63: BRACELESS_IPV6_ADDRZ_RE: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.ZONE_ID_RE",
+  "canonical": "urllib3.util.url.ZONE_ID_RE",
+  "name": "ZONE_ID_RE",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:64: ZONE_ID_RE: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.UNRESERVED_CHARS",
+  "canonical": "urllib3.util.url.UNRESERVED_CHARS",
+  "name": "UNRESERVED_CHARS",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:73: UNRESERVED_CHARS: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.SUB_DELIM_CHARS",
+  "canonical": "urllib3.util.url.SUB_DELIM_CHARS",
+  "name": "SUB_DELIM_CHARS",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:76: SUB_DELIM_CHARS: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.USERINFO_CHARS",
+  "canonical": "urllib3.util.url.USERINFO_CHARS",
+  "name": "USERINFO_CHARS",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:77: USERINFO_CHARS: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.PATH_CHARS",
+  "canonical": "urllib3.util.url.PATH_CHARS",
+  "name": "PATH_CHARS",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:78: PATH_CHARS: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.QUERY_CHARS",
+  "canonical": "urllib3.util.url.QUERY_CHARS",
+  "name": "QUERY_CHARS",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:79: QUERY_CHARS: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.FRAGMENT_CHARS",
+  "canonical": "urllib3.util.url.FRAGMENT_CHARS",
+  "name": "FRAGMENT_CHARS",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:79: FRAGMENT_CHARS: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.split_first",
+  "canonical": "urllib3.util.url.split_first",
+  "name": "split_first",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:175: split_first: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.util.url.get_host",
+  "canonical": "urllib3.util.url.get_host",
+  "name": "get_host",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/util/url.py\u001b[0m:430: get_host: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter default was changed",
+  "path": "urllib3.util.connection.create_connection",
+  "canonical": "urllib3.util.connection.create_connection",
+  "name": "timeout",
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/util/connection.py\u001b[0m:27: create_connection(\u001b[34mtimeout\u001b[39m): \u001b[33mParameter default was changed\u001b[39m: socket._GLOBAL_DEFAULT_TIMEOUT -> _DEFAULT_TIMEOUT"
+ },
+ {
+  "kind": "Parameter was added as required",
+  "path": "urllib3.contrib.socks.SOCKSConnection.__init__",
+  "canonical": "urllib3.contrib.socks.SOCKSConnection.__init__",
+  "name": null,
+  "explain": "\u001b[1msrc/urllib3-2.0.4/urllib3/contrib/socks.py\u001b[0m:94: SOCKSConnection.__init__(\u001b[34m_socks_options\u001b[39m): \u001b[33mParameter was added as required\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.contrib.socks.SOCKSHTTPSConnection.tls_in_tls_required",
+  "canonical": "urllib3.connection.HTTPSConnection.tls_in_tls_required",
+  "name": "tls_in_tls_required",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/contrib/socks.py\u001b[0m:0: SOCKSHTTPSConnection.tls_in_tls_required: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.contrib.socks.SOCKSHTTPConnectionPool.ResponseCls",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.ResponseCls",
+  "name": "ResponseCls",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/contrib/socks.py\u001b[0m:0: SOCKSHTTPConnectionPool.ResponseCls: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.contrib.socks.SOCKSHTTPConnectionPool.strict",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.strict",
+  "name": "strict",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/contrib/socks.py\u001b[0m:0: SOCKSHTTPConnectionPool.strict: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.contrib.socks.SOCKSHTTPSConnectionPool.ResponseCls",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.ResponseCls",
+  "name": "ResponseCls",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/contrib/socks.py\u001b[0m:0: SOCKSHTTPSConnectionPool.ResponseCls: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.contrib.socks.SOCKSHTTPSConnectionPool.strict",
+  "canonical": "urllib3.connectionpool.HTTPConnectionPool.strict",
+  "name": "strict",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/contrib/socks.py\u001b[0m:0: SOCKSHTTPSConnectionPool.strict: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.contrib.appengine",
+  "canonical": "urllib3.contrib.appengine",
+  "name": "appengine",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/contrib/appengine.py\u001b[0m:0: <module>: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.contrib.ntlmpool",
+  "canonical": "urllib3.contrib.ntlmpool",
+  "name": "ntlmpool",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/contrib/ntlmpool.py\u001b[0m:0: <module>: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "urllib3.packages",
+  "canonical": "urllib3.packages",
+  "name": "packages",
+  "explain": "\u001b[1msrc/urllib3-1.26.16/urllib3/packages/__init__.py\u001b[0m:0: <module>: \u001b[33mPublic object was removed\u001b[39m"
+ }
+]

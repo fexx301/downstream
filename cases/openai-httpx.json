@@ -1,0 +1,11 @@
+{
+ "name": "openai-httpx",
+ "lib": "httpx", "lib_module": "httpx", "old": "0.27.2", "new": "0.28.0",
+ "dep": "openai==1.55.2", "dep_module": "openai",
+ "python": "3.12", "asof": "2024-11-28T15:54:55Z",
+ "graph": "case_openai_httpx",
+ "src": ["src/openai-1.55.2", "src/httpx-0.27.2"],
+ "lib_src": ["src/httpx-0.27.2", "src/httpx-0.28.0"],
+ "breaks": "breaks-httpx.json",
+ "cap_s": 2700
+}

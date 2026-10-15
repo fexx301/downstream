@@ -1,0 +1,84 @@
+{
+ "findings": [
+  {
+   "function": "httpx._client.Client.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "openai._base_client.SyncAPIClient.__init__",
+    "openai._base_client.SyncHttpxClientWrapper",
+    "openai._base_client.DefaultHttpxClient",
+    "openai._base_client._DefaultHttpxClient",
+    "openai._base_client._DefaultHttpxClient.__init__",
+    "httpx.Client",
+    "httpx._client.Client",
+    "httpx._client.Client.__init__"
+   ],
+   "reproduction": "import os\nfor k in list(os.environ):\n    if 'proxy' in k.lower(): del os.environ[k]\nimport openai\nc = openai.OpenAI(api_key='sk-test', base_url='http://api.example/v1')\ninner = c._client\nassert all(v is None or 'Proxy' not in type(v._pool).__name__ for v in inner._mounts.values()), inner._mounts\nassert type(inner._transport._pool).__name__ == 'ConnectionPool'\nprint('OK')",
+   "shim": "SEE_SHIM_BELOW (identical for all findings):\nimport functools as _ft\nimport warnings as _w\n\ndef _httpx_shim_client_init(_cls, _transport_cls, _app_transport):\n    _orig = _cls.__init__\n    @_ft.wraps(_orig)\n    def __init__(self, *args, **kwargs):\n        if 'app' in kwargs:\n            _app = kwargs.pop('app')\n            _w.warn(\"The 'app' shortcut is now deprecated. Use 'transport=WSGITransport(app=...)' / 'ASGITransport(app=...)' instead.\", DeprecationWarning, stacklevel=2)\n            if _app is not None and kwargs.get('transport') is None:\n                kwargs['transport'] = _app_transport(app=_app)\n        if 'proxies' in kwargs:\n            proxies = kwargs.pop('proxies')\n            _w.warn(\"The 'proxies' argument is now deprecated. Use 'proxy' or 'mounts' instead.\", DeprecationWarning, stacklevel=2)\n            if proxies is not None:\n                if kwargs.get('proxy') is not None:\n                    raise RuntimeError(\"Use either `proxy` or 'proxies', not both.\")\n                if isinstance(proxies, dict):\n                    mounts = dict(kwargs.get('mounts') or {})\n                    tkw = {k: kwargs[k] for k in ('verify', 'cert', 'http1', 'http2', 'limits', 'trust_env') if k in kwargs}\n                    for key, value in proxies.items():\n                        if value is None:\n                            mounts.setdefault(key, None)\n                        else:\n                            p = value if isinstance(value, Proxy) else Proxy(url=value)\n                            mounts.setdefault(key, _transport_cls(proxy=p, **tkw))\n                    kwargs['mounts'] = mounts\n                else:\n                    kwargs['proxy'] = proxies\n        _orig(self, *args, **kwargs)\n    _cls.__init__ = __init__\n\n_httpx_shim_client_init(Client, HTTPTransport, WSGITransport)\n_httpx_shim_client_init(AsyncClient, AsyncHTTPTransport, ASGITransport)",
+   "results": {
+    "old": "pass: OK sync+async clients built, direct (unproxied) transport",
+    "new": "fail: TypeError: Client.__init__() got an unexpected keyword argument 'proxies' (openai/_client.py:123 -> openai/_base_client.py:857 -> openai/_base_client.py:755)",
+    "new+shim": "pass: OK sync+async clients built, direct (unproxied) transport"
+   }
+  },
+  {
+   "function": "httpx._client.AsyncClient.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "openai._base_client.AsyncAPIClient.__init__",
+    "openai._base_client.AsyncHttpxClientWrapper",
+    "openai._base_client.DefaultAsyncHttpxClient",
+    "openai._base_client._DefaultAsyncHttpxClient",
+    "openai._base_client._DefaultAsyncHttpxClient.__init__",
+    "httpx.AsyncClient",
+    "httpx._client.AsyncClient",
+    "httpx._client.AsyncClient.__init__"
+   ],
+   "reproduction": "import os\nfor k in list(os.environ):\n    if 'proxy' in k.lower(): del os.environ[k]\nimport openai\na = openai.AsyncOpenAI(api_key='sk-test', base_url='http://api.example/v1')\nassert type(a._client._transport._pool).__name__ == 'AsyncConnectionPool'\nprint('OK async')",
+   "shim": "same shim as first finding (wraps both Client and AsyncClient)",
+   "results": {
+    "old": "pass (verified in the combined sync+async run)",
+    "new": "fail: TypeError: AsyncClient.__init__() got an unexpected keyword argument 'proxies' (openai/_client.py:337 -> openai/_base_client.py:1438 -> openai/_base_client.py:1335)",
+    "new+shim": "pass: async client built with AsyncConnectionPool (direct)"
+   }
+  },
+  {
+   "function": "httpx._client.Client.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "openai.cli._cli._main",
+    "httpx.Client",
+    "httpx._client.Client",
+    "httpx._client.Client.__init__"
+   ],
+   "reproduction": "import os, sys\nfor k in list(os.environ):\n    if 'proxy' in k.lower(): del os.environ[k]\nimport openai, httpx\nfrom openai.cli import _cli\nseen = []\ndef fake_handle(self, request):\n    p = self._pool\n    seen.append((type(p).__name__, getattr(getattr(p, '_proxy_url', None), 'host', b''), str(request.url)))\n    return httpx.Response(200, json={'object': 'list', 'data': []}, request=request)\nhttpx.HTTPTransport.handle_request = fake_handle  # stub network only\nsys.argv = ['openai', '-p', 'https://proxy.example:3128', '-k', 'sk-test', '-b', 'https://api.example/v1', 'api', 'models.list']\n_cli._main()\nassert seen and seen[-1][0] == 'HTTPProxy' and b'proxy.example' in seen[-1][1], seen\nprint('OK request routed via CLI --proxy')",
+   "shim": "same shim as first finding",
+   "results": {
+    "old": "pass: [('HTTPProxy', b'proxy.example', 'https://api.example/v1models')] OK request routed via CLI --proxy",
+    "new": "fail: TypeError: Client.__init__() got an unexpected keyword argument 'proxies' (openai/cli/_cli.py:179 in _main)",
+    "new+shim": "pass: request routed via HTTPProxy to proxy.example; DeprecationWarning mentioning 'proxies' emitted"
+   }
+  }
+ ],
+ "unconfirmed": [
+  {
+   "candidate": "httpx._api.{request,stream,get,options,head,post,put,patch,delete} proxies/cert (18 removed parameters)",
+   "why": "No graph path; text search of openai finds no calls to httpx top-level request functions and no proxies=/cert= use apart from the Client constructors above."
+  },
+  {
+   "candidate": "httpx._client.Client.__init__ / AsyncClient.__init__ app",
+   "why": "No graph path; text search finds no app= use in openai."
+  },
+  {
+   "candidate": "httpx._config.create_ssl_context http2",
+   "why": "No graph path; openai never calls create_ssl_context. The only http2 use is httpx.Client(http2=...) in openai.cli._cli._main, and that parameter was not removed."
+  }
+ ],
+ "unsupported": {
+  "Attribute value was changed": 5,
+  "Positional parameter was moved": 10
+ }
+}

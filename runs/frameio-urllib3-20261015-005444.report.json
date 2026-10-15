@@ -1,0 +1,42 @@
+{
+ "findings": [
+  {
+   "function": "urllib3.util.retry.Retry.__init__",
+   "parameter": "method_whitelist",
+   "evidence": "text search",
+   "path": [
+    "frameioclient.client.FrameioClient",
+    "frameioclient.client.FrameioConnection.__init__",
+    "urllib3.util.retry.Retry.__init__"
+   ],
+   "reproduction": "import warnings\nfrom frameioclient import FrameioClient\nwith warnings.catch_warnings(record=True) as w:\n    warnings.simplefilter(\"always\")\n    c = FrameioClient(\"tok\")\nassert any(issubclass(x.category, DeprecationWarning) and \"method_whitelist\" in str(x.message) for x in w)\nr = c.retry_strategy\nassert r.is_retry(\"POST\", 429), \"POST should be retried on 429\"\nassert not r.is_retry(\"PUT\", 429), \"PUT should not be retried\"\nr2 = r.increment(method=\"POST\", url=\"/x\")\nassert r2.is_retry(\"POST\", 429)\nprint(\"OK\")",
+   "shim": "\ndef _install_method_whitelist_shim():\n    import functools as _ft\n    import warnings as _w\n    from urllib3.util import retry as _retry_mod\n    _Retry = _retry_mod.Retry\n    _orig_init = _Retry.__init__\n    if getattr(_orig_init, \"_method_whitelist_shim\", False):\n        return\n\n    @_ft.wraps(_orig_init)\n    def __init__(self, *args, method_whitelist=None, **kwargs):\n        if method_whitelist is not None:\n            _w.warn(\n                \"Retry(method_whitelist=...) is deprecated; use allowed_methods=... instead\",\n                DeprecationWarning,\n                stacklevel=2,\n            )\n            if \"allowed_methods\" in kwargs:\n                raise ValueError(\"Using both 'allowed_methods' and 'method_whitelist' together is not allowed.\")\n            kwargs[\"allowed_methods\"] = method_whitelist\n        _orig_init(self, *args, **kwargs)\n\n    __init__._method_whitelist_shim = True\n    _Retry.__init__ = __init__\n\n_install_method_whitelist_shim()\n",
+   "results": {
+    "old": "pass: OK (run without the DeprecationWarning assertion, which only applies with the shim; the retry-behaviour assertions passed)",
+    "new": "fail: TypeError: Retry.__init__() got an unexpected keyword argument 'method_whitelist' (traceback through frameioclient/client.py line 14, in __init__)",
+    "new+shim": "pass: OK"
+   }
+  }
+ ],
+ "unconfirmed": [
+  {
+   "candidate": "urllib3 strict (HTTPConnectionPool/HTTPSConnectionPool/HTTPResponse/HTTPSConnection.__init__)",
+   "why": "No graph path; text search for 'strict' finds no use in frameioclient."
+  },
+  {
+   "candidate": "Timeout.resolve_default_timeout cls, HTTPConnection.__init__/putrequest args/kw/kwargs, HTTPSConnection.__init__ kw, ProxyError.__init__ args, SSLTransport.recv len",
+   "why": "No graph path; frameioclient's only direct urllib3 use is Retry in client.py, so it never calls these."
+  }
+ ],
+ "unsupported": {
+  "Positional parameter was moved": 43,
+  "Attribute value was changed": 15,
+  "Public object was removed": 62,
+  "Parameter default was changed": 12,
+  "Parameter is now required": 3,
+  "Base class was removed": 7,
+  "Public object points to a different kind of object": 5,
+  "Parameter was added as required": 2,
+  "Parameter kind was changed": 9
+ }
+}

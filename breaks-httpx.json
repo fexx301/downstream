@@ -1,0 +1,268 @@
+[
+ {
+  "kind": "Attribute value was changed",
+  "path": "httpx.__version__.__version__",
+  "canonical": "httpx.__version__.__version__",
+  "name": null,
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/__version__.py\u001b[0m:3: __version__: \u001b[33mAttribute value was changed\u001b[39m: '0.27.2' -> '0.28.0'"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._api.request",
+  "canonical": "httpx._api.request",
+  "name": "proxies",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_api.py\u001b[0m:39: request(\u001b[34mproxies\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._api.request",
+  "canonical": "httpx._api.request",
+  "name": "cert",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_api.py\u001b[0m:39: request(\u001b[34mcert\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._api.stream",
+  "canonical": "httpx._api.stream",
+  "name": "proxies",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_api.py\u001b[0m:123: stream(\u001b[34mproxies\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._api.stream",
+  "canonical": "httpx._api.stream",
+  "name": "cert",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_api.py\u001b[0m:123: stream(\u001b[34mcert\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._api.get",
+  "canonical": "httpx._api.get",
+  "name": "proxies",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_api.py\u001b[0m:174: get(\u001b[34mproxies\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._api.get",
+  "canonical": "httpx._api.get",
+  "name": "cert",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_api.py\u001b[0m:174: get(\u001b[34mcert\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._api.options",
+  "canonical": "httpx._api.options",
+  "name": "proxies",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_api.py\u001b[0m:210: options(\u001b[34mproxies\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._api.options",
+  "canonical": "httpx._api.options",
+  "name": "cert",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_api.py\u001b[0m:210: options(\u001b[34mcert\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._api.head",
+  "canonical": "httpx._api.head",
+  "name": "proxies",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_api.py\u001b[0m:246: head(\u001b[34mproxies\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._api.head",
+  "canonical": "httpx._api.head",
+  "name": "cert",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_api.py\u001b[0m:246: head(\u001b[34mcert\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._api.post",
+  "canonical": "httpx._api.post",
+  "name": "proxies",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_api.py\u001b[0m:282: post(\u001b[34mproxies\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._api.post",
+  "canonical": "httpx._api.post",
+  "name": "cert",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_api.py\u001b[0m:282: post(\u001b[34mcert\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._api.put",
+  "canonical": "httpx._api.put",
+  "name": "proxies",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_api.py\u001b[0m:323: put(\u001b[34mproxies\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._api.put",
+  "canonical": "httpx._api.put",
+  "name": "cert",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_api.py\u001b[0m:323: put(\u001b[34mcert\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._api.patch",
+  "canonical": "httpx._api.patch",
+  "name": "proxies",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_api.py\u001b[0m:364: patch(\u001b[34mproxies\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._api.patch",
+  "canonical": "httpx._api.patch",
+  "name": "cert",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_api.py\u001b[0m:364: patch(\u001b[34mcert\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._api.delete",
+  "canonical": "httpx._api.delete",
+  "name": "proxies",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_api.py\u001b[0m:405: delete(\u001b[34mproxies\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._api.delete",
+  "canonical": "httpx._api.delete",
+  "name": "cert",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_api.py\u001b[0m:405: delete(\u001b[34mcert\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._client.Client.__init__",
+  "canonical": "httpx._client.Client.__init__",
+  "name": "proxies",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_client.py\u001b[0m:641: Client.__init__(\u001b[34mproxies\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._client.Client.__init__",
+  "canonical": "httpx._client.Client.__init__",
+  "name": "app",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_client.py\u001b[0m:641: Client.__init__(\u001b[34mapp\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._client.AsyncClient.__init__",
+  "canonical": "httpx._client.AsyncClient.__init__",
+  "name": "proxies",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_client.py\u001b[0m:1355: AsyncClient.__init__(\u001b[34mproxies\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._client.AsyncClient.__init__",
+  "canonical": "httpx._client.AsyncClient.__init__",
+  "name": "app",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_client.py\u001b[0m:1355: AsyncClient.__init__(\u001b[34mapp\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "httpx._config.create_ssl_context",
+  "canonical": "httpx._config.create_ssl_context",
+  "name": "cert",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_config.py\u001b[0m:23: create_ssl_context(\u001b[34mcert\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "httpx._config.create_ssl_context",
+  "canonical": "httpx._config.create_ssl_context",
+  "name": "verify",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_config.py\u001b[0m:23: create_ssl_context(\u001b[34mverify\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "httpx._config.create_ssl_context",
+  "canonical": "httpx._config.create_ssl_context",
+  "name": "http2",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_config.py\u001b[0m:23: create_ssl_context(\u001b[34mhttp2\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "httpx._models.Request.method",
+  "canonical": "httpx._models.Request.method",
+  "name": null,
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_models.py\u001b[0m:398: Request.method: \u001b[33mAttribute value was changed\u001b[39m: method.decode('ascii').upper() if isinstance(method, bytes) else method.upper() -> method.upper()"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "httpx._models.Request.url",
+  "canonical": "httpx._models.Request.url",
+  "name": null,
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_models.py\u001b[0m:399: Request.url: \u001b[33mAttribute value was changed\u001b[39m: URL(url) -> URL(url) if params is None else URL(url, params=params)"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "httpx._models.Request.extensions",
+  "canonical": "httpx._models.Request.extensions",
+  "name": null,
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_models.py\u001b[0m:401: Request.extensions: \u001b[33mAttribute value was changed\u001b[39m: {} if extensions is None else extensions -> {} if extensions is None else dict(extensions)"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "httpx._models.Response.extensions",
+  "canonical": "httpx._models.Response.extensions",
+  "name": null,
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_models.py\u001b[0m:540: Response.extensions: \u001b[33mAttribute value was changed\u001b[39m: {} if extensions is None else extensions -> {} if extensions is None else dict(extensions)"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "httpx._transports.default.HTTPTransport.__init__",
+  "canonical": "httpx._transports.default.HTTPTransport.__init__",
+  "name": "http1",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_transports/default.py\u001b[0m:136: HTTPTransport.__init__(\u001b[34mhttp1\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "httpx._transports.default.HTTPTransport.__init__",
+  "canonical": "httpx._transports.default.HTTPTransport.__init__",
+  "name": "http2",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_transports/default.py\u001b[0m:136: HTTPTransport.__init__(\u001b[34mhttp2\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "httpx._transports.default.HTTPTransport.__init__",
+  "canonical": "httpx._transports.default.HTTPTransport.__init__",
+  "name": "limits",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_transports/default.py\u001b[0m:136: HTTPTransport.__init__(\u001b[34mlimits\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "httpx._transports.default.HTTPTransport.__init__",
+  "canonical": "httpx._transports.default.HTTPTransport.__init__",
+  "name": "trust_env",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_transports/default.py\u001b[0m:136: HTTPTransport.__init__(\u001b[34mtrust_env\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "httpx._transports.default.AsyncHTTPTransport.__init__",
+  "canonical": "httpx._transports.default.AsyncHTTPTransport.__init__",
+  "name": "http1",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_transports/default.py\u001b[0m:280: AsyncHTTPTransport.__init__(\u001b[34mhttp1\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "httpx._transports.default.AsyncHTTPTransport.__init__",
+  "canonical": "httpx._transports.default.AsyncHTTPTransport.__init__",
+  "name": "http2",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_transports/default.py\u001b[0m:280: AsyncHTTPTransport.__init__(\u001b[34mhttp2\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "httpx._transports.default.AsyncHTTPTransport.__init__",
+  "canonical": "httpx._transports.default.AsyncHTTPTransport.__init__",
+  "name": "limits",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_transports/default.py\u001b[0m:280: AsyncHTTPTransport.__init__(\u001b[34mlimits\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "httpx._transports.default.AsyncHTTPTransport.__init__",
+  "canonical": "httpx._transports.default.AsyncHTTPTransport.__init__",
+  "name": "trust_env",
+  "explain": "\u001b[1msrc/httpx-0.28.0/httpx/_transports/default.py\u001b[0m:280: AsyncHTTPTransport.__init__(\u001b[34mtrust_env\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ }
+]

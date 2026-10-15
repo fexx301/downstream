@@ -1,0 +1,32 @@
+{
+ "unsupported kinds all listed": true,
+ "finding 0: urllib3.util.retry.Retry.__init__(method_whitelist=) via text search": {
+  "imports the dependent": true,
+  "does not pass the parameter itself": false,
+  "has an assertion": true,
+  "old passes": true,
+  "new fails naming the parameter, through the dependent": true,
+  "has a shim": true,
+  "new+shim passes": true,
+  "outputs": {
+   "old": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK\n",
+    "stderr": ""
+   },
+   "new": {
+    "outcome": "fail",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 5, in <module>\n  File \"/env/v/lib/python3.11/site-packages/frameioclient/client.py\", line 14, in __init__\n    self.retry_strategy = Retry(\n                          ^^^^^^\nTypeError: Retry.__init__() got an unexpected keyword argument 'method_whitelist'\n"
+   },
+   "new+shim": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK\n",
+    "stderr": ""
+   }
+  }
+ }
+}

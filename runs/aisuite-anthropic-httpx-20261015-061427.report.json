@@ -1,0 +1,50 @@
+{
+ "findings": [
+  {
+   "function": "httpx._client.Client.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "anthropic._base_client.SyncAPIClient.__init__",
+    "anthropic._base_client.SyncHttpxClientWrapper",
+    "anthropic._base_client.DefaultHttpxClient",
+    "anthropic._base_client._DefaultHttpxClient",
+    "anthropic._base_client._DefaultHttpxClient.__init__",
+    "httpx.Client",
+    "httpx._client.Client",
+    "httpx._client.Client.__init__"
+   ],
+   "exposure": [
+    "aisuite.providers.anthropic_provider.AnthropicProvider",
+    "aisuite.providers.anthropic_provider.AnthropicProvider.__init__",
+    "anthropic.Anthropic",
+    "anthropic._client.Anthropic",
+    "anthropic._client.Anthropic.__init__",
+    "anthropic._client.SyncAPIClient",
+    "anthropic._base_client.SyncAPIClient",
+    "anthropic._base_client.SyncAPIClient.__init__"
+   ],
+   "reproduction": "import json, traceback\nimport httpx  # used only to stub the network layer (no real requests)\n\ndef fake_handle(self, request):\n    body = {\"id\": \"msg_1\", \"type\": \"message\", \"role\": \"assistant\", \"model\": \"claude-3\",\n            \"content\": [{\"type\": \"text\", \"text\": \"hello from stub\"}],\n            \"stop_reason\": \"end_turn\", \"stop_sequence\": None,\n            \"usage\": {\"input_tokens\": 1, \"output_tokens\": 1}}\n    return httpx.Response(200, json=body, request=request)\nhttpx.HTTPTransport.handle_request = fake_handle\n\nimport aisuite as ai\nclient = ai.Client({\"anthropic\": {\"api_key\": \"sk-test\"}})\nresp = client.chat.completions.create(model=\"anthropic:claude-3\",\n                                      messages=[{\"role\": \"user\", \"content\": \"hi\"}])\nassert resp.choices[0].message.content == \"hello from stub\", resp.choices[0].message.content\nprint(\"OK:\", resp.choices[0].message.content)\n",
+   "shim": "\nimport functools as _functools\nimport warnings as _warnings\n\n\ndef _httpx_shim_proxies(cls, transport_factory):\n    _orig_init = cls.__init__\n\n    @_functools.wraps(_orig_init)\n    def __init__(self, *args, **kwargs):\n        if \"proxies\" in kwargs:\n            proxies = kwargs.pop(\"proxies\")\n            _warnings.warn(\n                \"The 'proxies' argument is deprecated; use 'proxy' or 'mounts' instead.\",\n                DeprecationWarning,\n                stacklevel=2,\n            )\n            if proxies is not None:\n                if isinstance(proxies, (str, URL, Proxy)):\n                    kwargs.setdefault(\"proxy\", proxies)\n                else:\n                    mounts = dict(kwargs.get(\"mounts\") or {})\n                    for pattern, p in dict(proxies).items():\n                        mounts.setdefault(\n                            pattern, None if p is None else transport_factory(proxy=p)\n                        )\n                    kwargs[\"mounts\"] = mounts\n        if \"app\" in kwargs:\n            app = kwargs.pop(\"app\")\n            _warnings.warn(\n                \"The 'app' argument is deprecated; use 'transport=WSGITransport(app=...)' \"\n                \"or 'transport=ASGITransport(app=...)' instead.\",\n                DeprecationWarning,\n                stacklevel=2,\n            )\n            if app is not None and kwargs.get(\"transport\") is None:\n                kwargs[\"transport\"] = (\n                    WSGITransport(app=app) if cls is Client else ASGITransport(app=app)\n                )\n        _orig_init(self, *args, **kwargs)\n\n    cls.__init__ = __init__\n\n\n_httpx_shim_proxies(Client, HTTPTransport)\n_httpx_shim_proxies(AsyncClient, AsyncHTTPTransport)\n",
+   "results": {
+    "old": "pass: OK: hello from stub",
+    "new": "fail: TypeError: Client.__init__() got an unexpected keyword argument 'proxies' (traceback through aisuite/client.py:27 -> aisuite/client.py:33 -> aisuite/provider.py:46 -> aisuite/providers/anthropic_provider.py:16 -> anthropic/_client.py:121 -> anthropic/_base_client.py:835 -> anthropic/_base_client.py:733)",
+    "new+shim": "pass: OK: hello from stub"
+   }
+  }
+ ],
+ "unconfirmed": [
+  {
+   "candidate": "httpx._client.AsyncClient.__init__ proxies (via anthropic._base_client.AsyncAPIClient.__init__)",
+   "why": "exposed_paths finds no aisuite code reaching AsyncAPIClient; aisuite only builds the sync anthropic.Anthropic (text search). Not reachable from aisuite."
+  },
+  {
+   "candidate": "the other 21 removed parameters (proxies/cert on httpx._api.request/stream/get/options/head/post/put/patch/delete, app on Client/AsyncClient, http2 on httpx._config.create_ssl_context)",
+   "why": "impact_paths found no call sites, and a text search of aisuite for proxies/cert=/app=/http2 found no uses."
+  }
+ ],
+ "unsupported": {
+  "Attribute value was changed": 5,
+  "Positional parameter was moved": 10
+ }
+}

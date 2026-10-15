@@ -1,0 +1,85 @@
+{
+ "findings": [
+  {
+   "function": "httpx._client.Client.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "openai._base_client.SyncAPIClient.__init__",
+    "openai._base_client.SyncHttpxClientWrapper",
+    "openai._base_client.DefaultHttpxClient",
+    "openai._base_client._DefaultHttpxClient",
+    "openai._base_client._DefaultHttpxClient.__init__",
+    "httpx.Client",
+    "httpx._client.Client",
+    "httpx._client.Client.__init__"
+   ],
+   "reproduction": "import os, httpcore\nos.environ[\"HTTPS_PROXY\"] = \"http://proxy.example:8080\"\nimport openai\nc = openai.OpenAI(api_key=\"sk-test\")\npools = [t._pool for t in c._client._mounts.values() if t is not None]\nassert any(isinstance(p, httpcore.HTTPProxy) and p._proxy_url.host == b\"proxy.example\" for p in pools), pools\nprint(\"OK sync env proxy\")",
+   "shim": "\nimport functools as _ft\nimport warnings as _warnings\nfrom ._config import DEFAULT_LIMITS as _DEFAULT_LIMITS\n\n\ndef _httpx_compat_wrap(_cls, _transport_cls, _wsgi):\n    _orig_init = _cls.__init__\n\n    @_ft.wraps(_orig_init)\n    def __init__(self, *args, **kwargs):\n        if \"proxies\" in kwargs:\n            proxies = kwargs.pop(\"proxies\")\n            _warnings.warn(\n                \"The 'proxies' argument is deprecated; use 'proxy' or 'mounts' instead.\",\n                DeprecationWarning,\n                stacklevel=2,\n            )\n            if proxies is not None:\n                if kwargs.get(\"proxy\") is not None:\n                    raise TypeError(\"Cannot pass both 'proxies' and 'proxy'.\")\n                if isinstance(proxies, dict):\n                    mounts = dict(kwargs.get(\"mounts\") or {})\n                    for pattern, value in proxies.items():\n                        if value is None:\n                            mounts[pattern] = None\n                        else:\n                            mounts[pattern] = _transport_cls(\n                                verify=kwargs.get(\"verify\", True),\n                                cert=kwargs.get(\"cert\"),\n                                trust_env=kwargs.get(\"trust_env\", True),\n                                http1=kwargs.get(\"http1\", True),\n                                http2=kwargs.get(\"http2\", False),\n                                limits=kwargs.get(\"limits\", _DEFAULT_LIMITS),\n                                proxy=value,\n                            )\n                    kwargs[\"mounts\"] = mounts\n                else:\n                    kwargs[\"proxy\"] = proxies\n        if \"app\" in kwargs:\n            app = kwargs.pop(\"app\")\n            _warnings.warn(\n                \"The 'app' argument is deprecated; use 'transport=%s(app=...)' instead.\"\n                % (\"WSGITransport\" if _wsgi else \"ASGITransport\"),\n                DeprecationWarning,\n                stacklevel=2,\n            )\n            if app is not None and kwargs.get(\"transport\") is None:\n                kwargs[\"transport\"] = (WSGITransport if _wsgi else ASGITransport)(app=app)\n        _orig_init(self, *args, **kwargs)\n\n    _cls.__init__ = __init__\n\n\n_httpx_compat_wrap(Client, HTTPTransport, True)\n_httpx_compat_wrap(AsyncClient, AsyncHTTPTransport, False)\n",
+   "results": {
+    "old": "pass: OK sync env proxy",
+    "new": "fail: TypeError: Client.__init__() got an unexpected keyword argument 'proxies' (openai/_client.py:123 -> openai/_base_client.py:857 -> openai/_base_client.py:755)",
+    "new+shim": "pass: OK sync env proxy"
+   }
+  },
+  {
+   "function": "httpx._client.AsyncClient.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "openai._base_client.AsyncAPIClient.__init__",
+    "openai._base_client.AsyncHttpxClientWrapper",
+    "openai._base_client.DefaultAsyncHttpxClient",
+    "openai._base_client._DefaultAsyncHttpxClient",
+    "openai._base_client._DefaultAsyncHttpxClient.__init__",
+    "httpx.AsyncClient",
+    "httpx._client.AsyncClient",
+    "httpx._client.AsyncClient.__init__"
+   ],
+   "reproduction": "import os, httpcore\nos.environ[\"HTTPS_PROXY\"] = \"http://proxy.example:8080\"\nimport openai\nc = openai.AsyncOpenAI(api_key=\"sk-test\")\npools = [t._pool for t in c._client._mounts.values() if t is not None]\nassert any(isinstance(p, httpcore.AsyncHTTPProxy) and p._proxy_url.host == b\"proxy.example\" for p in pools), pools\nprint(\"OK async env proxy\")",
+   "shim": "\nimport functools as _ft\nimport warnings as _warnings\nfrom ._config import DEFAULT_LIMITS as _DEFAULT_LIMITS\n\n\ndef _httpx_compat_wrap(_cls, _transport_cls, _wsgi):\n    _orig_init = _cls.__init__\n\n    @_ft.wraps(_orig_init)\n    def __init__(self, *args, **kwargs):\n        if \"proxies\" in kwargs:\n            proxies = kwargs.pop(\"proxies\")\n            _warnings.warn(\n                \"The 'proxies' argument is deprecated; use 'proxy' or 'mounts' instead.\",\n                DeprecationWarning,\n                stacklevel=2,\n            )\n            if proxies is not None:\n                if kwargs.get(\"proxy\") is not None:\n                    raise TypeError(\"Cannot pass both 'proxies' and 'proxy'.\")\n                if isinstance(proxies, dict):\n                    mounts = dict(kwargs.get(\"mounts\") or {})\n                    for pattern, value in proxies.items():\n                        if value is None:\n                            mounts[pattern] = None\n                        else:\n                            mounts[pattern] = _transport_cls(\n                                verify=kwargs.get(\"verify\", True),\n                                cert=kwargs.get(\"cert\"),\n                                trust_env=kwargs.get(\"trust_env\", True),\n                                http1=kwargs.get(\"http1\", True),\n                                http2=kwargs.get(\"http2\", False),\n                                limits=kwargs.get(\"limits\", _DEFAULT_LIMITS),\n                                proxy=value,\n                            )\n                    kwargs[\"mounts\"] = mounts\n                else:\n                    kwargs[\"proxy\"] = proxies\n        if \"app\" in kwargs:\n            app = kwargs.pop(\"app\")\n            _warnings.warn(\n                \"The 'app' argument is deprecated; use 'transport=%s(app=...)' instead.\"\n                % (\"WSGITransport\" if _wsgi else \"ASGITransport\"),\n                DeprecationWarning,\n                stacklevel=2,\n            )\n            if app is not None and kwargs.get(\"transport\") is None:\n                kwargs[\"transport\"] = (WSGITransport if _wsgi else ASGITransport)(app=app)\n        _orig_init(self, *args, **kwargs)\n\n    _cls.__init__ = __init__\n\n\n_httpx_compat_wrap(Client, HTTPTransport, True)\n_httpx_compat_wrap(AsyncClient, AsyncHTTPTransport, False)\n",
+   "results": {
+    "old": "pass: OK async env proxy",
+    "new": "fail: TypeError: AsyncClient.__init__() got an unexpected keyword argument 'proxies' (openai/_client.py:337 -> openai/_base_client.py:1438 -> openai/_base_client.py:1335)",
+    "new+shim": "pass: OK async env proxy"
+   }
+  },
+  {
+   "function": "httpx._client.Client.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "openai.cli._cli.main",
+    "openai.cli._cli._main",
+    "httpx.Client",
+    "httpx._client.Client",
+    "httpx._client.Client.__init__"
+   ],
+   "reproduction": "import sys, httpcore\nimport openai\nfrom openai.cli import _cli\ncaptured = {}\norig = _cli._parse_args\ndef fake_parse(parser):\n    parsed, args, unknown = orig(parser)\n    parsed.func = lambda *a, **k: captured.setdefault(\"client\", openai.http_client)\n    args.args_model = None\n    return parsed, args, unknown\n_cli._parse_args = fake_parse\nsys.argv = [\"openai\", \"--proxy\", \"http://proxy.example:8080\", \"--organization\", \"org-x\", \"api\", \"models.list\"]\nrc = _cli.main()\nassert rc == 0, rc\ncl = captured[\"client\"]\npools = [t._pool for t in cl._mounts.values() if t is not None]\nassert any(isinstance(p, httpcore.HTTPProxy) and p._proxy_url.host == b\"proxy.example\" for p in pools), pools\nprint(\"OK cli proxied\")",
+   "shim": "\nimport functools as _ft\nimport warnings as _warnings\nfrom ._config import DEFAULT_LIMITS as _DEFAULT_LIMITS\n\n\ndef _httpx_compat_wrap(_cls, _transport_cls, _wsgi):\n    _orig_init = _cls.__init__\n\n    @_ft.wraps(_orig_init)\n    def __init__(self, *args, **kwargs):\n        if \"proxies\" in kwargs:\n            proxies = kwargs.pop(\"proxies\")\n            _warnings.warn(\n                \"The 'proxies' argument is deprecated; use 'proxy' or 'mounts' instead.\",\n                DeprecationWarning,\n                stacklevel=2,\n            )\n            if proxies is not None:\n                if kwargs.get(\"proxy\") is not None:\n                    raise TypeError(\"Cannot pass both 'proxies' and 'proxy'.\")\n                if isinstance(proxies, dict):\n                    mounts = dict(kwargs.get(\"mounts\") or {})\n                    for pattern, value in proxies.items():\n                        if value is None:\n                            mounts[pattern] = None\n                        else:\n                            mounts[pattern] = _transport_cls(\n                                verify=kwargs.get(\"verify\", True),\n                                cert=kwargs.get(\"cert\"),\n                                trust_env=kwargs.get(\"trust_env\", True),\n                                http1=kwargs.get(\"http1\", True),\n                                http2=kwargs.get(\"http2\", False),\n                                limits=kwargs.get(\"limits\", _DEFAULT_LIMITS),\n                                proxy=value,\n                            )\n                    kwargs[\"mounts\"] = mounts\n                else:\n                    kwargs[\"proxy\"] = proxies\n        if \"app\" in kwargs:\n            app = kwargs.pop(\"app\")\n            _warnings.warn(\n                \"The 'app' argument is deprecated; use 'transport=%s(app=...)' instead.\"\n                % (\"WSGITransport\" if _wsgi else \"ASGITransport\"),\n                DeprecationWarning,\n                stacklevel=2,\n            )\n            if app is not None and kwargs.get(\"transport\") is None:\n                kwargs[\"transport\"] = (WSGITransport if _wsgi else ASGITransport)(app=app)\n        _orig_init(self, *args, **kwargs)\n\n    _cls.__init__ = __init__\n\n\n_httpx_compat_wrap(Client, HTTPTransport, True)\n_httpx_compat_wrap(AsyncClient, AsyncHTTPTransport, False)\n",
+   "results": {
+    "old": "pass: OK cli proxied",
+    "new": "fail: TypeError: Client.__init__() got an unexpected keyword argument 'proxies' (openai/cli/_cli.py:129 -> openai/cli/_cli.py:179)",
+    "new+shim": "pass: OK cli proxied"
+   }
+  }
+ ],
+ "unconfirmed": [
+  {
+   "candidate": "httpx._api.{request,stream,get,options,head,post,put,patch,delete}: proxies, cert",
+   "why": "No graph path; text search finds no use of httpx's top-level request functions or any cert= keyword in openai."
+  },
+  {
+   "candidate": "httpx._client.Client.__init__ / AsyncClient.__init__: app",
+   "why": "No graph path; text search finds no app= keyword in openai."
+  },
+  {
+   "candidate": "httpx._config.create_ssl_context: http2",
+   "why": "No graph path; openai never calls create_ssl_context. The only http2 use is httpx.Client(http2=...) in the CLI, which is still a valid Client parameter."
+  }
+ ],
+ "unsupported": {
+  "Attribute value was changed": 5,
+  "Positional parameter was moved": 10
+ }
+}

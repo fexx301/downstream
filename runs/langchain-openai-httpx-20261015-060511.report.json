@@ -1,0 +1,53 @@
+{
+ "findings": [
+  {
+   "function": "httpx._client.Client.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "openai._base_client.SyncAPIClient.__init__",
+    "openai._base_client.SyncHttpxClientWrapper",
+    "openai._base_client.DefaultHttpxClient",
+    "openai._base_client._DefaultHttpxClient",
+    "openai._base_client._DefaultHttpxClient.__init__",
+    "httpx.Client",
+    "httpx._client.Client",
+    "httpx._client.Client.__init__"
+   ],
+   "exposure": [
+    "langchain_openai.chat_models.base.BaseChatOpenAI.validate_environment",
+    "openai.OpenAI",
+    "openai._client.OpenAI",
+    "openai._client.OpenAI.__init__",
+    "openai._client.SyncAPIClient",
+    "openai._base_client.SyncAPIClient",
+    "openai._base_client.SyncAPIClient.__init__"
+   ],
+   "reproduction": "import json, httpx\nfrom langchain_openai import ChatOpenAI\nllm = ChatOpenAI(model=\"gpt-4o-mini\", api_key=\"sk-test\", max_retries=0)\ndef handler(request):\n    body = {\"id\":\"x\",\"object\":\"chat.completion\",\"created\":0,\"model\":\"gpt-4o-mini\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"pong\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1,\"completion_tokens\":1,\"total_tokens\":2}}\n    return httpx.Response(200, json=body)\nllm.root_client._client._transport = httpx.MockTransport(handler)\nout = llm.invoke(\"ping\")\nassert out.content == \"pong\", out\nprint(\"OK\", out.content)\n",
+   "shim": "\nimport functools as _ft, warnings as _w\n\n_UNSET = object()\n\ndef _httpx_compat_wrap(_cls, _async):\n    _orig = _cls.__init__\n    @_ft.wraps(_orig)\n    def __init__(self, *args, proxies=_UNSET, app=_UNSET, **kwargs):\n        if proxies is not _UNSET:\n            _w.warn(\"The 'proxies' argument was removed in httpx 0.28; use 'proxy' or 'mounts' instead.\", DeprecationWarning, stacklevel=2)\n            if isinstance(proxies, dict):\n                _T = AsyncHTTPTransport if _async else HTTPTransport\n                mounts = dict(kwargs.pop(\"mounts\", None) or {})\n                for _k, _v in proxies.items():\n                    mounts[_k] = None if _v is None else _T(proxy=_v)\n                kwargs[\"mounts\"] = mounts\n            elif proxies is not None:\n                kwargs.setdefault(\"proxy\", proxies)\n        if app is not _UNSET:\n            _w.warn(\"The 'app' argument was removed in httpx 0.28; use transport=WSGITransport(app=...) or ASGITransport(app=...) instead.\", DeprecationWarning, stacklevel=2)\n            if app is not None:\n                kwargs.setdefault(\"transport\", ASGITransport(app=app) if _async else WSGITransport(app=app))\n        _orig(self, *args, **kwargs)\n    _cls.__init__ = __init__\n\n_httpx_compat_wrap(Client, False)\n_httpx_compat_wrap(AsyncClient, True)\n",
+   "results": {
+    "old": "pass: OK pong",
+    "new": "fail: TypeError: Client.__init__() got an unexpected keyword argument 'proxies' (traceback via langchain_openai/chat_models/base.py:551 validate_environment -> openai/_base_client.py:857 SyncHttpxClientWrapper)",
+    "new+shim": "pass: OK pong"
+   }
+  }
+ ],
+ "unconfirmed": [
+  {
+   "candidate": "httpx._client.AsyncClient.__init__ proxies (openai._base_client.AsyncAPIClient.__init__ via AsyncHttpxClientWrapper, reached from every langchain_openai validate_environment)",
+   "why": "Same unconditional proxies=None forwarding as the sync path, but in validate_environment the sync openai.OpenAI client is built first and already raises the TypeError for Client.__init__, so a separate AsyncClient failure cannot be triggered without passing a user-built httpx.Client; the shim wraps AsyncClient.__init__ too and the reproduction (which constructs both clients) passes with it."
+  },
+  {
+   "candidate": "httpx._client.Client.__init__ proxies via openai.cli._cli._main",
+   "why": "exposed_paths finds no langchain_openai code reaching openai's CLI entry point."
+  },
+  {
+   "candidate": "remaining 21 removed parameters (proxies/cert on httpx._api.*, app on Client/AsyncClient, http2 on create_ssl_context)",
+   "why": "No graph path from openai or langchain_openai, and a text search of langchain_openai for proxies|cert|app=|http2 found no matches (langchain_openai uses the new proxy= keyword for openai_proxy)."
+  }
+ ],
+ "unsupported": {
+  "Attribute value was changed": 5,
+  "Positional parameter was moved": 10
+ }
+}

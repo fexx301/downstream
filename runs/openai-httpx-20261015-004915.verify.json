@@ -1,0 +1,90 @@
+{
+ "unsupported kinds all listed": true,
+ "finding 0: httpx._client.Client.__init__(proxies=) via graph path": {
+  "imports the dependent": true,
+  "does not pass the parameter itself": true,
+  "has an assertion": true,
+  "old passes": true,
+  "new fails naming the parameter, through the dependent": true,
+  "has a shim": true,
+  "new+shim passes": true,
+  "outputs": {
+   "old": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK sync env proxy\n",
+    "stderr": ""
+   },
+   "new": {
+    "outcome": "fail",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\n  File \"/env/v/lib/python3.12/site-packages/openai/_client.py\", line 123, in __init__\n    super().__init__(\n  File \"/env/v/lib/python3.12/site-packages/openai/_base_client.py\", line 857, in __init__\n    self._client = http_client or SyncHttpxClientWrapper(\n                                  ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/env/v/lib/python3.12/site-packages/openai/_base_client.py\", line 755, in __init__\n    super().__init__(**kwargs)\nTypeError: Client.__init__() got an unexpected keyword argument 'proxies'\n"
+   },
+   "new+shim": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK sync env proxy\n",
+    "stderr": ""
+   }
+  }
+ },
+ "finding 1: httpx._client.AsyncClient.__init__(proxies=) via graph path": {
+  "imports the dependent": true,
+  "does not pass the parameter itself": true,
+  "has an assertion": true,
+  "old passes": true,
+  "new fails naming the parameter, through the dependent": true,
+  "has a shim": true,
+  "new+shim passes": true,
+  "outputs": {
+   "old": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK async env proxy\n",
+    "stderr": ""
+   },
+   "new": {
+    "outcome": "fail",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 4, in <module>\n  File \"/env/v/lib/python3.12/site-packages/openai/_client.py\", line 337, in __init__\n    super().__init__(\n  File \"/env/v/lib/python3.12/site-packages/openai/_base_client.py\", line 1438, in __init__\n    self._client = http_client or AsyncHttpxClientWrapper(\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/env/v/lib/python3.12/site-packages/openai/_base_client.py\", line 1335, in __init__\n    super().__init__(**kwargs)\nTypeError: AsyncClient.__init__() got an unexpected keyword argument 'proxies'\n"
+   },
+   "new+shim": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK async env proxy\n",
+    "stderr": ""
+   }
+  }
+ },
+ "finding 2: httpx._client.Client.__init__(proxies=) via graph path": {
+  "imports the dependent": true,
+  "does not pass the parameter itself": true,
+  "has an assertion": true,
+  "old passes": true,
+  "new fails naming the parameter, through the dependent": true,
+  "has a shim": true,
+  "new+shim passes": true,
+  "outputs": {
+   "old": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK cli proxied\n",
+    "stderr": ""
+   },
+   "new": {
+    "outcome": "fail",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 13, in <module>\n  File \"/env/v/lib/python3.12/site-packages/openai/cli/_cli.py\", line 129, in main\n    _main()\n  File \"/env/v/lib/python3.12/site-packages/openai/cli/_cli.py\", line 179, in _main\n    http_client = httpx.Client(\n                  ^^^^^^^^^^^^^\nTypeError: Client.__init__() got an unexpected keyword argument 'proxies'\n"
+   },
+   "new+shim": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK cli proxied\n",
+    "stderr": ""
+   }
+  }
+ }
+}

@@ -1,0 +1,66 @@
+
+httpx._api.request(proxies=) removed: 0 call path(s)
+
+httpx._api.request(cert=) removed: 0 call path(s)
+
+httpx._api.stream(proxies=) removed: 0 call path(s)
+
+httpx._api.stream(cert=) removed: 0 call path(s)
+
+httpx._api.get(proxies=) removed: 0 call path(s)
+
+httpx._api.get(cert=) removed: 0 call path(s)
+
+httpx._api.options(proxies=) removed: 0 call path(s)
+
+httpx._api.options(cert=) removed: 0 call path(s)
+
+httpx._api.head(proxies=) removed: 0 call path(s)
+
+httpx._api.head(cert=) removed: 0 call path(s)
+
+httpx._api.post(proxies=) removed: 0 call path(s)
+
+httpx._api.post(cert=) removed: 0 call path(s)
+
+httpx._api.put(proxies=) removed: 0 call path(s)
+
+httpx._api.put(cert=) removed: 0 call path(s)
+
+httpx._api.patch(proxies=) removed: 0 call path(s)
+
+httpx._api.patch(cert=) removed: 0 call path(s)
+
+httpx._api.delete(proxies=) removed: 0 call path(s)
+
+httpx._api.delete(cert=) removed: 0 call path(s)
+
+httpx._client.Client.__init__(proxies=) removed: 2 call path(s)
+  openai._base_client.SyncAPIClient.__init__
+    -[CALLS]-> openai._base_client.SyncHttpxClientWrapper
+    -[CTOR]-> openai._base_client.DefaultHttpxClient
+    -[ALIAS_OF]-> openai._base_client._DefaultHttpxClient
+    -[CTOR]-> openai._base_client._DefaultHttpxClient.__init__
+    -[FORWARDS_KW]-> httpx.Client
+    -[ALIAS_OF]-> httpx._client.Client
+    -[CTOR]-> httpx._client.Client.__init__
+  openai.cli._cli._main
+    -[CALLS]-> httpx.Client
+    -[ALIAS_OF]-> httpx._client.Client
+    -[CTOR]-> httpx._client.Client.__init__
+
+httpx._client.Client.__init__(app=) removed: 0 call path(s)
+
+httpx._client.AsyncClient.__init__(proxies=) removed: 1 call path(s)
+  openai._base_client.AsyncAPIClient.__init__
+    -[CALLS]-> openai._base_client.AsyncHttpxClientWrapper
+    -[CTOR]-> openai._base_client.DefaultAsyncHttpxClient
+    -[ALIAS_OF]-> openai._base_client._DefaultAsyncHttpxClient
+    -[CTOR]-> openai._base_client._DefaultAsyncHttpxClient.__init__
+    -[FORWARDS_KW]-> httpx.AsyncClient
+    -[ALIAS_OF]-> httpx._client.AsyncClient
+    -[CTOR]-> httpx._client.AsyncClient.__init__
+
+httpx._client.AsyncClient.__init__(app=) removed: 0 call path(s)
+
+httpx._config.create_ssl_context(http2=) removed: 0 call path(s)

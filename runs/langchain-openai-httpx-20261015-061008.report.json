@@ -1,0 +1,84 @@
+{
+ "findings": [
+  {
+   "function": "httpx._client.Client.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "openai._base_client.SyncAPIClient.__init__",
+    "openai._base_client.SyncHttpxClientWrapper",
+    "openai._base_client.DefaultHttpxClient",
+    "openai._base_client._DefaultHttpxClient",
+    "openai._base_client._DefaultHttpxClient.__init__",
+    "httpx.Client",
+    "httpx._client.Client",
+    "httpx._client.Client.__init__"
+   ],
+   "exposure": [
+    "langchain_openai.chat_models.base.BaseChatOpenAI.validate_environment",
+    "openai.OpenAI",
+    "openai._client.OpenAI",
+    "openai._client.OpenAI.__init__",
+    "openai._client.SyncAPIClient",
+    "openai._base_client.SyncAPIClient",
+    "openai._base_client.SyncAPIClient.__init__"
+   ],
+   "reproduction": "import httpx\nfrom langchain_openai import ChatOpenAI\nllm = ChatOpenAI(model=\"gpt-4o-mini\", api_key=\"sk-test\", max_retries=0)\nBODY = {\"id\":\"x\",\"object\":\"chat.completion\",\"created\":0,\"model\":\"gpt-4o-mini\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"pong\"}}]}\ndef handler(req):\n    assert req.url.path.endswith(\"/chat/completions\")\n    return httpx.Response(200, json=BODY)\nc = llm.root_client._client\nassert c.follow_redirects is True\nc._transport = httpx.MockTransport(handler)\nout = llm.invoke(\"ping\")\nassert out.content == \"pong\", out\nprint(\"OK\", out.content)\n",
+   "shim": "\nimport functools as _httpx_ft\nimport warnings as _httpx_warnings\n\n\ndef _httpx_restore_removed_kwargs(cls, proxy_transport_cls, app_transport_cls):\n    _orig_init = cls.__init__\n\n    @_httpx_ft.wraps(_orig_init)\n    def __init__(self, *args, **kwargs):\n        if \"proxies\" in kwargs:\n            proxies = kwargs.pop(\"proxies\")\n            _httpx_warnings.warn(\n                \"The 'proxies' argument is deprecated; use 'proxy' or 'mounts' instead.\",\n                DeprecationWarning,\n                stacklevel=2,\n            )\n            if isinstance(proxies, dict):\n                mounts = dict(kwargs.pop(\"mounts\", None) or {})\n                for pattern, p in proxies.items():\n                    mounts[pattern] = None if p is None else proxy_transport_cls(proxy=p)\n                kwargs[\"mounts\"] = mounts\n            elif proxies is not None:\n                kwargs.setdefault(\"proxy\", proxies)\n        if \"app\" in kwargs:\n            app = kwargs.pop(\"app\")\n            _httpx_warnings.warn(\n                \"The 'app' argument is deprecated; use 'transport=WSGITransport(app=...)' or 'ASGITransport(app=...)' instead.\",\n                DeprecationWarning,\n                stacklevel=2,\n            )\n            if app is not None:\n                kwargs.setdefault(\"transport\", app_transport_cls(app=app))\n        _orig_init(self, *args, **kwargs)\n\n    cls.__init__ = __init__\n\n\n_httpx_restore_removed_kwargs(Client, HTTPTransport, WSGITransport)\n_httpx_restore_removed_kwargs(AsyncClient, AsyncHTTPTransport, ASGITransport)\n",
+   "results": {
+    "old": "pass: OK pong",
+    "new": "fail: TypeError: Client.__init__() got an unexpected keyword argument 'proxies' (traceback via langchain_openai/chat_models/base.py:551 validate_environment -> openai/_client.py:123 -> openai/_base_client.py:857 -> openai/_base_client.py:755)",
+    "new+shim": "pass: OK pong"
+   }
+  },
+  {
+   "function": "httpx._client.AsyncClient.__init__",
+   "parameter": "proxies",
+   "evidence": "graph path",
+   "path": [
+    "openai._base_client.AsyncAPIClient.__init__",
+    "openai._base_client.AsyncHttpxClientWrapper",
+    "openai._base_client.DefaultAsyncHttpxClient",
+    "openai._base_client._DefaultAsyncHttpxClient",
+    "openai._base_client._DefaultAsyncHttpxClient.__init__",
+    "httpx.AsyncClient",
+    "httpx._client.AsyncClient",
+    "httpx._client.AsyncClient.__init__"
+   ],
+   "exposure": [
+    "langchain_openai.chat_models.base.BaseChatOpenAI.validate_environment",
+    "openai.AsyncOpenAI",
+    "openai._client.AsyncOpenAI",
+    "openai._client.AsyncOpenAI.__init__",
+    "openai._client.AsyncAPIClient",
+    "openai._base_client.AsyncAPIClient",
+    "openai._base_client.AsyncAPIClient.__init__"
+   ],
+   "reproduction": "import asyncio, httpx\nfrom langchain_openai import ChatOpenAI\nclass _UnusedSyncClient:\n    pass\nllm = ChatOpenAI(model=\"gpt-4o-mini\", api_key=\"sk-test\", max_retries=0, client=_UnusedSyncClient())\nBODY = {\"id\":\"x\",\"object\":\"chat.completion\",\"created\":0,\"model\":\"gpt-4o-mini\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"pong\"}}]}\nasync def ahandler(req):\n    assert req.url.path.endswith(\"/chat/completions\")\n    return httpx.Response(200, json=BODY)\nac = llm.root_async_client._client\nassert ac.follow_redirects is True\nac._transport = httpx.MockTransport(ahandler)\nout = asyncio.run(llm.ainvoke(\"ping\"))\nassert out.content == \"pong\", out\nprint(\"OK\", out.content)\n",
+   "shim": "\nimport functools as _httpx_ft\nimport warnings as _httpx_warnings\n\n\ndef _httpx_restore_removed_kwargs(cls, proxy_transport_cls, app_transport_cls):\n    _orig_init = cls.__init__\n\n    @_httpx_ft.wraps(_orig_init)\n    def __init__(self, *args, **kwargs):\n        if \"proxies\" in kwargs:\n            proxies = kwargs.pop(\"proxies\")\n            _httpx_warnings.warn(\n                \"The 'proxies' argument is deprecated; use 'proxy' or 'mounts' instead.\",\n                DeprecationWarning,\n                stacklevel=2,\n            )\n            if isinstance(proxies, dict):\n                mounts = dict(kwargs.pop(\"mounts\", None) or {})\n                for pattern, p in proxies.items():\n                    mounts[pattern] = None if p is None else proxy_transport_cls(proxy=p)\n                kwargs[\"mounts\"] = mounts\n            elif proxies is not None:\n                kwargs.setdefault(\"proxy\", proxies)\n        if \"app\" in kwargs:\n            app = kwargs.pop(\"app\")\n            _httpx_warnings.warn(\n                \"The 'app' argument is deprecated; use 'transport=WSGITransport(app=...)' or 'ASGITransport(app=...)' instead.\",\n                DeprecationWarning,\n                stacklevel=2,\n            )\n            if app is not None:\n                kwargs.setdefault(\"transport\", app_transport_cls(app=app))\n        _orig_init(self, *args, **kwargs)\n\n    cls.__init__ = __init__\n\n\n_httpx_restore_removed_kwargs(Client, HTTPTransport, WSGITransport)\n_httpx_restore_removed_kwargs(AsyncClient, AsyncHTTPTransport, ASGITransport)\n",
+   "results": {
+    "old": "pass: OK pong",
+    "new": "fail: TypeError: AsyncClient.__init__() got an unexpected keyword argument 'proxies' (traceback via langchain_openai/chat_models/base.py:564 validate_environment -> openai/_client.py:337 -> openai/_base_client.py:1438 -> openai/_base_client.py:1335)",
+    "new+shim": "pass: OK pong"
+   }
+  }
+ ],
+ "unconfirmed": [
+  {
+   "candidate": "openai.cli._cli._main -> httpx.Client(proxies=...)",
+   "why": "exposed_paths finds no langchain_openai code that reaches the openai CLI entry point; it is not exposed through the dependent."
+  },
+  {
+   "candidate": "Same Client/AsyncClient proxies break via OpenAIEmbeddings, AzureOpenAIEmbeddings, OpenAI, AzureOpenAI, AzureChatOpenAI validate_environment",
+   "why": "Not run. exposed_paths shows these reach the same openai SyncAPIClient/AsyncAPIClient __init__ call sites as the confirmed ChatOpenAI findings, so they are expected to fail the same way and be fixed by the same shim."
+  },
+  {
+   "candidate": "httpx._api.* (request/stream/get/options/head/post/put/patch/delete) proxies/cert, Client/AsyncClient app, create_ssl_context http2",
+   "why": "impact_paths found no call sites passing these keywords, and searching langchain_openai's source for proxies|cert|app=|http2 found nothing. langchain_openai itself uses the new proxy= keyword."
+  }
+ ],
+ "unsupported": {
+  "Attribute value was changed": 5,
+  "Positional parameter was moved": 10
+ }
+}

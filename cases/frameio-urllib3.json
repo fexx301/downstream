@@ -1,0 +1,11 @@
+{
+ "name": "frameio-urllib3",
+ "lib": "urllib3", "lib_module": "urllib3", "old": "1.26.16", "new": "2.0.4",
+ "dep": "frameioclient==1.1.0", "dep_module": "frameioclient",
+ "python": "3.11", "asof": "2023-07-21T00:00:00Z",
+ "graph": "case_frameio_urllib3",
+ "src": ["src/frameioclient-1.1.0/frameioclient-1.1.0", "src/urllib3-1.26.16"],
+ "lib_src": ["src/urllib3-1.26.16", "src/urllib3-2.0.4"],
+ "breaks": "breaks-urllib3.json",
+ "cap_s": 2700
+}
