@@ -100,6 +100,6 @@ Claude (`claude-opus-5-5`, through Claude Code) wrote the code and this README a
 - Femi chose the project direction and gave the go-ahead for each test.
 - Claude wrote each test's pass criteria into the project's notes before the test ran.
 - The test cases were picked by an independent model, relayed by Femi.
-- Femi approved the first five demo dependents. Claude added openai 1.56.1 as the control after the graph showed that 1.55.3 still breaks.
+- Claude suggested the six demo dependents and Femi approved them. openai 1.56.1 was added as the control after the graph showed that 1.55.3 still breaks.
 
 At runtime the agent itself is Claude Code, restricted to DOWNSTREAM's tools.
