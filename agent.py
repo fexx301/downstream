@@ -115,15 +115,34 @@ def passes_param(code, param):
                for n in ast.walk(tree))
 
 
-def uses_name(code, name):
-    """Whether the code refers to `name` itself: as a variable, an attribute or an imported name."""
+def uses_name(code, name, lib):
+    """Whether the code reaches the removed `name` of library `lib` itself: imports it from the library,
+    or reads it off a library module. Other things that share the name do not count, such as a
+    dependent's own re-export (`flask.escape` when `jinja2.escape` was removed)."""
     try:
         tree = ast.parse(code)
     except SyntaxError:
         return True  # unparseable code cannot be cleared
-    return any((isinstance(n, ast.Name) and n.id == name) or (isinstance(n, ast.Attribute) and n.attr == name) or
-               (isinstance(n, ast.alias) and name in (n.name, n.name.rpartition(".")[2], n.asname))
-               for n in ast.walk(tree))
+
+    def in_lib(module):
+        return module == lib or module.startswith(lib + ".")
+
+    def root(expr):
+        while isinstance(expr, ast.Attribute):
+            expr = expr.value
+        return expr.id if isinstance(expr, ast.Name) else None
+
+    lib_names = {a.asname or a.name.partition(".")[0] for n in ast.walk(tree) if isinstance(n, ast.Import)
+                 for a in n.names if in_lib(a.name)}
+    for n in ast.walk(tree):
+        if isinstance(n, ast.ImportFrom) and n.module and in_lib(n.module) and any(a.name == name for a in n.names):
+            return True
+        if isinstance(n, ast.Attribute) and n.attr == name and root(n.value) in lib_names:
+            return True
+        if (isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id == "getattr" and len(n.args) >= 2
+                and root(n.args[0]) in lib_names and isinstance(n.args[1], ast.Constant) and n.args[1].value == name):
+            return True
+    return False
 
 
 def through_dependent(code, stderr, case):
@@ -170,7 +189,7 @@ def verify(case, report, out):
         new_err = res["new"].get("stderr", "")
         rows[f"finding {i}: {f.get('function')}({param}{'' if name else '='}) via {f.get('evidence')}"] = {
             "imports the dependent": mod in imported(code),
-            "does not pass or name it itself": not (uses_name(code, param) if name else passes_param(code, param)),
+            "does not pass or name it itself": not (uses_name(code, param, case["lib_module"]) if name else passes_param(code, param)),
             "dependent's source mentions the parameter": text_hits(case, param),
             "has an assertion": "assert" in code,
             "old passes": res["old"]["outcome"] == "pass",

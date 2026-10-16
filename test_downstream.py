@@ -261,10 +261,16 @@ class FinalReport(unittest.TestCase):
 
     def test_uses_name(self):
         from agent import uses_name
-        self.assertTrue(uses_name("from markupsafe import soft_unicode", "soft_unicode"))
-        self.assertTrue(uses_name("import markupsafe\nmarkupsafe.soft_unicode('x')", "soft_unicode"))
+        self.assertTrue(uses_name("from markupsafe import soft_unicode", "soft_unicode", "markupsafe"))
+        self.assertTrue(uses_name("import markupsafe\nmarkupsafe.soft_unicode('x')", "soft_unicode", "markupsafe"))
+        self.assertTrue(uses_name("import jinja2 as j\nj.escape('x')", "escape", "jinja2"))
+        self.assertTrue(uses_name("from jinja2.utils import escape", "escape", "jinja2"))
+        self.assertTrue(uses_name("import jinja2\ngetattr(jinja2, 'escape')", "escape", "jinja2"))
+        # the dependent's own re-export is a different object (the Oct 16 Flask case)
+        self.assertFalse(uses_name("import flask\nflask.escape('<b>')", "escape", "jinja2"))
+        self.assertFalse(uses_name("from markupsafe import escape\nescape('x')", "escape", "jinja2"))
         # mentioning it in a string, such as an expected error message, is not using it
-        self.assertFalse(uses_name("import jinja2\nassert 'soft_unicode' not in str(e)", "soft_unicode"))
+        self.assertFalse(uses_name("import jinja2\nassert 'soft_unicode' not in str(e)", "soft_unicode", "markupsafe"))
 
 
 if __name__ == "__main__":
