@@ -278,6 +278,15 @@ class FinalReport(unittest.TestCase):
         # naming it in a string, such as an expected warning, is not passing it
         self.assertFalse(passes_param("assert 'gone' in str(w)", "gone"))
 
+    def test_reverify_runs_a_control_report_as_an_exclusion_test(self):
+        import agent
+        from unittest import mock
+        with mock.patch.object(agent, "verify", return_value="findings"), \
+                mock.patch.object(agent, "verify_control", return_value="control"):
+            # before Oct 16 the CLI sent control reports to verify(), which found no findings and ran nothing
+            self.assertEqual(agent.reverify({}, {"control": {"reproduction": "x"}}, "out"), "control")
+            self.assertEqual(agent.reverify({}, {"findings": []}, "out"), "findings")
+
     def test_uses_name(self):
         from agent import uses_name
         self.assertTrue(uses_name("from markupsafe import soft_unicode", "soft_unicode", "markupsafe"))

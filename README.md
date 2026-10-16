@@ -1,6 +1,6 @@
 # DOWNSTREAM
 
-Find which Python packages a library release will break, directly or through other packages, and prove each break before the release ships.
+Compare two releases of a Python library, find which packages break, directly or through other packages, and reproduce each break in sealed containers. Every case so far replays releases that already shipped.
 
 Work in progress for Graph Hacks (FalkorDB × WeMakeDevs), Track 01: agents that act on connected data.
 
@@ -151,7 +151,7 @@ Results are in `runs/aisuite-anthropic-httpx-20261015-061427.*`:
 - With 0.28.0 it fails with `TypeError: Client.__init__() got an unexpected keyword argument 'proxies'`, raised through aisuite's and anthropic's code.
 - With the agent's shim it passes again.
 
-## Demo: httpx 0.27.2 → 0.28.0 against six dependents
+## Demo: httpx 0.27.2 → 0.28.0 against six releases of four dependents
 
 `python3 agent.py demo cases/openai-httpx.json cases/anthropic-httpx.json cases/aisuite-anthropic-httpx.json cases/langchain-openai-httpx.json cases/openai-1.55.3-httpx.json cases/openai-1.56.1-httpx.json` took 11 minutes on Oct 15.
 
@@ -186,7 +186,7 @@ python3 agent.py cases/aisuite-anthropic-httpx.json verify runs/aisuite-anthropi
 uv run --python 3.12 --with falkordb python -m unittest test_downstream
 ```
 
-Any file in `cases/` works with `triage`, and every `runs/*.report.json` can be re-verified the same way.
+Any file in `cases/` works with `triage`, and every `runs/*.report.json` can be re-verified the same way; a control report re-runs its exclusion test on both releases.
 
 ## Run the agent
 

@@ -219,6 +219,11 @@ def verify_control(case, report, out):
     }}, out)
 
 
+def reverify(case, report, out):
+    """Re-run a saved report: a control report holds an exclusion test, not findings."""
+    return (verify_control if "control" in report else verify)(case, report, out)
+
+
 def save(rows, out):
     Path(f"{out}.verify.json").write_text(json.dumps(rows, indent=1))
     for k, v in rows.items():
@@ -312,4 +317,4 @@ if __name__ == "__main__":
     elif sys.argv[2] == "run":
         run_agent(path, case)
     else:
-        verify(case, json.loads(Path(sys.argv[3]).read_text()), Path(sys.argv[3]).with_suffix(""))
+        reverify(case, json.loads(Path(sys.argv[3]).read_text()), Path(sys.argv[3]).with_suffix(""))
