@@ -1,0 +1,22 @@
+{
+ "name": "fresh-click-typer",
+ "lib": "click",
+ "lib_module": "click",
+ "old": "7.0",
+ "new": "7.1.0",
+ "dep": "typer==0.0.9",
+ "dep_module": "typer",
+ "asof": "2020-03-09T16:15:59Z",
+ "graph": "fresh_click_typer",
+ "src": [
+  "src/typer-0.0.9",
+  "src/click-7.0"
+ ],
+ "lib_src": [
+  "src/click-7.0",
+  "src/click-7.1.0"
+ ],
+ "breaks": "breaks-click.json",
+ "python": "3.12",
+ "cap_s": 2700
+}

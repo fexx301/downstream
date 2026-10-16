@@ -1,0 +1,44 @@
+[
+ {
+  "kind": "Positional parameter was moved",
+  "path": "click.core.Command.__init__",
+  "canonical": "click.core.Command.__init__",
+  "name": "hidden",
+  "explain": "\u001b[1msrc/click-7.1.0/click/core.py\u001b[0m:865: Command.__init__(\u001b[34mhidden\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "click.core.Command.__init__",
+  "canonical": "click.core.Command.__init__",
+  "name": "deprecated",
+  "explain": "\u001b[1msrc/click-7.1.0/click/core.py\u001b[0m:865: Command.__init__(\u001b[34mdeprecated\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "click.exceptions.UsageError.cmd",
+  "canonical": "click.exceptions.UsageError.cmd",
+  "name": null,
+  "explain": "\u001b[1msrc/click-7.1.0/click/exceptions.py\u001b[0m:59: UsageError.cmd: \u001b[33mAttribute value was changed\u001b[39m: self.ctx and self.ctx.command or None -> self.ctx.command if self.ctx else None"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "click.core.DEPRECATED_INVOKE_NOTICE",
+  "canonical": "click.core.DEPRECATED_INVOKE_NOTICE",
+  "name": null,
+  "explain": "\u001b[1msrc/click-7.1.0/click/core.py\u001b[0m:45: DEPRECATED_INVOKE_NOTICE: \u001b[33mAttribute value was changed\u001b[39m: 'DeprecationWarning: ' + 'The command %(name)s is deprecated.' -> 'DeprecationWarning: The command %(name)s is deprecated.'"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "click.testing.clickpkg",
+  "canonical": "click.testing.clickpkg",
+  "name": "clickpkg",
+  "explain": "\u001b[1msrc/click-7.0/click/testing.py\u001b[0m:15: clickpkg: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "click.testing.CliRunner.invoke",
+  "canonical": "click.testing.CliRunner.invoke",
+  "name": "mix_stderr",
+  "explain": "\u001b[1msrc/click-7.1.0/click/testing.py\u001b[0m:275: CliRunner.invoke(\u001b[34mmix_stderr\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ }
+]

@@ -1,0 +1,40 @@
+{
+ "findings": [
+  {
+   "kind": "parameter",
+   "function": "click.testing.CliRunner.invoke",
+   "parameter": "mix_stderr",
+   "evidence": "graph path",
+   "path": [
+    "typer.testing.CliRunner.invoke",
+    "click.testing.CliRunner.invoke"
+   ],
+   "exposure": [],
+   "reproduction": "import typer\nfrom typer.testing import CliRunner\napp = typer.Typer()\n@app.command()\ndef hello(name: str):\n    typer.echo(f\"Hello {name}\")\nr = CliRunner().invoke(app, [\"World\"], catch_exceptions=False)\nassert r.exit_code == 0, r.exit_code\nassert \"Hello World\" in r.output, r.output\nprint(\"OK\", r.output.strip())",
+   "shim": "\nimport functools as _functools\nimport warnings as _warnings\nfrom click import testing as _click_testing\n\n_orig_cli_runner_invoke = _click_testing.CliRunner.invoke\n\n@_functools.wraps(_orig_cli_runner_invoke)\ndef _cli_runner_invoke(self, *args, **kwargs):\n    if \"mix_stderr\" in kwargs:\n        kwargs.pop(\"mix_stderr\")\n        _warnings.warn(\n            \"The 'mix_stderr' parameter of CliRunner.invoke() is deprecated and \"\n            \"ignored; pass mix_stderr to CliRunner() instead.\",\n            DeprecationWarning,\n            stacklevel=2,\n        )\n    return _orig_cli_runner_invoke(self, *args, **kwargs)\n\n_click_testing.CliRunner.invoke = _cli_runner_invoke\n",
+   "results": {
+    "old": "pass: OK Hello World",
+    "new": "fail: TypeError: Context.__init__() got an unexpected keyword argument 'mix_stderr' (traceback through typer/testing.py line 20 -> click/testing.py invoke -> click/core.py main -> make_context)",
+    "new+shim": "pass: OK Hello World"
+   }
+  }
+ ],
+ "unconfirmed": [
+  {
+   "candidate": "click.core.command (removed name)",
+   "why": "No graph path and no text-search hit in typer; typer does not import or reference click.core.command."
+  },
+  {
+   "candidate": "click.core.group (removed name)",
+   "why": "No graph path and no text-search hit in typer; typer does not import or reference click.core.group."
+  },
+  {
+   "candidate": "click.testing.clickpkg (removed name)",
+   "why": "Internal module alias used only inside click.testing; typer imports only CliRunner and Result from click.testing, and text search finds no reference to clickpkg in typer."
+  }
+ ],
+ "unsupported": {
+  "Positional parameter was moved": 2,
+  "Attribute value was changed": 2
+ }
+}

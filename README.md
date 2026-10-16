@@ -188,10 +188,27 @@ uv run --python 3.12 --with falkordb python -m unittest test_downstream
 - docker on requests 2.32 is an unsupported change class: an overridden method that the library stopped calling.
 - The scanner resolves names, module attributes, `super().method()` calls and members reached through import aliases. It does not resolve calls through `self` or other instances, and it follows only the first base class.
 - Removed functions, classes and names are now diffed too. But importing a module that itself imports a removed name is not linked, because there are no module-to-import edges, so a break that only travels through module imports can be missed.
-- Every demo case comes from one incident: httpx 0.28.0 removing `proxies`. The scanner was first developed on the openai case.
+- The six-dependent demo comes from one incident (httpx 0.28.0 removing `proxies`), and the scanner was first developed on the openai case. The fresh frozen test adds three libraries the scanner was not tuned on: Click, docker and Jinja2.
 - The graph only traces parameters that griffe reports as removed, and griffe misses some. The frozen replay set below shows two:
   - **`as_tuple`, dropped from Werkzeug 2.1's `Client.open`.** griffe did not list it. The new signature still ends in `**kwargs`, which is the likely reason.
   - **MarkupSafe 2.1's removal of `soft_unicode`.** griffe did not list it. In 2.0.1 the name was only imported into `markupsafe/__init__.py`, inside a try/except and with no `__all__`, so griffe most likely did not count it as public API.
+
+## Fresh frozen test, Oct 16 (cases picked by an independent model after the code was locked)
+
+These are three cases from libraries the scanner had never been tuned on. Results are in `runs/demo-20261016-045801.md`.
+
+| Dependent on release | What broke | Found by | Graph path from the dependent | Re-run in fresh containers |
+|---|---|---|---|---|
+| Typer 0.0.9 on Click 7.0 → 7.1 | `CliRunner.invoke(mix_stderr=)` removed | both diffs | `typer.testing.CliRunner.invoke` → `click.testing.CliRunner.invoke` (through `super()`) | confirmed; shim passes |
+| docker-compose 1.29.2 on docker 6.1.3 → 7.0.0 | `TLSConfig(assert_hostname=)`, `kwargs_from_env(ssl_version=)` removed | both diffs | `compose.cli.docker_client.tls_config_from_options` → `docker.tls.TLSConfig.__init__`, and `docker_client` → `docker.utils.utils.kwargs_from_env` | both confirmed; shims pass |
+| Flask 1.1.2 on Jinja2 3.0.3 → 3.1.0 | the name `jinja2.escape` removed | graph diff only; griffe missed it | `flask.escape` → `jinja2.escape` (Flask's own import) | confirmed (fails at `import flask`); shim passes; see the note below |
+
+**Note on the Flask row.** The verifier flagged its reproduction for "naming the removed name itself". The check matches any attribute called `escape`, and the reproduction calls `flask.escape(...)`, which is Flask's own public name. The reproduction never imports from jinja2, and on the new release it fails at `import flask`, before that call runs. We count the row as passed by judgment, and the flag stays visible in the run files.
+
+**Setup notes:**
+- docker-compose needs Python 3.9, because PyYAML 5.4.1 no longer builds from source on newer Pythons.
+- Flask 1.1.2 needs `itsdangerous==2.0.1` pinned, because itsdangerous 2.1 breaks Flask 1.x on its own.
+- Both were decided before the run.
 
 ## Frozen replay set (cases picked by an independent model, code locked before the run)
 

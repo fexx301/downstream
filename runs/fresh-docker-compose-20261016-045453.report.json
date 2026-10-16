@@ -1,0 +1,66 @@
+{
+ "findings": [
+  {
+   "kind": "parameter",
+   "function": "docker.tls.TLSConfig.__init__",
+   "parameter": "assert_hostname",
+   "evidence": "graph path",
+   "path": [
+    "compose.cli.docker_client.tls_config_from_options",
+    "compose.cli.docker_client.TLSConfig",
+    "docker.TLSConfig",
+    "docker.tls.TLSConfig",
+    "docker.tls.TLSConfig.__init__"
+   ],
+   "exposure": [],
+   "reproduction": "import os, ssl, tempfile\nd = tempfile.mkdtemp()\nfor f in ('ca.pem', 'cert.pem', 'key.pem'):\n    open(os.path.join(d, f), 'w').write('x')\nfrom compose.config.environment import Environment\nfrom compose.cli.docker_client import tls_config_from_options\nenv = Environment({'DOCKER_CERT_PATH': d, 'COMPOSE_TLS_VERSION': 'TLSv1_2'})\ntls = tls_config_from_options({'--tlsverify': True, '--skip-hostname-check': True}, env)\nassert tls.verify is True\nassert tls.cert == (os.path.join(d, 'cert.pem'), os.path.join(d, 'key.pem'))\nassert tls.assert_hostname is False, tls.assert_hostname\nassert tls.ssl_version == ssl.PROTOCOL_TLSv1_2, tls.ssl_version\nprint('OK')",
+   "shim": "\nimport warnings as _dw_warnings\nimport functools as _dw_functools\nfrom docker import tls as _dw_tls\nfrom docker.utils import utils as _dw_uu\nimport docker.utils as _dw_utils\n\n_dw_orig_tls_init = _dw_tls.TLSConfig.__init__\n\n@_dw_functools.wraps(_dw_orig_tls_init)\ndef _dw_tls_init(self, client_cert=None, ca_cert=None, verify=None,\n                 ssl_version=None, assert_hostname=None, assert_fingerprint=None):\n    for _n, _v in (('ssl_version', ssl_version), ('assert_hostname', assert_hostname),\n                   ('assert_fingerprint', assert_fingerprint)):\n        if _v is not None:\n            _dw_warnings.warn(\n                'TLSConfig(%s=...) is deprecated and ignored by docker 7; '\n                'the value is kept only as an attribute.' % _n,\n                DeprecationWarning, stacklevel=2)\n    _dw_orig_tls_init(self, client_cert=client_cert, ca_cert=ca_cert, verify=verify)\n    self.ssl_version = ssl_version\n    self.assert_hostname = assert_hostname\n    self.assert_fingerprint = assert_fingerprint\n\n_dw_tls.TLSConfig.__init__ = _dw_tls_init\n\n_dw_orig_kfe = _dw_uu.kwargs_from_env\n\n@_dw_functools.wraps(_dw_orig_kfe)\ndef _dw_kwargs_from_env(*args, ssl_version=None, assert_hostname=None, environment=None):\n    if args:\n        # old positional order: (ssl_version, assert_hostname, environment)\n        _dw_warnings.warn('Positional arguments to kwargs_from_env are deprecated; '\n                          'use environment=...', DeprecationWarning, stacklevel=2)\n        _names = ['ssl_version', 'assert_hostname', 'environment']\n        _vals = dict(zip(_names, args))\n        ssl_version = _vals.get('ssl_version', ssl_version)\n        assert_hostname = _vals.get('assert_hostname', assert_hostname)\n        environment = _vals.get('environment', environment)\n    if ssl_version is not None or assert_hostname is not None:\n        _dw_warnings.warn('kwargs_from_env(ssl_version=..., assert_hostname=...) is '\n                          'deprecated and ignored by docker 7.', DeprecationWarning, stacklevel=2)\n    params = _dw_orig_kfe(environment=environment)\n    _t = params.get('tls')\n    if _t is not None and not isinstance(_t, bool):\n        _t.ssl_version = ssl_version\n        _t.assert_hostname = assert_hostname\n    return params\n\n_dw_uu.kwargs_from_env = _dw_kwargs_from_env\n_dw_utils.kwargs_from_env = _dw_kwargs_from_env\n",
+   "results": {
+    "old": "pass: OK",
+    "new": "fail: TypeError: __init__() got an unexpected keyword argument 'assert_hostname' (compose/cli/docker_client.py line 109, in tls_config_from_options)",
+    "new+shim": "pass: OK"
+   }
+  },
+  {
+   "kind": "parameter",
+   "function": "docker.utils.utils.kwargs_from_env",
+   "parameter": "ssl_version",
+   "evidence": "graph path",
+   "path": [
+    "compose.cli.docker_client.docker_client",
+    "compose.cli.docker_client.kwargs_from_env",
+    "docker.utils.kwargs_from_env",
+    "docker.utils.utils.kwargs_from_env"
+   ],
+   "exposure": [],
+   "reproduction": "import os, ssl, tempfile\nd = tempfile.mkdtemp()\nfor f in ('ca.pem', 'cert.pem', 'key.pem'):\n    open(os.path.join(d, f), 'w').write('x')\nfrom compose.config.environment import Environment\nfrom compose.cli.docker_client import get_client\nenv = Environment({'DOCKER_HOST': 'tcp://127.0.0.1:2376', 'DOCKER_TLS_VERIFY': '1',\n                   'DOCKER_CERT_PATH': d, 'COMPOSE_TLS_VERSION': 'TLSv1_2'})\nclient = get_client(env, version='1.41')\nassert client.base_url == 'https://127.0.0.1:2376', client.base_url\nassert client.verify == os.path.join(d, 'ca.pem'), client.verify\nassert client.cert == (os.path.join(d, 'cert.pem'), os.path.join(d, 'key.pem')), client.cert\nprint('OK')",
+   "shim": "\nimport warnings as _dw_warnings\nimport functools as _dw_functools\nfrom docker import tls as _dw_tls\nfrom docker.utils import utils as _dw_uu\nimport docker.utils as _dw_utils\n\n_dw_orig_tls_init = _dw_tls.TLSConfig.__init__\n\n@_dw_functools.wraps(_dw_orig_tls_init)\ndef _dw_tls_init(self, client_cert=None, ca_cert=None, verify=None,\n                 ssl_version=None, assert_hostname=None, assert_fingerprint=None):\n    for _n, _v in (('ssl_version', ssl_version), ('assert_hostname', assert_hostname),\n                   ('assert_fingerprint', assert_fingerprint)):\n        if _v is not None:\n            _dw_warnings.warn(\n                'TLSConfig(%s=...) is deprecated and ignored by docker 7; '\n                'the value is kept only as an attribute.' % _n,\n                DeprecationWarning, stacklevel=2)\n    _dw_orig_tls_init(self, client_cert=client_cert, ca_cert=ca_cert, verify=verify)\n    self.ssl_version = ssl_version\n    self.assert_hostname = assert_hostname\n    self.assert_fingerprint = assert_fingerprint\n\n_dw_tls.TLSConfig.__init__ = _dw_tls_init\n\n_dw_orig_kfe = _dw_uu.kwargs_from_env\n\n@_dw_functools.wraps(_dw_orig_kfe)\ndef _dw_kwargs_from_env(*args, ssl_version=None, assert_hostname=None, environment=None):\n    if args:\n        # old positional order: (ssl_version, assert_hostname, environment)\n        _dw_warnings.warn('Positional arguments to kwargs_from_env are deprecated; '\n                          'use environment=...', DeprecationWarning, stacklevel=2)\n        _names = ['ssl_version', 'assert_hostname', 'environment']\n        _vals = dict(zip(_names, args))\n        ssl_version = _vals.get('ssl_version', ssl_version)\n        assert_hostname = _vals.get('assert_hostname', assert_hostname)\n        environment = _vals.get('environment', environment)\n    if ssl_version is not None or assert_hostname is not None:\n        _dw_warnings.warn('kwargs_from_env(ssl_version=..., assert_hostname=...) is '\n                          'deprecated and ignored by docker 7.', DeprecationWarning, stacklevel=2)\n    params = _dw_orig_kfe(environment=environment)\n    _t = params.get('tls')\n    if _t is not None and not isinstance(_t, bool):\n        _t.ssl_version = ssl_version\n        _t.assert_hostname = assert_hostname\n    return params\n\n_dw_uu.kwargs_from_env = _dw_kwargs_from_env\n_dw_utils.kwargs_from_env = _dw_kwargs_from_env\n",
+   "results": {
+    "old": "pass: OK",
+    "new": "fail: TypeError: kwargs_from_env() got an unexpected keyword argument 'ssl_version' (compose/cli/docker_client.py line 41 get_client -> line 124 docker_client)",
+    "new+shim": "pass: OK"
+   }
+  }
+ ],
+ "unconfirmed": [
+  {
+   "candidate": "docker.tls.TLSConfig.__init__ ssl_version (graph path compose.cli.docker_client.tls_config_from_options -> docker.tls.TLSConfig.__init__)",
+   "why": "Real break, but compose always passes assert_hostname in the same TLSConfig(...) call, so Python reports 'assert_hostname' first and no error names ssl_version. The assert_hostname finding's reproduction also checks tls.ssl_version and passes with the shim."
+  },
+  {
+   "candidate": "docker.utils.utils.kwargs_from_env assert_hostname",
+   "why": "No graph path, no unknown call, and the text search found no call in compose that passes assert_hostname to kwargs_from_env (compose passes only environment and ssl_version)."
+  },
+  {
+   "candidate": "docker.tls.TLSConfig.__init__ assert_fingerprint",
+   "why": "No graph path, no unknown call, and the text search found no use in compose."
+  },
+  {
+   "candidate": "removed names (docker.api.client.SSLHTTPAdapter, docker.api.client.websocket, docker.tls.SSLHTTPAdapter, docker.tls.ssl, docker.transport.SSLHTTPAdapter, docker.transport.ssladapter, TLSConfig.ssl_version/assert_hostname/assert_fingerprint attributes)",
+   "why": "impact_paths reported no import, call or subclass site, and the text search found no use in compose apart from the keyword arguments above. The shim restores the TLSConfig attributes anyway."
+  }
+ ],
+ "unsupported": {
+  "Positional parameter was moved": 3
+ }
+}

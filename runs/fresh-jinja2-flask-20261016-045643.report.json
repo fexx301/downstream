@@ -1,0 +1,40 @@
+{
+ "findings": [
+  {
+   "kind": "name",
+   "function": "jinja2.escape",
+   "parameter": "jinja2.escape",
+   "evidence": "graph path",
+   "path": [
+    "flask.escape",
+    "jinja2.escape",
+    "jinja2.utils.escape"
+   ],
+   "exposure": [],
+   "reproduction": "import flask\nassert str(flask.escape(\"<b>\")) == \"&lt;b&gt;\"\nassert str(flask.Markup(\"<i>x</i>\")) == \"<i>x</i>\"\napp = flask.Flask(\"t\")\nwith app.test_request_context():\n    out = flask.render_template_string(\"{% autoescape false %}{{ v }}{% endautoescape %}{% with a=1 %}{{ a }}{% endwith %}|{{ v }}\", v=\"<b>\")\nassert out == \"<b>1|&lt;b&gt;\", out\nprint(\"OK\", out)",
+   "shim": "\nimport warnings as _dw\nimport markupsafe as _ms\nfrom . import ext as _ext\nfrom . import utils as _utils\n\ndef __getattr__(name):\n    if name in (\"Markup\", \"escape\"):\n        _dw.warn(f\"'jinja2.{name}' is deprecated; import 'markupsafe.{name}' instead.\", DeprecationWarning, stacklevel=2)\n        return getattr(_ms, name)\n    raise AttributeError(f\"module 'jinja2' has no attribute {name!r}\")\n\ndef _utils_getattr(name):\n    if name in (\"Markup\", \"escape\"):\n        _dw.warn(f\"'jinja2.utils.{name}' is deprecated; import 'markupsafe.{name}' instead.\", DeprecationWarning, stacklevel=2)\n        return getattr(_ms, name)\n    raise AttributeError(f\"module 'jinja2.utils' has no attribute {name!r}\")\n_utils.__getattr__ = _utils_getattr\n\nclass _DeprecatedBuiltinExtension(_ext.Extension):\n    def __init__(self, environment):\n        _dw.warn(f\"The '{type(self).__name__}' extension is deprecated; its behaviour is built in now. Remove it from extensions.\", DeprecationWarning, stacklevel=3)\n        super().__init__(environment)\n\nclass WithExtension(_DeprecatedBuiltinExtension):\n    pass\n\nclass AutoEscapeExtension(_DeprecatedBuiltinExtension):\n    pass\n\n_ext.WithExtension = WithExtension\n_ext.AutoEscapeExtension = AutoEscapeExtension\n_ext.with_ = WithExtension\n_ext.autoescape = AutoEscapeExtension\n",
+   "results": {
+    "old": "pass: OK <b>1|&lt;b&gt; (only jinja2's own DeprecationWarnings for escape/Markup)",
+    "new": "fail: Traceback ... File \"/env/v/lib/python3.12/site-packages/flask/__init__.py\", line 14, in <module>\n    from jinja2 import escape\nImportError: cannot import name 'escape' from 'jinja2'",
+    "new+shim": "pass: OK <b>1|&lt;b&gt;"
+   }
+  }
+ ],
+ "unconfirmed": [
+  {
+   "candidate": "jinja2.Markup / jinja2.utils.Markup (graph path: flask.Markup, flask.json.Markup -> flask.json.tojson_filter, flask.json.tag.Markup -> flask.json.tag.TagMarkup.to_python)",
+   "why": "This is a real break, but it is hidden: flask/__init__.py line 15 imports Markup, and Python stops at the escape import on line 14 first, so the 3.1.0 error never names Markup. The confirmed finding's shim restores it, and the reproduction checks it through flask.Markup."
+  },
+  {
+   "candidate": "jinja2.ext.autoescape / jinja2.ext.AutoEscapeExtension (text search: flask.app.Flask.jinja_options = {'extensions': ['jinja2.ext.autoescape', 'jinja2.ext.with_']})",
+   "why": "Hidden by the import-time escape error. In a diagnostic run on 3.1.0 with a shim that only restored Markup and escape, render_template_string failed in flask/app.py create_jinja_environment -> jinja2 load_extensions with \"AttributeError: module 'jinja2.ext' has no attribute 'autoescape'\". It can't be confirmed with an unshimmed run. The confirmed finding's shim restores it, and the reproduction checks it by rendering a template."
+  },
+  {
+   "candidate": "jinja2.ext.with_ / jinja2.ext.WithExtension (text search: same jinja_options)",
+   "why": "Hidden twice: first by the escape import error, then by the autoescape extension failing to load (it is listed before with_). The confirmed finding's shim restores it, and the reproduction checks {% with %} rendering."
+  }
+ ],
+ "unsupported": {
+  "Attribute value was changed": 3
+ }
+}

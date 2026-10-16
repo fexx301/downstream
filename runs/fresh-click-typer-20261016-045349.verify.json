@@ -1,0 +1,36 @@
+{
+ "unsupported kinds all listed": true,
+ "finding 0: click.testing.CliRunner.invoke(mix_stderr=) via graph path": {
+  "imports the dependent": true,
+  "does not pass or name it itself": true,
+  "dependent's source mentions the parameter": [
+   "testing.py:16",
+   "testing.py:27"
+  ],
+  "has an assertion": true,
+  "old passes": true,
+  "new fails naming the parameter, through the dependent": true,
+  "has a shim": true,
+  "new+shim passes": true,
+  "outputs": {
+   "old": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK Hello World\n",
+    "stderr": ""
+   },
+   "new": {
+    "outcome": "fail",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 7, in <module>\n  File \"/env/v/lib/python3.12/site-packages/typer/testing.py\", line 20, in invoke\n    return super().invoke(\n           ^^^^^^^^^^^^^^^\n  File \"/env/v/lib/python3.12/site-packages/click/testing.py\", line 329, in invoke\n    cli.main(args=args or (), prog_name=prog_name, **extra)\n  File \"/env/v/lib/python3.12/site-packages/click/core.py\", line 781, in main\n    with self.make_context(prog_name, args, **extra) as ctx:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/env/v/lib/python3.12/site-packages/click/core.py\", line 698, in make_context\n    ctx = Context(self, info_name=info_name, parent=parent, **extra)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTypeError: Context.__init__() got an unexpected keyword argument 'mix_stderr'\n"
+   },
+   "new+shim": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK Hello World\n",
+    "stderr": ""
+   }
+  }
+ }
+}

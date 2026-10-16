@@ -1,0 +1,68 @@
+{
+ "unsupported kinds all listed": true,
+ "finding 0: docker.tls.TLSConfig.__init__(assert_hostname=) via graph path": {
+  "imports the dependent": true,
+  "does not pass or name it itself": true,
+  "dependent's source mentions the parameter": [
+   "docker_client.py:111"
+  ],
+  "has an assertion": true,
+  "old passes": true,
+  "new fails naming the parameter, through the dependent": true,
+  "has a shim": true,
+  "new+shim passes": true,
+  "outputs": {
+   "old": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK\n",
+    "stderr": ""
+   },
+   "new": {
+    "outcome": "fail",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 8, in <module>\n  File \"/env/v/lib/python3.9/site-packages/compose/cli/docker_client.py\", line 109, in tls_config_from_options\n    return TLSConfig(\nTypeError: __init__() got an unexpected keyword argument 'assert_hostname'\n"
+   },
+   "new+shim": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK\n",
+    "stderr": ""
+   }
+  }
+ },
+ "finding 1: docker.utils.utils.kwargs_from_env(ssl_version=) via graph path": {
+  "imports the dependent": true,
+  "does not pass or name it itself": true,
+  "dependent's source mentions the parameter": [
+   "docker_client.py:112",
+   "docker_client.py:124"
+  ],
+  "has an assertion": true,
+  "old passes": true,
+  "new fails naming the parameter, through the dependent": true,
+  "has a shim": true,
+  "new+shim passes": true,
+  "outputs": {
+   "old": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK\n",
+    "stderr": ""
+   },
+   "new": {
+    "outcome": "fail",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 9, in <module>\n  File \"/env/v/lib/python3.9/site-packages/compose/cli/docker_client.py\", line 41, in get_client\n    client = docker_client(\n  File \"/env/v/lib/python3.9/site-packages/compose/cli/docker_client.py\", line 124, in docker_client\n    kwargs = kwargs_from_env(environment=environment, ssl_version=tls_version)\nTypeError: kwargs_from_env() got an unexpected keyword argument 'ssl_version'\n"
+   },
+   "new+shim": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK\n",
+    "stderr": ""
+   }
+  }
+ }
+}

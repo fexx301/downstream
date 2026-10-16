@@ -1,0 +1,142 @@
+[
+ {
+  "kind": "Attribute value was changed",
+  "path": "jinja2.__version__",
+  "canonical": "jinja2.__version__",
+  "name": null,
+  "explain": "\u001b[1msrc/jinja2-3.1.0/jinja2/__init__.py\u001b[0m:37: __version__: \u001b[33mAttribute value was changed\u001b[39m: '3.0.3' -> '3.1.0'"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "jinja2.runtime.exported",
+  "canonical": "jinja2.runtime.exported",
+  "name": null,
+  "explain": "\u001b[1msrc/jinja2-3.1.0/jinja2/runtime.py\u001b[0m:45: exported: \u001b[33mAttribute value was changed\u001b[39m: ['LoopContext', 'TemplateReference', 'Macro', 'Markup', 'TemplateRuntimeError', 'missing', 'concat', 'escape', 'markup_join', 'str_join', 'identity', 'TemplateNotFound', 'Namespace', 'Undefined', 'internalcode'] -> ['LoopContext', 'TemplateReference', 'Macro', 'Markup', 'TemplateRuntimeError', 'missing', 'escape', 'markup_join', 'str_join', 'identity', 'TemplateNotFound', 'Namespace', 'Undefined', 'internalcode']"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "jinja2.runtime.unicode_join",
+  "canonical": "jinja2.runtime.unicode_join",
+  "name": "unicode_join",
+  "explain": "\u001b[1msrc/jinja2-3.0.3/jinja2/runtime.py\u001b[0m:92: unicode_join: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "jinja2.runtime.Context.__init_subclass__",
+  "canonical": "jinja2.runtime.Context.__init_subclass__",
+  "name": "__init_subclass__",
+  "explain": "\u001b[1msrc/jinja2-3.0.3/jinja2/runtime.py\u001b[0m:178: Context.__init_subclass__: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "jinja2.utils.contextfunction",
+  "canonical": "jinja2.utils.contextfunction",
+  "name": "contextfunction",
+  "explain": "\u001b[1msrc/jinja2-3.0.3/jinja2/utils.py\u001b[0m:103: contextfunction: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "jinja2.utils.evalcontextfunction",
+  "canonical": "jinja2.utils.evalcontextfunction",
+  "name": "evalcontextfunction",
+  "explain": "\u001b[1msrc/jinja2-3.0.3/jinja2/utils.py\u001b[0m:119: evalcontextfunction: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "jinja2.utils.environmentfunction",
+  "canonical": "jinja2.utils.environmentfunction",
+  "name": "environmentfunction",
+  "explain": "\u001b[1msrc/jinja2-3.0.3/jinja2/utils.py\u001b[0m:138: environmentfunction: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "jinja2.utils.unicode_urlencode",
+  "canonical": "jinja2.utils.unicode_urlencode",
+  "name": "unicode_urlencode",
+  "explain": "\u001b[1msrc/jinja2-3.0.3/jinja2/utils.py\u001b[0m:486: unicode_urlencode: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "jinja2.utils.Markup",
+  "canonical": "jinja2.utils.Markup",
+  "name": "Markup",
+  "explain": "\u001b[1msrc/jinja2-3.0.3/jinja2/utils.py\u001b[0m:836: Markup: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "jinja2.utils.escape",
+  "canonical": "jinja2.utils.escape",
+  "name": "escape",
+  "explain": "\u001b[1msrc/jinja2-3.0.3/jinja2/utils.py\u001b[0m:847: escape: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "jinja2.debug.tb_set_next",
+  "canonical": "jinja2.debug.tb_set_next",
+  "name": "tb_set_next",
+  "explain": "\u001b[1msrc/jinja2-3.0.3/jinja2/debug.py\u001b[0m:242: tb_set_next: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "jinja2.lexer.Lexer.lstrip_unless_re",
+  "canonical": "jinja2.lexer.Lexer.lstrip_unless_re",
+  "name": "lstrip_unless_re",
+  "explain": "\u001b[1msrc/jinja2-3.0.3/jinja2/lexer.py\u001b[0m:512: Lexer.lstrip_unless_re: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "jinja2.filters.contextfilter",
+  "canonical": "jinja2.filters.contextfilter",
+  "name": "contextfilter",
+  "explain": "\u001b[1msrc/jinja2-3.0.3/jinja2/filters.py\u001b[0m:47: contextfilter: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "jinja2.filters.evalcontextfilter",
+  "canonical": "jinja2.filters.evalcontextfilter",
+  "name": "evalcontextfilter",
+  "explain": "\u001b[1msrc/jinja2-3.0.3/jinja2/filters.py\u001b[0m:63: evalcontextfilter: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "jinja2.filters.environmentfilter",
+  "canonical": "jinja2.filters.environmentfilter",
+  "name": "environmentfilter",
+  "explain": "\u001b[1msrc/jinja2-3.0.3/jinja2/filters.py\u001b[0m:82: environmentfilter: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Attribute value was changed",
+  "path": "jinja2.filters.FILTERS",
+  "canonical": "jinja2.filters.FILTERS",
+  "name": null,
+  "explain": "\u001b[1msrc/jinja2-3.1.0/jinja2/filters.py\u001b[0m:1785: FILTERS: \u001b[33mAttribute value was changed\u001b[39m: {'abs': abs, 'attr': do_attr, 'batch': do_batch, 'capitalize': do_capitalize, 'center': do_center, 'count': len, 'd': do_default, 'default': do_default, 'dictsort': do_dictsort, 'e': escape, 'escape': escape, 'filesizeformat': do_filesizeformat, 'first': do_first, 'float': do_float, 'forceescape': do_forceescape, 'format': do_format, 'groupby': do_groupby, 'indent': do_indent, 'int': do_int, 'join': do_join, 'last': do_last, 'length': len, 'list': do_list, 'lower': do_lower, 'map': do_map, 'min': do_min, 'max': do_max, 'pprint': do_pprint, 'random': do_random, 'reject': do_reject, 'rejectattr': do_rejectattr, 'replace': do_replace, 'reverse': do_reverse, 'round': do_round, 'safe': do_mark_safe, 'select': do_select, 'selectattr': do_selectattr, 'slice': do_slice, 'sort': do_sort, 'string': soft_str, 'striptags': do_striptags, 'sum': do_sum, 'title': do_title, 'trim': do_trim, 'truncate': do_truncate, 'unique': do_unique, 'upper': do_upper, 'urlencode': do_urlencode, 'urlize': do_urlize, 'wordcount': do_wordcount, 'wordwrap': do_wordwrap, 'xmlattr': do_xmlattr, 'tojson': do_tojson} -> {'abs': abs, 'attr': do_attr, 'batch': do_batch, 'capitalize': do_capitalize, 'center': do_center, 'count': len, 'd': do_default, 'default': do_default, 'dictsort': do_dictsort, 'e': escape, 'escape': escape, 'filesizeformat': do_filesizeformat, 'first': do_first, 'float': do_float, 'forceescape': do_forceescape, 'format': do_format, 'groupby': do_groupby, 'indent': do_indent, 'int': do_int, 'join': do_join, 'last': do_last, 'length': len, 'list': do_list, 'lower': do_lower, 'items': do_items, 'map': do_map, 'min': do_min, 'max': do_max, 'pprint': do_pprint, 'random': do_random, 'reject': do_reject, 'rejectattr': do_rejectattr, 'replace': do_replace, 'reverse': do_reverse, 'round': do_round, 'safe': do_mark_safe, 'select': do_select, 'selectattr': do_selectattr, 'slice': do_slice, 'sort': do_sort, 'string': soft_str, 'striptags': do_striptags, 'sum': do_sum, 'title': do_title, 'trim': do_trim, 'truncate': do_truncate, 'unique': do_unique, 'upper': do_upper, 'urlencode': do_urlencode, 'urlize': do_urlize, 'wordcount': do_wordcount, 'wordwrap': do_wordwrap, 'xmlattr': do_xmlattr, 'tojson': do_tojson}"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "jinja2.ext.WithExtension",
+  "canonical": "jinja2.ext.WithExtension",
+  "name": "WithExtension",
+  "explain": "\u001b[1msrc/jinja2-3.0.3/jinja2/ext.py\u001b[0m:600: WithExtension: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "jinja2.ext.AutoEscapeExtension",
+  "canonical": "jinja2.ext.AutoEscapeExtension",
+  "name": "AutoEscapeExtension",
+  "explain": "\u001b[1msrc/jinja2-3.0.3/jinja2/ext.py\u001b[0m:611: AutoEscapeExtension: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "jinja2.ext.with_",
+  "canonical": "jinja2.ext.with_",
+  "name": "with_",
+  "explain": "\u001b[1msrc/jinja2-3.0.3/jinja2/ext.py\u001b[0m:877: with_: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "jinja2.ext.autoescape",
+  "canonical": "jinja2.ext.autoescape",
+  "name": "autoescape",
+  "explain": "\u001b[1msrc/jinja2-3.0.3/jinja2/ext.py\u001b[0m:878: autoescape: \u001b[33mPublic object was removed\u001b[39m"
+ }
+]

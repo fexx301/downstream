@@ -1,0 +1,86 @@
+[
+ {
+  "kind": "Public object was removed",
+  "path": "docker.tls.TLSConfig.ssl_version",
+  "canonical": "docker.tls.TLSConfig.ssl_version",
+  "name": "ssl_version",
+  "explain": "\u001b[1msrc/docker-6.1.3/docker/tls.py\u001b[0m:27: TLSConfig.ssl_version: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "docker.tls.TLSConfig.__init__",
+  "canonical": "docker.tls.TLSConfig.__init__",
+  "name": "ssl_version",
+  "explain": "\u001b[1msrc/docker-7.0.0/docker/tls.py\u001b[0m:21: TLSConfig.__init__(\u001b[34mssl_version\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "docker.tls.TLSConfig.__init__",
+  "canonical": "docker.tls.TLSConfig.__init__",
+  "name": "assert_hostname",
+  "explain": "\u001b[1msrc/docker-7.0.0/docker/tls.py\u001b[0m:21: TLSConfig.__init__(\u001b[34massert_hostname\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "docker.tls.TLSConfig.__init__",
+  "canonical": "docker.tls.TLSConfig.__init__",
+  "name": "assert_fingerprint",
+  "explain": "\u001b[1msrc/docker-7.0.0/docker/tls.py\u001b[0m:21: TLSConfig.__init__(\u001b[34massert_fingerprint\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "docker.tls.TLSConfig.assert_hostname",
+  "canonical": "docker.tls.TLSConfig.assert_hostname",
+  "name": "assert_hostname",
+  "explain": "\u001b[1msrc/docker-6.1.3/docker/tls.py\u001b[0m:38: TLSConfig.assert_hostname: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "docker.tls.TLSConfig.assert_fingerprint",
+  "canonical": "docker.tls.TLSConfig.assert_fingerprint",
+  "name": "assert_fingerprint",
+  "explain": "\u001b[1msrc/docker-6.1.3/docker/tls.py\u001b[0m:39: TLSConfig.assert_fingerprint: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Public object was removed",
+  "path": "docker.transport.ssladapter",
+  "canonical": "docker.transport.ssladapter",
+  "name": "ssladapter",
+  "explain": "\u001b[1msrc/docker-6.1.3/docker/transport/ssladapter.py\u001b[0m:0: <module>: \u001b[33mPublic object was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "docker.utils.utils.kwargs_from_env",
+  "canonical": "docker.utils.utils.kwargs_from_env",
+  "name": "ssl_version",
+  "explain": "\u001b[1msrc/docker-7.0.0/docker/utils/utils.py\u001b[0m:344: kwargs_from_env(\u001b[34mssl_version\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Parameter was removed",
+  "path": "docker.utils.utils.kwargs_from_env",
+  "canonical": "docker.utils.utils.kwargs_from_env",
+  "name": "assert_hostname",
+  "explain": "\u001b[1msrc/docker-7.0.0/docker/utils/utils.py\u001b[0m:344: kwargs_from_env(\u001b[34massert_hostname\u001b[39m): \u001b[33mParameter was removed\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "docker.utils.utils.kwargs_from_env",
+  "canonical": "docker.utils.utils.kwargs_from_env",
+  "name": "environment",
+  "explain": "\u001b[1msrc/docker-7.0.0/docker/utils/utils.py\u001b[0m:344: kwargs_from_env(\u001b[34menvironment\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "docker.api.container.ContainerApiMixin.commit",
+  "canonical": "docker.api.container.ContainerApiMixin.commit",
+  "name": "changes",
+  "explain": "\u001b[1msrc/docker-7.0.0/docker/api/container.py\u001b[0m:113: ContainerApiMixin.commit(\u001b[34mchanges\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ },
+ {
+  "kind": "Positional parameter was moved",
+  "path": "docker.api.container.ContainerApiMixin.commit",
+  "canonical": "docker.api.container.ContainerApiMixin.commit",
+  "name": "conf",
+  "explain": "\u001b[1msrc/docker-7.0.0/docker/api/container.py\u001b[0m:113: ContainerApiMixin.commit(\u001b[34mconf\u001b[39m): \u001b[33mPositional parameter was moved\u001b[39m"
+ }
+]

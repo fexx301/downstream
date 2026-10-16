@@ -1,0 +1,36 @@
+{
+ "unsupported kinds all listed": true,
+ "finding 0: jinja2.escape(escape) via graph path": {
+  "imports the dependent": true,
+  "does not pass or name it itself": false,
+  "dependent's source mentions the parameter": [
+   "__init__.py:14",
+   "__init__.py:280"
+  ],
+  "has an assertion": true,
+  "old passes": true,
+  "new fails naming the parameter, through the dependent": true,
+  "has a shim": true,
+  "new+shim passes": true,
+  "outputs": {
+   "old": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK <b>1|&lt;b&gt;\n",
+    "stderr": "<string>:2: DeprecationWarning: 'jinja2.escape' is deprecated and will be removed in Jinja 3.1. Import 'markupsafe.escape' instead.\n<string>:3: DeprecationWarning: 'jinja2.Markup' is deprecated and will be removed in Jinja 3.1. Import 'markupsafe.Markup' instead.\n"
+   },
+   "new": {
+    "outcome": "fail",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/env/v/lib/python3.12/site-packages/flask/__init__.py\", line 14, in <module>\n    from jinja2 import escape\nImportError: cannot import name 'escape' from 'jinja2' (/env/v/lib/python3.12/site-packages/jinja2/__init__.py)\n"
+   },
+   "new+shim": {
+    "outcome": "pass",
+    "exit": 0,
+    "stdout": "OK <b>1|&lt;b&gt;\n",
+    "stderr": ""
+   }
+  }
+ }
+}

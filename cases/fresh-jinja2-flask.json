@@ -1,0 +1,25 @@
+{
+ "name": "fresh-jinja2-flask",
+ "lib": "jinja2",
+ "lib_module": "jinja2",
+ "old": "3.0.3",
+ "new": "3.1.0",
+ "dep": "flask==1.1.2",
+ "dep_module": "flask",
+ "asof": "2022-03-24T15:14:01Z",
+ "graph": "fresh_jinja2_flask",
+ "src": [
+  "src/flask-1.1.2",
+  "src/jinja2-3.0.3"
+ ],
+ "lib_src": [
+  "src/jinja2-3.0.3",
+  "src/jinja2-3.1.0"
+ ],
+ "breaks": "breaks-jinja2.json",
+ "python": "3.12",
+ "cap_s": 2700,
+ "pins": [
+  "itsdangerous==2.0.1"
+ ]
+}
