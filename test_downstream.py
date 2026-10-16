@@ -237,6 +237,25 @@ class SummaryRow(unittest.TestCase):
         self.assertIn("1 break(s) reported | NOT all confirmed", summary_row("b==1", {**none, "direct": 2}, 0, found))
 
 
+class TriageText(unittest.TestCase):
+    def test_paths_and_the_no_exposure_verdict(self):
+        from agent import triage_text
+        case = {"dep": "b==1", "lib": "a", "old": "1", "new": "2"}
+        changes = {"removed_parameters": [{"found_by": "both"}, {"found_by": "graph diff"}],
+                   "removed_names": {"count": 3}, "unsupported": {"Attribute value was changed": {"count": 4}}}
+        found = triage_text(case, {"changes": changes, "triage": {
+            "direct": [{"chain": ["b.f", "a.g"]}], "exposed": [],
+            "unknown": [{"caller": "b.h", "target": "x.a.R", "keywords": ["k"]}]}})
+        self.assertIn("removed parameters: 2 (1 by both, 1 by graph diff); removed names: 3", found)
+        self.assertIn("  b.f -> a.g", found)
+        self.assertIn("  b.h -> x.a.R ['k']", found)
+        self.assertNotIn("verdict", found)
+        quiet = triage_text(case, {"changes": changes, "triage": {"direct": [], "exposed": [], "unknown": []}})
+        # a clean graph result is never reported as safe
+        self.assertIn("no exposure found among removed parameters and names; run the agent's exclusion test", quiet)
+        self.assertIn("not analysed: 4 other API changes, and behaviour changes", quiet)
+
+
 class Readme(unittest.TestCase):
     def test_cypher_in_readme_matches_code(self):
         import impact

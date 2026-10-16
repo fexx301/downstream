@@ -168,9 +168,29 @@ For each dependent the graph decides first. If it finds a path, the agent invest
 
 A text search of openai 1.55.3 for `proxies` returns 20 lines. The graph flagged one path among them, the CLI, and the agent confirmed it breaks. The other 19 lines were not tested one by one; some build `proxies` at runtime, which the graph cannot see. A text search of aisuite and langchain-openai for `proxies` returns nothing, yet both break; the graph found them through the packages they depend on.
 
-## Run it
+## Try it in 5 minutes, no API key
 
-You need Docker, [uv](https://docs.astral.sh/uv/), the Claude Code CLI (logged in) and FalkorDB on port 6380:
+You need git, Docker and [uv](https://docs.astral.sh/uv/). No LLM is involved in these steps.
+
+```sh
+git clone https://github.com/fexx301/downstream && cd downstream
+docker run -d --name downstream-falkordb -p 6380:6379 falkordb/falkordb:latest
+
+# What the graph alone says. This downloads the packages, diffs the releases, builds the graph and runs the Cypher.
+python3 agent.py cases/aisuite-anthropic-httpx.json triage
+
+# Re-run a saved agent finding from scratch in fresh containers: old works, new breaks, new + shim works.
+python3 agent.py cases/aisuite-anthropic-httpx.json verify runs/aisuite-anthropic-httpx-20261015-061427.report.json
+
+# Self-tests on made-up packages.
+uv run --python 3.12 --with falkordb python -m unittest test_downstream
+```
+
+Any file in `cases/` works with `triage`, and every `runs/*.report.json` can be re-verified the same way.
+
+## Run the agent
+
+To run the agent itself you also need the Claude Code CLI, either logged in or with `ANTHROPIC_API_KEY` set. It uses `claude-opus-5-5` unless `DOWNSTREAM_MODEL` names another model. Each dependent takes about 1–2 minutes of agent time.
 
 ```sh
 docker run -d --name downstream-falkordb -p 6380:6379 falkordb/falkordb:latest

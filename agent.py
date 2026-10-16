@@ -1,9 +1,13 @@
 """Run the DOWNSTREAM agent on one case, then re-check its findings in fresh containers.
 
-Usage: python agent.py <case.json> setup|run|verify [report.json]
-  setup   griffe diff and symbol graph for the case
+Usage: python agent.py <case.json> setup|triage|run|verify [report.json]
+       python agent.py demo <case.json> ...
+  setup   download the sources, diff the releases, build the symbol graph
+  triage  setup, then print what the graph alone says (no LLM, no API key)
   run     headless Claude Code with only the downstream MCP tools; trace and report go to runs/, then verify
-  verify  re-run each finding's reproduction on old, new and new+shim in fresh environments
+          (needs a Claude Code login or ANTHROPIC_API_KEY; DOWNSTREAM_MODEL picks the model)
+  verify  re-run a saved report's reproductions on old, new and new+shim in fresh containers (no LLM)
+  demo    triage, then run or an exclusion test, then verify, for each case; a summary table goes to runs/
 """
 import ast
 import hashlib
@@ -24,7 +28,7 @@ from string import Template
 import runner
 
 HERE = Path(__file__).parent
-MODEL = "claude-opus-5-5"
+MODEL = os.environ.get("DOWNSTREAM_MODEL", "claude-opus-5-5")  # any model your Claude Code login or API key can use
 TRACED = {"Parameter was removed", "Public object was removed"}  # change kinds the graph traces
 UV = ["uv", "run", "-q", "--python", "3.12"]
 
@@ -246,16 +250,45 @@ def summary_row(dep, counts, other, rows):
     return f"| {dep} | {says} | {unanalysed} | {did} | {rerun} |"
 
 
+def graph_says(path):
+    """The graph's verdict on one case, before any agent runs: removed parameters and names, and the
+    paths from the dependent to them (no LLM involved)."""
+    return json.loads(subprocess.run(
+        [*UV, "--with", "mcp", "--with", "falkordb", "python", "-c",
+         "import json, server; print(json.dumps({'triage': server.triage(), 'changes': server.breaking_changes()}))"],
+        cwd=HERE, env={**os.environ, "DOWNSTREAM_CASE": str(path.resolve())},
+        capture_output=True, text=True, check=True).stdout)
+
+
+def triage_text(case, said):
+    """The graph's verdict as plain text."""
+    t, ch = said["triage"], said["changes"]
+    by = {}
+    for c in ch["removed_parameters"]:
+        by[c["found_by"]] = by.get(c["found_by"], 0) + 1
+    lines = [f"{case['dep']} on {case['lib']} {case['old']} -> {case['new']}",
+             f"removed parameters: {len(ch['removed_parameters'])}"
+             + (f" ({', '.join(f'{n} by {k}' for k, n in sorted(by.items()))})" if by else "") + "; "
+             f"removed names: {ch['removed_names']['count']}",
+             f"not analysed: {sum(v['count'] for v in ch['unsupported'].values())} other API changes, and behaviour changes"]
+    labels = {"direct": "paths from the dependent's own code", "exposed": "paths through other packages",
+              "unknown": "calls the graph cannot resolve (unknown, not safe)"}
+    for key, label in labels.items():
+        lines.append(f"{label}: {len(t[key]) or 'none'}" + (" (first 10 shown)" if len(t[key]) > 10 else ""))
+        for p in t[key][:10]:
+            lines.append("  " + (" -> ".join(p["chain"]) if "chain" in p else f"{p['caller']} -> {p['target']} {p['keywords']}"))
+    if not any(t.values()):
+        lines.append("verdict: no exposure found among removed parameters and names; run the agent's exclusion test to check")
+    return "\n".join(lines)
+
+
 def demo(paths):
     """One release against several dependents: the graph sorts them, the agent tests each, the verifier re-runs."""
     lines = ["| Dependent | Graph says | Not analysed | Agent run | Re-run in fresh containers |", "|---|---|---|---|---|"]
     for path in paths:
         case = json.loads(path.read_text())
         setup(case)
-        t = json.loads(subprocess.run([*UV, "--with", "mcp", "--with", "falkordb", "python", "-c",
-                                       "import json, server; print(json.dumps(server.triage()))"],
-                                      cwd=HERE, env={**os.environ, "DOWNSTREAM_CASE": str(path.resolve())},
-                                      capture_output=True, text=True, check=True).stdout)
+        t = graph_says(path)["triage"]
         counts = {k: len(v) for k, v in t.items()}
         other = sum(c["kind"] not in TRACED for c in json.loads((HERE / case["breaks"]).read_text()))
         rows = run_agent(path, case, control=not any(counts.values()))
@@ -273,6 +306,9 @@ if __name__ == "__main__":
     case = json.loads(path.read_text())
     if sys.argv[2] == "setup":
         setup(case)
+    elif sys.argv[2] == "triage":
+        setup(case)
+        print(triage_text(case, graph_says(path)))
     elif sys.argv[2] == "run":
         run_agent(path, case)
     else:
