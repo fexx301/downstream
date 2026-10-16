@@ -259,3 +259,5 @@ Claude (`claude-opus-5-5`, through Claude Code) wrote the code and this README a
 - Claude suggested the six demo dependents and Femi approved them. openai 1.56.1 was added as the control after the graph showed that 1.55.3 still breaks.
 
 At runtime the agent itself is Claude Code, restricted to DOWNSTREAM's tools.
+
+The demo video was also made with AI. Claude wrote the narration script and the pages shown, and drove the screen recording. The narrator's voice is synthetic: a local text-to-speech model, not a person.
